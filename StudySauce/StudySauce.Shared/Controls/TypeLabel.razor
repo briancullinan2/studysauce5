@@ -1,0 +1,11 @@
+@* TypeLabel.razor *@
+
+<label>@Model?.PropertyType</label>
+
+@code {
+    [Parameter] public PropertyMetadata? Model { get; set; }
+    [Parameter] public EventCallback<object> ValueChanged { get; set; }
+
+    //private async Task OnInput(ChangeEventArgs e)
+    //    => await ValueChanged.InvokeAsync(e.Value);
+}

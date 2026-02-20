@@ -1,0 +1,62 @@
+@using System.Reflection
+@typeparam TModel
+
+<div class="auto-form-container">
+    @if (_parameterCache != null)
+    {
+        @foreach (var entry in _parameterCache)
+        {
+            <div class="form-field">
+                @*<label>@entry.Metadata.PropertyType</label>
+                <label>@GetControl(entry.Metadata.PropertyType).Name</label>*@
+                @{
+                    var controlType = GetControl(entry.Metadata.PropertyType);
+                    RenderFragment renderControl = builder =>
+                    {
+                        builder.OpenComponent(0, controlType);
+                        // Manually assign parameters from your dictionary
+                        builder.AddAttribute(1, "Model", entry.Metadata);
+                        builder.AddAttribute(2, "ValueChanged", entry.Params["ValueChanged"]);
+                        builder.CloseComponent();
+                    };
+                }
+                @renderControl
+                @*<DynamicComponent Type="@ControlMapper.GetControl(entry.Metadata.PropertyType)"
+                                  Parameters="@entry.Params" />*@
+            </div>
+        }
+    }
+</div>
+
+@code {
+    [Parameter] public IEnumerable<TModel>? Model { get; set; }
+
+    private List<(PropertyMetadata Metadata, Dictionary<string, object?> Params)>? _parameterCache;
+
+    public static readonly Dictionary<Type, Type> TypeToControl = new()
+        {
+            { typeof(string), typeof(StringControl) },
+            //{ typeof(bool), typeof(CheckBoxControl) },
+            //{ typeof(DateTime), typeof(DateControl) },
+            //{ typeof(int), typeof(NumberControl) }
+        };
+
+    public static Type GetControl(Type modelPropertyType)
+        => TypeToControl.GetValueOrDefault(modelPropertyType, typeof(TypeLabel));
+
+    protected override void OnParametersSet()
+    {
+        // Only rebuild if the model actually exists and we haven't cached it yet
+        if (Model is IEnumerable<PropertyMetadata> metadataList && _parameterCache == null)
+        {
+            _parameterCache = metadataList.Select(prop => (
+                prop,
+                new Dictionary<string, object?>
+                {
+                    { "Model", prop },
+                    { "ValueChanged", EventCallback.Factory.Create<object>(this, (val) => {})}
+                }
+            )).ToList();
+        }
+    }
+}

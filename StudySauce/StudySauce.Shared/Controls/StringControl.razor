@@ -1,0 +1,16 @@
+@* StringControl.razor *@
+
+<label>@Model?.DisplayName</label>
+<input type="text"
+       maxlength="@(Model?.MaxLength > 0 ? Model.MaxLength.ToString() : "4096")"
+       class="my-custom-input-style" />
+
+@code {
+    [Parameter] public PropertyMetadata? Model { get; set; }
+    [Parameter] public EventCallback<object> ValueChanged { get; set; }
+
+    //       @oninput="OnInput"
+
+    //private async Task OnInput(ChangeEventArgs e)
+    //    => await ValueChanged.InvokeAsync(e.Value);
+}

@@ -1,0 +1,28 @@
+﻿@page "/"
+@using DataLayer
+@using DataLayer.Entities
+@using StudySauce.Shared.Controls
+@using StudySauce.Shared.Services
+@inject IFormFactor FormFactor
+
+<PageTitle>Home</PageTitle>
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app running on <em>@factor</em> using <em>@platform</em>.
+
+<ModelItemsControl TModel="PropertyMetadata" Model="@CurrentCategory"></ModelItemsControl>
+
+@code {
+    private string factor => FormFactor.GetFormFactor();
+    private string platform => FormFactor.GetPlatform();
+
+    private IEnumerable<PropertyMetadata>? CurrentCategory;
+
+    protected override void OnInitialized()
+    {
+        // Equivalent to: Source={x:Static data:EntityMetadata.User.Categories[Login Info]}
+        // We assign the specific "Login Info" object to the Model property
+        CurrentCategory = EntityMetadata.User.Groups["Login Info"]?.ToList();
+    }
+}
