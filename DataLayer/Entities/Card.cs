@@ -1,0 +1,66 @@
+﻿using DataLayer.Entities;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace EPIC.DataLayer.Entities
+{
+    [Table("card")]
+    public class Card : Entity<Card>
+    {
+        // Constants for logic matching your PHP source
+        public const string SELF_ASSESSMENT = "SELF_ASSESSMENT";
+        public const string SHORT_ANSWER = "SHORT_ANSWER";
+        public const string MULTIPLE_CHOICE = "MULTIPLE_CHOICE";
+
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; protected set; }
+
+        [Required]
+        public int PackId { get; set; }
+
+        [ForeignKey(nameof(PackId))]
+        public virtual Pack? Pack { get; set; }
+
+        [Category("Content")]
+        [Display(Name = "Question/Front", Description = "The primary content displayed to the user")]
+        [DataType(DataType.MultilineText)]
+        public string Content { get; set; } = string.Empty;
+
+        [Category("Content")]
+        [Display(Name = "Answer/Back", Description = "The expected response or back of the flashcard")]
+        [DataType(DataType.MultilineText)]
+        public string? ResponseContent { get; set; } = string.Empty;
+
+        [MaxLength(16)]
+        [Category("Settings")]
+        [Display(Name = "Content Type", Description = "Format of the front (TEXT, IMAGE, etc.)")]
+        public string ContentType { get; set; } = "TEXT";
+
+        [MaxLength(16)]
+        [Category("Settings")]
+        [Display(Name = "Response Type", Description = "Interaction type (flash-card, multiple-choice)")]
+        public string ResponseType { get; set; } = "flash-card";
+
+        [MaxLength(16)]
+        [Category("Scheduling")]
+        [Display(Name = "Recurrence", Description = "Spaced repetition interval")]
+        public string Recurrence { get; set; } = "1 day";
+
+        [Required]
+        [Category("System")]
+        public bool Deleted { get; set; } = false;
+
+        [Required]
+        [Category("System")]
+        public DateTime Created { get; set; } = DateTime.UtcNow;
+
+        [Category("System")]
+        public DateTime? Modified { get; set; }
+
+        // Navigation for Anki-style responses and multiple choice answers
+        //public virtual ICollection<Response> Responses { get; set; } = new HashSet<Response>();
+        //public virtual ICollection<Answer> Answers { get; set; } = new HashSet<Answer>();
+    }
+}

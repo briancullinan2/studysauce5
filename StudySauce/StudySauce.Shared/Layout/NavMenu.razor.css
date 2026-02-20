@@ -49,6 +49,8 @@
 .nav-item {
     font-size: 0.9rem;
     padding-bottom: 0.5rem;
+    text-wrap: nowrap;
+    max-width:100%;
 }
 
     .nav-item:first-of-type {
@@ -67,8 +69,11 @@
         height: 3rem;
         display: flex;
         align-items: center;
-        line-height: 3rem;
         width: 100%;
+    }
+
+    .nav-text {
+        text-overflow: ellipsis
     }
 
 .nav-item ::deep a.active {
@@ -83,6 +88,8 @@
 
 .nav-scrollable {
     display: none;
+   overflow-y:auto;
+   overflow-x:hidden;
 }
 
 .navbar-toggler:checked ~ .nav-scrollable {

@@ -1,0 +1,34 @@
+﻿.auto-form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 20px;
+}
+
+.form-field {
+    display: grid;
+    /* Label takes 150px, Input takes the rest */
+    grid-template-columns: 150px 1fr;
+    align-items: center;
+    gap: 15px;
+}
+
+    .form-field label {
+        text-align: right;
+        font-weight: 500;
+        color: #444;
+    }
+
+    /* Use ::deep to style the components inside DynamicComponent */
+    .form-field ::deep .my-custom-input-style {
+        width: 100%;
+        padding: 6px 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background: white;
+    }
+
+        .form-field ::deep .my-custom-input-style:focus {
+            border-color: #0078d4; /* WinUI standard focus color */
+            outline: 2px solid rgba(0, 120, 212, 0.3);
+        }
