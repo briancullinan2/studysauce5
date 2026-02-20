@@ -1,0 +1,65 @@
+@page "/pack/{Id:int}"
+@page "/quiz/{Id:int}"
+@page "/card/{Id:int}"
+@page "/demo/{Id:int}"
+@inject NavigationManager Nav
+@using StudySauce.Shared.Services
+@using StudySauce.Shared.Controls
+@using System.ComponentModel
+@using System.Reflection
+
+@if (Mode == null)
+{
+    <NotFoundControl />
+    return;
+}
+
+<label>@Mode</label>
+@if (Id.HasValue)
+{
+    <p>Viewing ID: @Id</p>
+}
+else
+{
+    <p>Viewing your own profile.</p>
+}
+
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+
+    public PackMode? Mode { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        // 1. Get the relative path (e.g., "pack/123" or "quiz/456")
+        var relativePath = Nav.ToBaseRelativePath(Nav.Uri);
+
+        // 2. Extract the first segment before the first '/'
+        var firstSegment = relativePath.Split('/')[0];
+
+        foreach (var value in Enum.GetValues<PackMode>())
+        {
+            var attribute = typeof(PackMode).GetField(value.ToString())?.GetCustomAttribute<DescriptionAttribute>();
+            if (attribute != null && string.Equals(firstSegment, attribute.Description, StringComparison.InvariantCultureIgnoreCase))
+            {
+                Mode = value;
+                break;
+            }
+        }
+
+        // 3. Map the segment to your Enum
+        // We use the built-in Enum.TryParse which is part of System (CoreCLR/Mono)
+        if (Mode == null && Enum.TryParse<PackMode>(firstSegment, true, out var result))
+        {
+            Mode = result;
+        }
+
+
+        //if (Mode == null)
+        //{
+            // Fallback for unexpected segments
+        //    Nav.NavigateTo("/not-found", replace: true);
+        //}
+    }
+}

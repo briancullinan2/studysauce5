@@ -1,0 +1,19 @@
+@foreach (var item in HeaderLinks)
+{
+    <NavLink class="header-link" href="@item.Href" Match="NavLinkMatch.All">
+        <i class="bi @item.Icon" aria-hidden="true"></i>
+        <span class="header-text">@item.Title</span>
+    </NavLink>
+}
+
+@code {
+    private List<NavMenuItem> HeaderLinks = new()
+    {
+        new() { Title = "About Us", Href = "about", Icon = "bi-info-circle" },
+        new() { Title = "Terms", Href = "terms", Icon = "bi-file-earmark-text" },
+        new() { Title = "Privacy", Href = "privacy", Icon = "bi-shield-lock" },
+        new() { Title = "Contact", Href = "contact", Icon = "bi-envelope-at" }
+    };
+
+}
+

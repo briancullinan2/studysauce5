@@ -18,4 +18,13 @@
     <ProjectReference Include="..\..\DataLayer\DataLayer.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Pages\Landing\" />
+    <Folder Include="Pages\Admin\" />
+    <Folder Include="Pages\Content\" />
+    <Folder Include="Pages\Course\" />
+    <Folder Include="Pages\Shared\" />
+    <Folder Include="Pages\Tools\" />
+  </ItemGroup>
+
 </Project>

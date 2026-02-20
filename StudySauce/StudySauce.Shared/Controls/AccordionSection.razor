@@ -1,0 +1,46 @@
+@using System.Text.RegularExpressions
+@using System.Globalization
+@* AccordionSection.razor *@
+<div class="accordion-item mb-3">
+    <h4 name="@SafeUrlToTitle(Title)" @onclick="Toggle" style="cursor: pointer;" class="@(IsExpanded ? "header-active" : "inactive") d-flex justify-content-between align-items-center border-bottom pb-2">
+        <span>@Title</span>
+        <i class="bi @(IsExpanded ? "bi-chevron-up" : "bi-chevron-down") text-muted"></i>
+    </h4>
+
+    <div class="@(IsExpanded ? "d-block" : "d-none") animate-fade-in">
+        @ChildContent
+    </div>
+</div>
+
+@code {
+    [Parameter] public string Title { get; set; } = "";
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    
+    // We use a static dictionary to persist state across the session 
+    // or instance-based if you want it to reset on every visit.
+    private static Dictionary<string, bool> _states = new();
+
+    private bool IsExpanded 
+    {
+        get => _states.TryGetValue(Title, out var expanded) && expanded;
+        set => _states[Title] = value;
+    }
+
+    private void Toggle() => IsExpanded = !IsExpanded;
+
+
+    public static string SafeUrlToTitle(string url)
+    {
+        if (string.IsNullOrEmpty(url)) return string.Empty;
+        string[] words = Regex.Split(url, @"[^a-zA-Z0-9]+", RegexOptions.IgnoreCase);
+        TextInfo ti = CultureInfo.CurrentCulture.TextInfo;
+
+        var titleCasedWords = words
+            .Where(w => !string.IsNullOrWhiteSpace(w))
+            .Select(w => ti.ToTitleCase(w.ToLower()));
+
+        string result = string.Join("", titleCasedWords);
+        return result.Substring(0, Math.Min(result.Length, 100));
+    }
+
+}

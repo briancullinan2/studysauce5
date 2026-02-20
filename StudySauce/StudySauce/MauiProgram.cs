@@ -26,7 +26,16 @@ namespace StudySauce
             builder.Logging.AddDebug();
 #endif
 
+            //RegisterPageConstraints(builder);
+
             return builder.Build();
         }
+
+        //public static void RegisterPageConstraints(IHostApplicationBuilder builder)
+        //{
+        //    builder.Services.Configure<RouteOptions>(opt => opt.ConstraintMap.Add("pack", typeof(EnumConstraint<PackMode>)));
+        //}
     }
+
+
 }

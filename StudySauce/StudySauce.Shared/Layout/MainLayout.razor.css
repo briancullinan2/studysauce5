@@ -1,3 +1,4 @@
+
 .page {
     position: relative;
     display: flex;
@@ -96,3 +97,15 @@ main {
         right: 0.75rem;
         top: 0.5rem;
     }
+
+::deep h4.inactive ~ *:not(h4) {
+    display: none;
+}
+
+::deep h4.header-active ~ *:not(h4) {
+    display: inline-block;
+}
+
+::deep h4.header-active ~ *:not(h4) ~ .h4.inactive ~ *:not(h4) {
+    display: none;
+}
