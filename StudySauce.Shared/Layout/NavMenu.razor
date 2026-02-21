@@ -1,0 +1,198 @@
+﻿@inject NavigationManager Nav
+
+<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">StudySauce</a>
+    </div>
+</div>
+
+<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+
+<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
+    <nav class="nav flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+            </NavLink>
+        </div>
+
+        @* <div class="nav-item px-3">
+            <NavLink class="nav-link" href="counter">
+                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="weather">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
+            </NavLink>
+        </div> *@
+
+        @foreach (var item in GetVisibleItems())
+        {
+            @RenderNavItem(item)
+        }
+
+    </nav>
+</div>
+
+@code {
+    private void HandleClick(NavMenuItem item)
+    {
+        var currentUrl = Nav.ToBaseRelativePath(Nav.Uri);
+        bool isOnTargetPage = string.Equals(currentUrl, item.Href, StringComparison.InvariantCultureIgnoreCase);
+
+        if(item.Children.Count == 0)
+        {
+            Nav.NavigateTo(item.Href);
+        }
+        else if (!item.IsCollapsed)
+        {
+            if (isOnTargetPage)
+            {
+                // Rule: Only collapse if they are already on that page
+                item.IsCollapsed = true;
+            }
+            else
+            {
+                // Rule: Only connect to href if it is already expanded
+                Nav.NavigateTo(item.Href);
+            }
+        }
+        else
+        {
+            // If it's currently collapsed, just expand it
+            item.IsCollapsed = false;
+        }
+    }
+
+    RenderFragment RenderNavItem(NavMenuItem item) => __builder =>
+    {
+        var hasChildren = item.Children != null && item.Children.Any();
+
+        <div class="nav-item px-3">
+            @* Use @onclick:stopPropagation if you don't want the side-panel click logic to fire *@
+            <div @onclick="() => HandleClick(item)"
+                 @onclick:stopPropagation="true">
+
+                <NavLink class="nav-link"
+                         Match="@(string.IsNullOrWhiteSpace(item.Href) ? NavLinkMatch.All : NavLinkMatch.Prefix)">
+
+                    <span class="bi @item.Icon" aria-hidden="true"></span>
+                    <span class="nav-text">@item.Title</span>
+
+                    @if (hasChildren)
+                    {
+                        <span class="bi @(item.IsCollapsed ? "bi-chevron-right" : "bi-chevron-down") ms-auto small"></span>
+                    }
+                </NavLink>
+            </div>
+
+            @if (hasChildren && !item.IsCollapsed)
+            {
+                <div class="nav-children">
+                    @foreach (var child in item.Children!)
+                    {
+                        @RenderNavItem(child)
+                    }
+                </div>
+            }
+        </div>
+    };
+
+    // This is your Iterator/List
+    private List<NavMenuItem> MenuStructure = new()
+    {
+        new() { Title = "Packs", Href = "packs", Icon = "bi-card-list" },
+        new() { Title = "Store", Href = "store", Icon = "bi-cart" },
+        new() { Title = "Results", Href = "results", Icon = "bi-clipboard-data" },
+        new() { Title = "Account settings", Href = "account", Icon = "bi-person-gear" },
+
+        // administration
+        new() { Title = "Administration", Href = "admin", Icon = "bi-shield-lock", Children = new () {
+            new() { Title = "Users", Href = "users", Icon = "bi-people-fill" },
+            new() { Title = "Groups", Href = "groups", Icon = "bi-collection" },
+            new() { Title = "User Import", Href = "import", Icon = "bi-file-earmark-arrow-up" },
+            new() { Title = "Emails", Href = "emails", Icon = "bi-envelope-paper" },
+            new() { Title = "Recent Activity", Href = "activity", Icon = "bi-activity" },
+            new() { Title = "Hosting", Href = "hosting", Icon = "bi-hdd-network" },
+            new() { Title = "Status", Href = "status", Icon = "bi-exclamation-triangle" },
+            // TODO: debug build only
+            new() { Title = "Validation", Href = "validation", Icon = "bi-check-circle" },
+        } },
+
+
+        // going to add management stuff here
+        new() { Title = "Content Management", Href = "content", Icon = "bi-database-gear", Children = new () {
+            new() { Title = "Analytics", Href = "analytics", Icon = "bi-graph-up-arrow" },
+            new() { Title = "Pack Import", Href = "upload", Icon = "bi-cloud-arrow-up" },
+            new() { Title = "Content Analysis", Href = "analysis", Icon = "bi-search-heart" }, // Fits the medical/data theme
+            new() { Title = "Backups", Href = "backups", Icon = "bi-device-hdd" },
+            new() { Title = "Billing", Href = "billing", Icon = "bi-receipt" },
+            new() { Title = "Payments", Href = "payments", Icon = "bi-credit-card" },
+            new() { Title = "Merchant Tools", Href = "merchant", Icon = "bi-shop" },
+            new() { Title = "Recovery", Href = "recovery", Icon = "bi-life-preserver" },
+            new() { Title = "Encryption", Href = "encryption", Icon = "bi-incognito" },
+            new() { Title = "Marshalling", Href = "marshal", Icon = "bi-database-lock" },
+            new() { Title = "Download Tokens", Href = "tokens", Icon = "bi-coin" },
+            new() { Title = "Install AI", Href = "installai", Icon = "bi-robot" },
+            new() { Title = "Export", Href = "export", Icon = "bi-file-earmark-arrow-down" },
+            new() { Title = "Trash", Href = "trash", Icon = "bi-trash3" },
+        } },
+
+        // course tools
+        new() { Title = "Study Tools", Href = "tools", Icon = "bi-briefcase", Children = new () {
+            new() { Title = "Goals", Href = "goals", Icon = "bi-flag" },
+            new() { Title = "Class schedule", Href = "schedule", Icon = "bi-calendar3" },
+            new() { Title = "Deadlines", Href = "deadlines", Icon = "bi-alarm" },
+            new() { Title = "Check in", Href = "checkin", Icon = "bi-geo-alt" },
+            new() { Title = "Study metrics", Href = "metrics", Icon = "bi-bar-chart" },
+            new() { Title = "Accountability", Href = "partner", Icon = "bi-people" },
+            new() { Title = "Grade calculator", Href = "calculator", Icon = "bi-calculator" },
+            new() { Title = "Notes", Href = "notes", Icon = "bi-journal-text" },
+            new() { Title = "Premium", Href = "premium", RoleRequired = "ROLE_FREE", Icon = "bi-star-fill" },
+        } },
+
+        // course 1
+        new() { Title = "Course 1", Href = "course1", Icon = "bi-book", Children = new () {
+            new() { Title = "Introduction", Href = "course1_introduction", Icon = "bi-play-circle" },
+            new() { Title = "Setting goals", Href = "course1_setting_goals", Icon = "bi-flag" },
+            new() { Title = "Distractions", Href = "course1_distractions", Icon = "bi-shield-x" },
+            new() { Title = "Procrastination", Href = "course1_procrastination", Icon = "bi-hourglass-split" },
+            new() { Title = "Study environment", Href = "course1_environment", Icon = "bi-house" },
+            new() { Title = "Partners", Href = "course1_partners", Icon = "bi-people" },
+            new() { Title = "End of Level 1", Href = "course1_upgrade", RoleRequired = "ROLE_FREE", Icon = "bi-award" },
+        } },
+
+        // course 2
+        new() { Title = "Course 2", Href = "course2", Icon = "bi-journal-bookmark", Children = new () {
+            new() { Title = "Study metrics", Href = "course2_study_metrics", Icon = "bi-graph-up" },
+            new() { Title = "Study plan", Href = "course2_study_plan", Icon = "bi-calendar-check" },
+            new() { Title = "Interleaving", Href = "course2_interleaving", Icon = "bi-shuffle" },
+            new() { Title = "Studying for tests", Href = "course2_study_tests", Icon = "bi-pencil-square" },
+            new() { Title = "Test-taking", Href = "course2_test_taking", Icon = "bi-check2-all" },
+        } }
+,
+
+        // course 3
+        new() { Title = "Course 3", Href = "course3", Icon = "bi-mortarboard", Children = new () {
+            new() { Title = "Intro to strategies", Href = "course3_strategies", Icon = "bi-lightbulb" },
+            new() { Title = "Group study", Href = "course3_group_study", Icon = "bi-people-fill" },
+            new() { Title = "Teach to learn", Href = "course3_teaching", Icon = "bi-person-video3" },
+            new() { Title = "Active reading", Href = "course3_active_reading", Icon = "bi-book" },
+            new() { Title = "Spaced repetition", Href = "course3_spaced_repetition", Icon = "bi-clock-history" },
+        } },
+
+        new() { Title = "Terms of Service", Href = "terms", Icon = "bi-file-earmark-text" },
+
+    };
+
+    private IEnumerable<NavMenuItem> GetVisibleItems()
+    {
+        // Filter out items the user shouldn't see
+        // For example: hide Premium link if they already paid
+        return MenuStructure.Where(i => string.IsNullOrEmpty(i.RoleRequired) || !UserHasPaid);
+    }
+
+    private bool UserHasPaid => true; // Logic to check user role
+}

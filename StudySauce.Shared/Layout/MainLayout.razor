@@ -1,0 +1,54 @@
+﻿@using StudySauce.Shared.Services
+@inherits LayoutComponentBase
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+        <header class="top-row px-4">
+            @* This is where the contextual menu will appear *@
+            <div class="contextual-menu">
+                @HeaderMenu
+            </div>
+            <NavLink class="header-link" href="/about" Match="NavLinkMatch.All">
+                <i class="bi bi-info-circle" aria-hidden="true"></i>
+                <span class="header-text">About</span>
+            </NavLink>
+
+        </header>
+
+        <article class="content px-4">
+            @* We pass the Layout instance to the Body so pages can set the HeaderMenu *@
+            <CascadingValue Value="this">
+                @Body
+            </CascadingValue>
+        </article>
+
+
+        @* Connected to @server.BaseUrl *@
+    </main>
+
+</div>
+
+<div id="blazor-error-ui" data-nosnippet>
+    An unhandled error has occurred.
+    <a href="." class="reload">Reload</a>
+    <span class="dismiss">🗙</span>
+</div>
+
+@code {
+    public RenderFragment? HeaderMenu { get; private set; }
+
+    public void SetHeaderMenu(RenderFragment? menu)
+    {
+        HeaderMenu = menu;
+        StateHasChanged(); // Force layout to re-render when a page sets the menu
+    }
+    protected override void OnParametersSet()
+    {
+        // This runs every time the @Body content changes
+        SetHeaderMenu(null);
+    }
+}
