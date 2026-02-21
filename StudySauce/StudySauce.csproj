@@ -72,10 +72,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="Services\LocalServer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Remove="wwwroot\_framework\blazor.web.js.gz" />
   </ItemGroup>
 
@@ -89,7 +85,7 @@
   <ItemGroup>
     <ProjectReference Include="..\DataLayer\DataLayer.csproj" />
     <ProjectReference Include="..\StudySauce.Shared\StudySauce.Shared.csproj" />
-    <ProjectReference Include="..\StudySauce.Web\StudySauce.Web.csproj" />
+    <ProjectReference Include="..\StudySauce.Web.Client\StudySauce.Web.Client.csproj" />
   </ItemGroup>
 
 </Project>

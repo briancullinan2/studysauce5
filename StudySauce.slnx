@@ -5,7 +5,5 @@
   <Project Path="DataLayer/DataLayer.csproj" Id="d32e03e0-e36a-48aa-9778-9bb92d682ed4" />
   <Project Path="StudySauce.Shared/StudySauce.Shared.csproj" />
   <Project Path="StudySauce.Web.Client/StudySauce.Web.Client.csproj" />
-  <Project Path="StudySauce.Web/StudySauce.Web.csproj" />
-  <Project Path="StudySauce.Win/StudySauce.Win.csproj" />
   <Project Path="StudySauce/StudySauce.csproj" />
 </Solution>

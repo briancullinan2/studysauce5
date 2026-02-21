@@ -34,7 +34,7 @@ namespace StudySauce.WinUI
                 Args = args,
                 // Ensure the server looks in the actual folder where the assets live
                 ContentRootPath = AppContext.BaseDirectory,
-                ApplicationName = "StudySauce.Web"
+                ApplicationName = "StudySauce"
             });
 
 
@@ -95,7 +95,7 @@ namespace StudySauce.WinUI
 
             //
 
-            webApp.MapRazorComponents<StudySauce.Web.Components.App>()
+            webApp.MapRazorComponents<Components.App>()
                 .AddInteractiveServerRenderMode()
                 .AddInteractiveWebAssemblyRenderMode()
                 .AddAdditionalAssemblies(
