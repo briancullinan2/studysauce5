@@ -8,7 +8,6 @@
     @if (ActiveItem != null)
     {
         <div class="card-viewer">
-            <h2 class="text-center">@ActiveItem.Title</h2>
 
             <div class="card-stage">
                 @switch (Step)
@@ -60,24 +59,45 @@
 
     public CourseMenuItem? ActiveItem { get; set; }
     public enum StepMode { Intro, Video, Quiz, Reward, Investment }
+    [CascadingParameter] public MainLayout? Layout { get; set; }
+    protected override void OnInitialized()
+    {
+    }
 
     protected override void OnParametersSet()
     {
         // Cache the menu item for reference on this page
-        ActiveItem = CourseMenu.GetActiveItem(Level, Lesson);
+        var newItem = CourseMenu.GetActiveItem(Level, Lesson);
 
         var relativePath = Nav.ToBaseRelativePath(Nav.Uri);
 
         var segments = relativePath.Split('/');
 
-        if(segments.Count() >= 4)
+        StepMode? newStep = null;
+        if (segments.Count() >= 4)
         {
-            Step = segments[3].TryParse<StepMode>() ?? StepMode.Intro;
+            newStep = segments[3].TryParse<StepMode>() ?? StepMode.Intro;
         }
 
+        if (ActiveItem == newItem && newStep == Step)
+        {
+            return;
+        }
+        ActiveItem = newItem;
+        Step = newStep ?? StepMode.Intro;
+
+        if(Layout?.Tag == ActiveItem)
+        {
+            return;
+        }
+        Layout?.Tag = ActiveItem;
+
+        Layout?.SetHeaderTitle(builder => builder.AddContent(0, ActiveItem?.Title));
+
+        Layout?.SetHeaderMenu(@<StudySauce.Shared.Pages.Shared.Course Step="@((int)Step)" Level="@Level" Lesson="@Lesson" />);
     }
 
-    private void Next(StepMode nextStep) => Step = nextStep;
+    private void Next(StepMode nextStep) => Nav.NavigateTo<Pages.Course.Course>(c => new() { Level = Level, Lesson = Lesson, Step = nextStep });
 
     private void Finish() { /* Navigate back or to next lesson */ }
 }

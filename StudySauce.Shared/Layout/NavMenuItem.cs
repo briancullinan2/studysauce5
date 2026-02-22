@@ -38,10 +38,13 @@ namespace StudySauce.Shared.Layout
     public class CourseMenuItem : NavMenuItem<CourseMenuItem>
     {
         public Type? Lesson { get; set; }
+        public int? Level { get; set; }
 
         public Type? Course => (Lesson != null && CourseMenu.ParentMap.TryGetValue(Lesson, out var parent))
             ? parent
             : Lesson; // If no parent, it IS the course
+
+        public bool IsCourse => Lesson != null && CourseMenu.CourseMap.ContainsKey(Lesson);
 
         override public string Href
         {
@@ -51,18 +54,18 @@ namespace StudySauce.Shared.Layout
 
                 // Efficient lookup using our cached maps
                 var courseType = Course;
-                int levelId = (courseType != null && CourseMenu.CourseMap.TryGetValue(courseType, out var cid)) ? cid : 0;
+                Level = (courseType != null && CourseMenu.CourseMap.TryGetValue(courseType, out var cid)) ? cid : 0;
 
                 // If this item is a top-level course, just return the Level link
                 if (Lesson == courseType)
                 {
-                    return NavigationExtensions.GetUri<Pages.Course.Course>(c => new() { Level = levelId });
+                    return NavigationExtensions.GetUri<Pages.Course.Course>(c => new() { Level = Level });
                 }
 
                 // Otherwise, return the Level + Lesson link
                 return NavigationExtensions.GetUri<Pages.Course.Course>(c => new()
                 {
-                    Level = levelId,
+                    Level = Level,
                     Lesson = Lesson.Name.ToSafe()
                 });
             }

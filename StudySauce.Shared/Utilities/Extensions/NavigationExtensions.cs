@@ -72,11 +72,22 @@ namespace StudySauce.Shared.Utilities.Extensions
         //    var values = initializer?.ToDictionary();
         //    return GetUri<TComponent>(values);
         //}
+        //public static string GetUri<TComponent>(this NavigationManager Nav, Expression<Func<TComponent, TComponent>> initializer) where TComponent : IComponent
+        //{
+        //    var values = initializer.ToDictionary();
+        //    return Nav.GetUriWithQueryParameters(values.ToDictionary(kvp => kvp.Key, kvp => kvp.Value as object));
+        //}
+
+
+        public static void NavigateTo<TComponent>(this NavigationManager Nav, Expression<Func<TComponent, TComponent>> initializer) where TComponent : IComponent
+        {
+            Nav.NavigateTo(GetUri(initializer));
+        }
 
 
         public static string GetUri<TComponent>(Expression<Func<TComponent, TComponent>> initializer) where TComponent : IComponent
         {
-            var values = initializer?.ToDictionary();
+            var values = initializer.ToDictionary();
             return GetUri<TComponent>(values);
         }
 

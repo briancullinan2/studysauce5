@@ -40,7 +40,7 @@
     private void HandleClick(INavMenuItem item)
     {
         var currentUrl = Nav.ToBaseRelativePath(Nav.Uri);
-        bool isOnTargetPage = string.Equals(currentUrl, item.Href, StringComparison.InvariantCultureIgnoreCase);
+        bool isOnTargetPage = string.Equals(currentUrl, item.Href.Trim('/'), StringComparison.InvariantCultureIgnoreCase);
 
         if(item.Children.Count() == 0)
         {

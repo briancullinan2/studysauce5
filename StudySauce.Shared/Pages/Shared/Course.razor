@@ -1,4 +1,11 @@
-@foreach (var item in HeaderLinks)
+
+
+@code
+{
+    public bool IsIntro;
+}
+
+@foreach (var item in (IEnumerable<INavMenuItem>)(IsIntro ? IntroLinks : CourseLinks))
 {
     <NavLink class="header-link" href="@item.Href" Match="NavLinkMatch.All">
         <i class="bi @item.Icon" aria-hidden="true"></i>
@@ -7,14 +14,58 @@
 }
 
 @code {
-    private List<NavMenuItem> HeaderLinks = new()
+    [Parameter] public int? Level { get; set; }
+    [Parameter] public string? Lesson { get; set; }
+    [Parameter] public int? Step { get; set; }
+    public CourseMenuItem? ActiveItem { get; set; }
+
+    public class SharedMenuItem : NavMenuItem
     {
-        new() { Title = "Introduction", Href = NavigationExtensions.GetUri<Pages.Course.Course>(), Icon = "bi-info-circle" },
-        new() { Title = "Course 1", Href = NavigationExtensions.GetUri<Pages.Course.Course>(c => new() { Level = 1 }), Icon = "bi-file-earmark-text" },
-        new() { Title = "Course 2", Href = NavigationExtensions.GetUri<Pages.Course.Course>(c => new() { Level = 2 }), Icon = "bi-shield-lock" },
-        new() { Title = "Course 3", Href = NavigationExtensions.GetUri<Pages.Course.Course>(c => new() { Level = 3 }), Icon = "bi-envelope-at" },
-        new() { Title = "Study Tools", Href = NavigationExtensions.GetUri<Pages.Course.Course>(), Icon = "bi-envelope-at" }
+        public Pages.Course.Course.StepMode Step { get; set; }
+
+        public Func<Pages.Course.Course.StepMode, string>? GetHref { get; set; }
+
+        public override string Href { get
+            {
+                return GetHref != null ? GetHref(Step) : throw new InvalidOperationException("Set the callback on the SharedMenuItem first.");
+            } 
+            set => base.Href = value; }
+    }
+
+    public string GetHref(Pages.Course.Course.StepMode Step)
+    {
+        return NavigationExtensions.GetUri<Pages.Course.Course>(c => new() { Step = Step, Level = Level, Lesson = Lesson });
+    }
+
+    protected override void OnParametersSet()
+    {
+        ActiveItem = CourseMenu.GetActiveItem(Level, Lesson);
+        IsIntro = Level == null || Lesson == null; // || Step == (int)Pages.Course.Course.StepMode.Intro;
+    }
+
+    public Course()
+    {
+        CourseLinks = new()
+        {
+            new() { GetHref = GetHref, Title = "Introduction", Step = Pages.Course.Course.StepMode.Intro, Icon = "bi-megaphone" },
+            new() { GetHref = GetHref, Title = "Video",        Step = Pages.Course.Course.StepMode.Video, Icon = "bi-play-btn" },
+            new() { GetHref = GetHref, Title = "Quiz",         Step = Pages.Course.Course.StepMode.Quiz,  Icon = "bi-pencil-square" },
+            new() { GetHref = GetHref, Title = "Reward",       Step = Pages.Course.Course.StepMode.Reward, Icon = "bi-trophy" },
+            new() { GetHref = GetHref, Title = "Investment",   Step = Pages.Course.Course.StepMode.Investment, Icon = "bi-bank" }
+        };
+    }
+
+    public static List<CourseMenuItem> IntroLinks = new()
+    {
+        new() { Title = "Introduction", Lesson = typeof(Pages.Course.Introduction), Icon = "bi-play-circle" },
+        new() { Title = "Course 1", Lesson = typeof(Pages.Course.Course1), Icon = "bi-book" },
+        new() { Title = "Course 2", Lesson = typeof(Pages.Course.Course2), Icon = "bi-journal-bookmark" },
+        new() { Title = "Course 3", Lesson = typeof(Pages.Course.Course3), Icon = "bi-mortarboard" },
+        new() { Title = "Study Tools", Lesson = typeof(Pages.Course.SpacedRepetition), Icon = "bi-award" }
     };
 
+    public enum StepMode { Intro, Video, Quiz, Reward, Investment }
+
+    public static List<SharedMenuItem> CourseLinks;
 }
 

@@ -4,6 +4,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Hosting;
 using StudySauce.Services;
 using StudySauce.Shared.Services;
 
@@ -69,6 +70,15 @@ namespace StudySauce.WinUI
             //MauiProgram.ServerInstance = webApp;
 
             //webApp.MapGet("/api/status", () => new { Status = "Online", Machine = Environment.MachineName });
+
+            if (webApp.Environment.IsDevelopment())
+            {
+                webApp.UseWebAssemblyDebugging();
+            }
+            else
+            {
+                webApp.UseHsts();
+            }
 
             //webApp.UseHttpsRedirection();
             //webApp.UseCors(policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
