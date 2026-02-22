@@ -114,7 +114,7 @@ namespace StudySauce.Shared.Utilities.Extensions
         {
             var routes = componentType.GetCustomAttributes<RouteAttribute>().Select(attr => attr.Template).ToList();
 
-            if (routes == null || !routes.Any())
+            if (routes == null || routes.Count == 0)
             {
                 throw new ArgumentException($"Type {componentType.Name} does not have any [RouteAttribute] defined.");
             }
@@ -122,26 +122,52 @@ namespace StudySauce.Shared.Utilities.Extensions
             // 2. Select the "Best" route
             // We want the route that has the same number of parameters as our 'values' count
             // Or the one with the highest match count that doesn't exceed our values.
-            var bestRoute = routes
+            var parameterMatcher = @"\{([^:{}]+)(.*?)?\}|(\*)";
+            var sortedRoutes = routes
                 .Select(r => new
                 {
                     Template = r,
-                    Params = System.Text.RegularExpressions.Regex.Matches(r, @"\{([^:{}]+)(?::.*?)?\}")
-                                .Select(m => m.Groups[1].Value).ToList()
+                    Segments = r.Split("/"),
+                    Params = System.Text.RegularExpressions.Regex.Matches(r, parameterMatcher)
+                                .Select(m => !string.IsNullOrEmpty(m.Groups[1].Value)
+                                      ? m.Groups[1].Value  // Returns "id" or "*path"
+                                      : m.Groups[3].Value).ToList()
                 })
-                .OrderByDescending(r => r.Params.Count(p => initializer?.ContainsKey(p) == true))
-                .ThenBy(r => r.Template.Length)
-                .FirstOrDefault();
+                .Select(m => new
+                {
+                    m.Template,
+                    m.Params,
+                    Wildcard = m.Params.Any(p => p.StartsWith("*")),
+                    Matches = m.Params.Count(p => initializer?.ContainsKey(p) == true)
+                            + m.Segments.Count(s => initializer?.Any(kvp => s.Equals(kvp.Value, StringComparison.InvariantCultureIgnoreCase)) == true)
+                })
+                .OrderByDescending(r => initializer?.Count() > r.Matches && r.Params.Count > r.Matches && r.Wildcard ? r.Matches + 1 : r.Matches)
+                .ThenBy(r => r.Template.Length);
 
-            if (bestRoute == null) return routes.First(); // Fallback
-
+            var bestRoute = sortedRoutes.First();
+            var missing = initializer?.Where(kvp => !bestRoute.Params.Contains(kvp.Key)).FirstOrDefault().Value;
+            // if missing a parameter update by 1
+            if (missing != null)
+            {
+                sortedRoutes = sortedRoutes
+                    .OrderByDescending(r => r.Params.Any(p => p.StartsWith("*")) ? r.Matches + 1 : r.Matches)
+                    .ThenBy(r => r.Template.Length);
+                bestRoute = sortedRoutes.First();
+            }
             var finalUri = bestRoute.Template;
 
             // 3. Replace the placeholders
             foreach (var kvp in initializer ?? [])
             {
-                var pattern = $@"\{{{kvp.Key}(?::.*?)?\}}";
+                var pattern = $@"\{{\\*?{kvp.Key}(?::.*?)?\}}";
                 finalUri = System.Text.RegularExpressions.Regex.Replace(finalUri, pattern, kvp.Value ?? "", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            }
+
+            // replace catch all with missing value
+            // TODO: replace intermittent? /*/something?
+            if (missing != null && finalUri.EndsWith("/*"))
+            {
+                finalUri = finalUri.Substring(0, finalUri.Length - 1) + missing;
             }
 
             return finalUri;

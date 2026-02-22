@@ -17,15 +17,14 @@
 
 <h1>Hello, world!</h1>
 
-Welcome to your new app running on @*<em>@factor</em> using <em>@platform</em>.*@
+Welcome to your new app running on <em>@factor</em> using <em>@platform</em>.
 
 <ModelItemsControl TModel="PropertyMetadata" Model="@CurrentCategory"></ModelItemsControl>
 
 @code {
-    //private string factor => FormFactor.GetFormFactor();
-    //private string platform => FormFactor.GetPlatform();
-    [Parameter]
-    public string? notFound { get; set; }
+    private string factor => FormFactor.GetFormFactor();
+    private string platform => FormFactor.GetPlatform();
+    [Parameter] public string? notFound { get; set; }
 
     private IEnumerable<PropertyMetadata>? CurrentCategory;
 

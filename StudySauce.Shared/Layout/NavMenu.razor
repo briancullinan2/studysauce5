@@ -73,7 +73,8 @@
         <div class="nav-item px-3">
             @* Use @onclick:stopPropagation if you don't want the side-panel click logic to fire *@
             <div @onclick="() => HandleClick(item)"
-                 @onclick:stopPropagation="true">
+                 @onclick:stopPropagation="true"
+                 data-href="@item.Href">
 
                 <NavLink class="nav-link"
                          Match="@(string.IsNullOrWhiteSpace(item.Href) ? NavLinkMatch.All : NavLinkMatch.Prefix)">

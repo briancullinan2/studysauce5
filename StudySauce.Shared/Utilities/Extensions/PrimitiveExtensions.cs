@@ -25,7 +25,7 @@ namespace StudySauce.Shared.Utilities.Extensions
 
         public static TEnum? TryParse<TEnum>(this string val) where TEnum : struct, Enum
         {
-            return TryParse<TEnum>(val);
+            return TryParse<TEnum>((object)val);
         }
 
         // fuck i forget about this: An object reference is required for the non-static field, method, or property 'PrimitiveExtensions.TryParse<PackMode>(PackMode, object)'
