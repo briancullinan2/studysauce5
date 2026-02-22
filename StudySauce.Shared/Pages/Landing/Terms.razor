@@ -129,13 +129,12 @@
 </div>
 
 @code {
-    // Component logic for 2026 features can be added here
-    [CascadingParameter]
-    public MainLayout? Layout { get; set; }
+
     public Dictionary<object, bool> _collapsed = new();
     public ElementReference self;
     // TODO: bool StartCollapsed based on CSS style
 
+    [CascadingParameter] public MainLayout? Layout { get; set; }
     protected override void OnInitialized()
     {
         // Define the contextual menu for THIS page

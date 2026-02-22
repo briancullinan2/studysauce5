@@ -1,0 +1,49 @@
+﻿
+@code {
+    [Parameter] public string Href { get; set; }
+}
+
+@if (Href == "course2_study_plan")
+{
+    <h2>Study plan <span class="badge bg-secondary">10 minutes</span></h2>
+    <ul>
+        <li>Why you should build a study plan</li>
+        <li>How to build a study plan</li>
+        <li>The different types of study sessions</li>
+    </ul>
+}
+else if (Href == "course2_interleaving")
+{
+    <h2>Interleaving <span class="badge bg-secondary">10 minutes</span></h2>
+    <ul>
+        <li>What interleaving is</li>
+        <li>How it works</li>
+        <li>How to incorporate it into your studies</li>
+    </ul>
+}
+else if (Href == "course2_study_tests")
+{
+    <h2>Tips for taking different types of tests <span class="badge bg-secondary">10 minutes</span></h2>
+    <ul>
+        <li>The most important thing about studying for tests</li>
+        <li>How to study for different types of tests</li>
+        <li>Tips for different types of tests</li>
+    </ul>
+} if (Href == "course2_study_metrics")
+{
+    <h2>Study metrics <span class="badge bg-secondary">10 minutes</span></h2>
+    <ul>
+        <li>Why it is important to track how much you study.</li>
+        <li>When to ask for help.</li>
+        <li>How many students are overwhelmed.</li>
+    </ul>
+}
+else if (Href == "course2_test_taking")
+{
+    <h2>Test taking <span class="badge bg-secondary">10 minutes</span></h2>
+    <ul>
+        <li>What to do leading up to the test</li>
+        <li>How to manage test anxiety</li>
+        <li>What to do during the test</li>
+    </ul>
+}

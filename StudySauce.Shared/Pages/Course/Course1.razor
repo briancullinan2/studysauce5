@@ -1,0 +1,67 @@
+﻿
+@code {
+    [Parameter] public string? Href { get; set; }
+}
+
+@if (Href == "course1_setting_goals")
+{
+    <h2>Setting goals <span class="badge bg-secondary">10 minutes</span></h2>
+    <ul>
+        <li>Why goal setting is so powerful</li>
+        <li>How your brain works while you are studying</li>
+        <li>How to set effective goals</li>
+        <li>How to stay motivated with intrinsic and extrinsic rewards</li>
+    </ul>
+}
+else if (Href == "course1_distractions")
+{
+    <h2>Distractions <span class="badge bg-secondary">10 minutes</span></h2>
+    <ul>
+        <li>The science behind multitasking</li>
+        <li>The downside of multitasking</li>
+        <li>How distractions affect your performance</li>
+        <li>How long an interruption affects you when you study</li>
+    </ul>
+}
+else if (Href == "course1_procrastination")
+{
+    <h2>Procrastination <span class="badge bg-secondary">10 minutes</span></h2>
+    <ul>
+        <li>Why procrastination leads to a cycle of cramming</li>
+        <li>How the human brain creates memories</li>
+        <li>How to defeat the procrastination to cramming cycle</li>
+        <li>Two tools that will help you stop procrastination</li>
+    </ul>
+}
+else if (Href == "course1_environment")
+{
+    <h2>Study environment <span class="badge bg-secondary">10 minutes</span></h2>
+    <ul>
+        <li>How to set up an effective study environment</li>
+        <li>Where and how long you should study</li>
+        <li>How music affects your studies</li>
+    </ul>
+}
+else if (Href == "course1_partners")
+{
+    <h2>Partners <span class="badge bg-secondary">10 minutes</span></h2>
+    <ul>
+        <li>How an accountability partner can help you in school</li>
+        <li>What to look for in a good accountability partner</li>
+        <li>How to work with an accountability partner</li>
+    </ul>
+}
+else if (Href == "course1_upgrade")
+{
+    <h2>The free course is over <span class="badge bg-secondary">10 minutes</span></h2>
+    <p>You have reached the end of the free course, but we have so much more to show you. Watch the video to learn about Study Sauce premium.</p>
+}  
+else if (Href == "course1_introduction")
+{
+    <h2>Introduction to Study Sauce <span class="badge bg-secondary">10 minutes</span></h2>
+    <ul>
+        <li>Some common misconceptions about studying</li>
+        <li>Why studying is important</li>
+        <li>How Study Sauce will help you take control of your academic life</li>
+    </ul>
+}

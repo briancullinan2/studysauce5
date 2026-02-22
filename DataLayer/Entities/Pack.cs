@@ -1,10 +1,9 @@
-﻿using DataLayer.Entities;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.RegularExpressions;
 
-namespace EPIC.DataLayer.Entities
+namespace DataLayer.Entities
 {
     [Table("pack")]
     public class Pack : Entity<Pack>

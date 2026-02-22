@@ -3,7 +3,9 @@
     <File Path="README.md" />
   </Folder>
   <Project Path="DataLayer/DataLayer.csproj" Id="d32e03e0-e36a-48aa-9778-9bb92d682ed4" />
-  <Project Path="StudySauce.Shared/StudySauce.Shared.csproj" />
+  <Project Path="StudySauce.Shared/StudySauce.Shared.csproj">
+    <BuildDependency Project="DataLayer/DataLayer.csproj" />
+  </Project>
   <Project Path="StudySauce.Web.Client/StudySauce.Web.Client.csproj" />
   <Project Path="StudySauce/StudySauce.csproj" />
 </Solution>

@@ -1,9 +1,8 @@
-﻿using DataLayer.Entities;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace EPIC.DataLayer.Entities
+namespace DataLayer.Entities
 {
     [Table("card")]
     public class Card : Entity<Card>
@@ -61,6 +60,6 @@ namespace EPIC.DataLayer.Entities
 
         // Navigation for Anki-style responses and multiple choice answers
         //public virtual ICollection<Response> Responses { get; set; } = new HashSet<Response>();
-        //public virtual ICollection<Answer> Answers { get; set; } = new HashSet<Answer>();
+        public virtual ICollection<Answer> Answers { get; set; } = new HashSet<Answer>();
     }
 }

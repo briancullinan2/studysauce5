@@ -1,1 +1,83 @@
-@* control handling of multi pack behavior, show the intro, video, quiz, reward, then finally investment page *@
+@page "/course"
+@page "/course/{Level:int}"
+@page "/course/{Level:int}/{Lesson}"
+@page "/course/{Level:int}/{Lesson}/*"
+@inject NavigationManager Nav
+
+<div class="course-container">
+    @if (ActiveItem != null)
+    {
+        <div class="card-viewer">
+            <h2 class="text-center">@ActiveItem.Title</h2>
+
+            <div class="card-stage">
+                @switch (Step)
+                {
+                    case StepMode.Intro:
+                        <div class="flash-card animate-in">
+                            <h3>Welcome to @ActiveItem.Title</h3>
+                            <p>Get ready to master this concept.</p>
+                            <button @onclick="() => Next(StepMode.Video)">Start Lesson</button>
+                        </div>
+                        break;
+                    case StepMode.Video:
+                        <div class="flash-card animate-in">
+                            <div class="video-placeholder">Video content for @Lesson</div>
+                            <button @onclick="() => Next(StepMode.Quiz)">Take Quiz</button>
+                        </div>
+                        break;
+                    case StepMode.Quiz:
+                        <div class="flash-card animate-in">
+                            <h3>Knowledge Check</h3>
+                            @* Insert Quiz Component here *@
+                            <button @onclick="() => Next(StepMode.Reward)">Submit Answers</button>
+                        </div>
+                        break;
+                    case StepMode.Reward:
+                        <div class="flash-card animate-in">
+                            <div class="badge">🏆</div>
+                            <h3>You earned 10 Trivial Bux!</h3>
+                            <button @onclick="() => Next(StepMode.Investment)">Invest Tokens</button>
+                        </div>
+                        break;
+                    case StepMode.Investment:
+                        <div class="flash-card animate-in">
+                            <h3>Buddy Backup Investment</h3>
+                            <p>Allocate your tokens to secure your study vault.</p>
+                            <button @onclick="Finish">Complete Lesson</button>
+                        </div>
+                        break;
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public int? Level { get; set; }
+    [Parameter] public string? Lesson { get; set; }
+    public StepMode Step { get; set; } = StepMode.Intro;
+
+    public CourseMenuItem? ActiveItem { get; set; }
+    public enum StepMode { Intro, Video, Quiz, Reward, Investment }
+
+    protected override void OnParametersSet()
+    {
+        // Cache the menu item for reference on this page
+        ActiveItem = CourseMenu.GetActiveItem(Level, Lesson);
+
+        var relativePath = Nav.ToBaseRelativePath(Nav.Uri);
+
+        var segments = relativePath.Split('/');
+
+        if(segments.Count() >= 4)
+        {
+            Step = segments[3].TryParse<StepMode>() ?? StepMode.Intro;
+        }
+
+    }
+
+    private void Next(StepMode nextStep) => Step = nextStep;
+
+    private void Finish() { /* Navigate back or to next lesson */ }
+}

@@ -83,9 +83,21 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DataLayer\DataLayer.csproj" />
-    <ProjectReference Include="..\StudySauce.Shared\StudySauce.Shared.csproj" />
-    <ProjectReference Include="..\StudySauce.Web.Client\StudySauce.Web.Client.csproj" />
+    <ProjectReference Include="..\DataLayer\DataLayer.csproj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="..\StudySauce.Shared\StudySauce.Shared.csproj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="..\StudySauce.Web.Client\StudySauce.Web.Client.csproj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </ProjectReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="DataLayer">
+      <HintPath>bin\Debug\net10.0-windows10.0.19041.0\win-x64\DataLayer.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

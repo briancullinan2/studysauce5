@@ -1,0 +1,139 @@
+﻿using Microsoft.AspNetCore.Components;
+using System.Linq.Expressions;
+using System.Reflection;
+
+namespace StudySauce.Shared.Utilities.Extensions
+{
+    public static class NavigationExtensions
+    {
+        // TODO: i thought there was some fancy c# pattern that has the object expression as the coalescing parameters that makes an object of type <T>?
+        /*
+        public static string GetUri<TComponent>(Expression<NewExpression>? initializer = null) where TComponent : IComponent
+        {
+            return GetUri<TComponent>(initializer as Expression<Func<object>>);
+        }
+        public static string GetUri<TComponent, TObject>(Expression<Func<TObject>>? initializer = null) where TComponent : IComponent where TObject : TComponent
+        {
+            return GetUri<TComponent>(initializer as Expression<Func<object>>);
+        }
+        */
+
+        private static Dictionary<string, string?> ToDictionary(this MemberInitExpression expression)
+        {
+            var values = new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var binding in expression.Bindings)
+            {
+                if (binding is MemberAssignment assignment)
+                {
+                    // We extract the name and value without ever running the constructor
+                    var value = Expression.Lambda(assignment.Expression).Compile().DynamicInvoke();
+                    values[assignment.Member.Name] = value?.ToString();
+                }
+            }
+            return values;
+        }
+
+
+        public static Dictionary<string, string?> ToDictionary(this NewExpression ne)
+        {
+            var values = new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
+            for (int i = 0; i < ne.Members?.Count; i++)
+            {
+                var value = Expression.Lambda(ne.Arguments[i]).Compile().DynamicInvoke();
+                values[ne.Members[i].Name] = value?.ToString();
+            }
+            return values;
+        }
+
+        public static Dictionary<string, string?> ToDictionary<TDelegate>(this Expression<TDelegate> ex)
+        {
+            var values = new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
+            if (ex?.Body is NewExpression ne && ne.Members != null)
+            {
+                values = ne.ToDictionary();
+            }
+            else if (ex?.Body is MemberInitExpression mi && mi.Bindings != null)
+            {
+                values = mi.ToDictionary();
+            }
+            else
+            {
+                throw new InvalidOperationException("Can't do anything else, frankly.");
+            }
+            return values;
+        }
+
+        // TODO: generic implicit ?
+        // public static implicit operator RouteData<T>(T source) => new RouteData<T>();
+
+        //public static string GetUri<TComponent>(Expression<Func<TComponent, object?>>? initializer) where TComponent : IComponent
+        //{
+        //    var values = initializer?.ToDictionary();
+        //    return GetUri<TComponent>(values);
+        //}
+
+
+        public static string GetUri<TComponent>(Expression<Func<TComponent, TComponent>> initializer) where TComponent : IComponent
+        {
+            var values = initializer?.ToDictionary();
+            return GetUri<TComponent>(values);
+        }
+
+        // NOT TYPESAFE
+        //public static string GetUri<TComponent>(Expression<Func<TComponent>> initializer) where TComponent : IComponent
+        //{
+        //    var values = initializer?.ToDictionary();
+        //    return GetUri<TComponent>(values);
+        //}
+
+        //public static string GetUri<TComponent>(Expression<Func<object>> initializer) where TComponent : IComponent
+        //{
+        //    var values = initializer?.ToDictionary();
+        //    return GetUri<TComponent>(values);
+        //}
+
+        public static string GetUri<TComponent>(Dictionary<string, string?>? initializer = null) where TComponent : IComponent
+        {
+            var componentType = typeof(TComponent);
+            return GetUri(componentType, initializer);
+        }
+
+        public static string GetUri(Type componentType, Dictionary<string, string?>? initializer = null)
+        {
+            var routes = componentType.GetCustomAttributes<RouteAttribute>().Select(attr => attr.Template).ToList();
+
+            if (routes == null || !routes.Any())
+            {
+                throw new ArgumentException($"Type {componentType.Name} does not have any [RouteAttribute] defined.");
+            }
+
+            // 2. Select the "Best" route
+            // We want the route that has the same number of parameters as our 'values' count
+            // Or the one with the highest match count that doesn't exceed our values.
+            var bestRoute = routes
+                .Select(r => new
+                {
+                    Template = r,
+                    Params = System.Text.RegularExpressions.Regex.Matches(r, @"\{([^:{}]+)(?::.*?)?\}")
+                                .Select(m => m.Groups[1].Value).ToList()
+                })
+                .OrderByDescending(r => r.Params.Count(p => initializer?.ContainsKey(p) == true))
+                .ThenBy(r => r.Template.Length)
+                .FirstOrDefault();
+
+            if (bestRoute == null) return routes.First(); // Fallback
+
+            var finalUri = bestRoute.Template;
+
+            // 3. Replace the placeholders
+            foreach (var kvp in initializer ?? [])
+            {
+                var pattern = $@"\{{{kvp.Key}(?::.*?)?\}}";
+                finalUri = System.Text.RegularExpressions.Regex.Replace(finalUri, pattern, kvp.Value ?? "", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            }
+
+            return finalUri;
+        }
+    }
+}
