@@ -6,6 +6,7 @@ namespace StudySauce.Shared.Utilities.Extensions
 {
     public static class NavigationExtensions
     {
+
         // TODO: i thought there was some fancy c# pattern that has the object expression as the coalescing parameters that makes an object of type <T>?
         /*
         public static string GetUri<TComponent>(Expression<NewExpression>? initializer = null) where TComponent : IComponent
@@ -110,20 +111,36 @@ namespace StudySauce.Shared.Utilities.Extensions
             return GetUri(componentType, initializer);
         }
 
-        public static string GetUri(Type componentType, Dictionary<string, string?>? initializer = null)
+        private class ParsedRoute
         {
-            var routes = componentType.GetCustomAttributes<RouteAttribute>().Select(attr => attr.Template).ToList();
+            internal string? Template;
+            internal IEnumerable<string>? Segments;
+            internal IEnumerable<string>? Params;
+            internal bool Wildcard;
+        }
+        private static Dictionary<Type, IEnumerable<ParsedRoute>> _routeCache = new();
 
+        private static IEnumerable<ParsedRoute> GetRoutes(Type componentType)
+        {
+            // not sure how this would get in there?
+            if (_routeCache.ContainsKey(componentType))
+            {
+                if (_routeCache[componentType].Count() == 0)
+                {
+                    throw new ArgumentException($"Type {componentType.Name} does not have any [RouteAttribute] defined.");
+                }
+
+                return _routeCache[componentType];
+            }
+
+            var routes = componentType.GetCustomAttributes<RouteAttribute>().Select(attr => attr.Template).ToList();
             if (routes == null || routes.Count == 0)
             {
                 throw new ArgumentException($"Type {componentType.Name} does not have any [RouteAttribute] defined.");
             }
 
-            // 2. Select the "Best" route
-            // We want the route that has the same number of parameters as our 'values' count
-            // Or the one with the highest match count that doesn't exceed our values.
             var parameterMatcher = @"\{([^:{}]+)(.*?)?\}|(\*)";
-            var sortedRoutes = routes
+            _routeCache[componentType] = routes
                 .Select(r => new
                 {
                     Template = r,
@@ -133,33 +150,47 @@ namespace StudySauce.Shared.Utilities.Extensions
                                       ? m.Groups[1].Value  // Returns "id" or "*path"
                                       : m.Groups[3].Value).ToList()
                 })
+                .Select(m => new ParsedRoute
+                {
+                    Template = m.Template,
+                    Segments = m.Segments,
+                    Params = m.Params,
+                    Wildcard = m.Params.Any(p => p.StartsWith("*")),
+                }).ToList();
+
+            return _routeCache[componentType];
+
+        }
+
+
+        public static string GetUri(Type componentType, Dictionary<string, string?>? initializer = null)
+        {
+
+            var sortedRoutes = GetRoutes(componentType);
+
+            // 2. Select the "Best" route
+            // We want the route that has the same number of parameters as our 'values' count
+            // Or the one with the highest match count that doesn't exceed our values.
+            var matchedRoutes = sortedRoutes
                 .Select(m => new
                 {
-                    m.Template,
+                    m.Wildcard,
                     m.Params,
-                    Wildcard = m.Params.Any(p => p.StartsWith("*")),
-                    Matches = m.Params.Count(p => initializer?.ContainsKey(p) == true)
-                            + m.Segments.Count(s => initializer?.Any(kvp => s.Equals(kvp.Value, StringComparison.InvariantCultureIgnoreCase)) == true)
+                    m.Template,
+                    Matches = m.Params?.Count(p => initializer?.ContainsKey(p) == true)
+                            + m.Segments?.Count(s => initializer?.Any(kvp => s.Equals(kvp.Value, StringComparison.InvariantCultureIgnoreCase)) == true)
                 })
-                .OrderByDescending(r => initializer?.Count() > r.Matches && r.Params.Count > r.Matches && r.Wildcard ? r.Matches + 1 : r.Matches)
-                .ThenBy(r => r.Template.Length);
+                .OrderByDescending(r => initializer?.Count() > r.Matches && r.Params?.Count() > r.Matches && r.Wildcard ? r.Matches + 1 : r.Matches)
+                .ThenBy(r => r.Template?.Length);
 
-            var bestRoute = sortedRoutes.First();
-            var missing = initializer?.Where(kvp => !bestRoute.Params.Contains(kvp.Key)).FirstOrDefault().Value;
-            // if missing a parameter update by 1
-            if (missing != null)
-            {
-                sortedRoutes = sortedRoutes
-                    .OrderByDescending(r => r.Params.Any(p => p.StartsWith("*")) ? r.Matches + 1 : r.Matches)
-                    .ThenBy(r => r.Template.Length);
-                bestRoute = sortedRoutes.First();
-            }
-            var finalUri = bestRoute.Template;
+            var bestRoute = matchedRoutes.First();
+            var missing = initializer?.Where(kvp => bestRoute.Params?.Contains(kvp.Key) == true).FirstOrDefault().Value;
+            var finalUri = bestRoute.Template ?? "";
 
             // 3. Replace the placeholders
             foreach (var kvp in initializer ?? [])
             {
-                var pattern = $@"\{{\\*?{kvp.Key}(?::.*?)?\}}";
+                var pattern = $@"\{{\*?{kvp.Key}(?::.*?)?\}}";
                 finalUri = System.Text.RegularExpressions.Regex.Replace(finalUri, pattern, kvp.Value ?? "", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
             }
 

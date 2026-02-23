@@ -22,6 +22,7 @@ namespace DataLayer
             }
             _currentConfigure = _configure = configure;
 
+
             var conn = this.Database.GetDbConnection();
             if (conn.State != ConnectionState.Open) conn.Open();
 
@@ -52,6 +53,16 @@ namespace DataLayer
         // Access a specific database context by its App.config Name
         public static TranslationContext Get(Func<DbContextOptionsBuilder?, string> opt) => _contexts.GetOrAdd(opt(null), (key) => new TranslationContext(opt));
 
+
+
+        public TranslationContext? this[string name]
+        {
+            get
+            {
+                return _contexts.Values.FirstOrDefault(ctx => ctx.Database.GetConnectionString()?.Contains(name) == true);
+            }
+        }
+
         public TranslationContext this[Func<DbContextOptionsBuilder?, string> opt]
         {
             get
@@ -64,14 +75,11 @@ namespace DataLayer
         protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
         {
             // This makes the conversion "implicit" for the database layer globally.
-            configurationBuilder.Properties<Customization.Voltage>().HaveConversion<int>();
+            configurationBuilder.Properties<Customization.ControlMode>().HaveConversion<int>();
             configurationBuilder.Properties<Customization.Gender>().HaveConversion<int>();
-            configurationBuilder.Properties<Customization.OrganComponent>().HaveConversion<int>();
-            configurationBuilder.Properties<Customization.OrganSystem>().HaveConversion<int>();
-            configurationBuilder.Properties<Customization.PulseDuration>().HaveConversion<int>();
-            configurationBuilder.Properties<Customization.PulseWidth>().HaveConversion<int>();
-            configurationBuilder.Properties<Customization.PWM0Frequency>().HaveConversion<int>();
-            configurationBuilder.Properties<Customization.Voltage>().HaveConversion<int>();
+            configurationBuilder.Properties<Customization.PackMode>().HaveConversion<int>();
+            configurationBuilder.Properties<Customization.PackStatus>().HaveConversion<int>();
+            configurationBuilder.Properties<Customization.CardType>().HaveConversion<int>();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -105,9 +113,12 @@ namespace DataLayer
 
     public partial class EntityMetadata
     {
+        public static EntityMetadata<Entities.Answer> Answer => new EntityMetadata<Entities.Answer>();
+        public static EntityMetadata<Entities.Pack> Pack => new EntityMetadata<Entities.Pack>();
+        public static EntityMetadata<Entities.Card> Card => new EntityMetadata<Entities.Card>();
         public static EntityMetadata<Entities.Permission> Permission => new EntityMetadata<Entities.Permission>();
         public static EntityMetadata<Entities.User> User => new EntityMetadata<Entities.User>();
-        public static EntityMetadata<Entities.Role> Patient => new EntityMetadata<Entities.Role>();
+        public static EntityMetadata<Entities.Role> Role => new EntityMetadata<Entities.Role>();
         public static EntityMetadata<Entities.Setting> Setting => new EntityMetadata<Entities.Setting>();
         public static EntityMetadata<Entities.Message> Message => new EntityMetadata<Entities.Message>();
 

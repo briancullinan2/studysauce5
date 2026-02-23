@@ -1,0 +1,32 @@
+@code
+{
+
+
+    [Parameter] public PropertyMetadata? Model { get; set; }
+    [Parameter] public EventCallback<object> ValueChanged { get; set; }
+    public DataLayer.Customization.ControlMode Mode
+    {
+        get
+        {
+            return Model?.DeclaringType == typeof(CardsControl.EditCard) ? DataLayer.Customization.ControlMode.Edit : DataLayer.Customization.ControlMode.View;
+        }
+    }
+    private IEnumerable<PropertyMetadata>? CardLayout;
+    protected override void OnInitialized()
+    {
+        CardLayout = EntityMetadata.Card.Categories["Content"]?.ToList();
+    }
+
+}
+
+This is a card
+@if (Mode == DataLayer.Customization.ControlMode.Edit)
+{
+    <span>Editing</span>
+    <MetadataControl TModel="PropertyMetadata" Model="@CardLayout"></MetadataControl>
+
+}
+else
+{
+    <span>Viewing</span>
+}

@@ -1,0 +1,49 @@
+@using System.ComponentModel.DataAnnotations
+@using System.ComponentModel
+@code
+{
+    public class EditCard : DataLayer.Entities.Card
+    {
+        public static EntityMetadata Metadata => new EntityMetadata(typeof(EditCard));
+
+    }
+
+    public class ViewCard : DataLayer.Entities.Card
+    {
+        public static EntityMetadata Metadata => new EntityMetadata(typeof(ViewCard));
+        [Category("Content")]
+        [Display(Name = "Cards", GroupName = "Display", Description = "Card currently being viewed by the user")]
+        public ViewCard? Card { get; set; } = null;
+
+    }
+
+    [Parameter] public PropertyMetadata? Model { get; set; }
+    [Parameter] public EventCallback<object> ValueChanged { get; set; }
+    public DataLayer.Customization.ControlMode Mode
+    {
+        get
+        {
+            return Model?.DeclaringType == typeof(EditCard) ? DataLayer.Customization.ControlMode.Edit : DataLayer.Customization.ControlMode.View;
+        }
+    }
+    private IEnumerable<PropertyMetadata>? CardLayout;
+    protected override void OnInitialized()
+    {
+        CardLayout = ViewCard.Metadata.Groups["Display"]?.ToList();
+    }
+
+}
+
+This is a list of cards
+@if (Mode == DataLayer.Customization.ControlMode.Edit)
+{
+    <span>Editing list of cards</span>
+    @* TODO: repeat all controls of CardControl for every card in new Data property *@
+    <MetadataControl TModel="PropertyMetadata" Model="@CardLayout"></MetadataControl>
+
+}
+else
+{
+    <span>Viewing list of cards</span>
+    <MetadataControl TModel="PropertyMetadata" Model="@CardLayout"></MetadataControl>
+}

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using DataLayer.Customization;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -7,11 +8,6 @@ namespace DataLayer.Entities
     [Table("card")]
     public class Card : Entity<Card>
     {
-        // Constants for logic matching your PHP source
-        public const string SELF_ASSESSMENT = "SELF_ASSESSMENT";
-        public const string SHORT_ANSWER = "SHORT_ANSWER";
-        public const string MULTIPLE_CHOICE = "MULTIPLE_CHOICE";
-
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; protected set; }
@@ -40,7 +36,7 @@ namespace DataLayer.Entities
         [MaxLength(16)]
         [Category("Settings")]
         [Display(Name = "Response Type", Description = "Interaction type (flash-card, multiple-choice)")]
-        public string ResponseType { get; set; } = "flash-card";
+        public CardType ResponseType { get; set; } = CardType.FlashCard;
 
         [MaxLength(16)]
         [Category("Scheduling")]

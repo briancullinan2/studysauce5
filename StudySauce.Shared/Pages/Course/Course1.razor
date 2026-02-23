@@ -1,9 +1,9 @@
 ﻿
 @code {
-    [Parameter] public string? Href { get; set; }
+    [Parameter] public Type? Lesson { get; set; }
 }
 
-@if (Href == "course1_setting_goals")
+@if (Lesson == typeof(SettingGoals))
 {
     <h2>Setting goals <span class="badge bg-secondary">10 minutes</span></h2>
     <ul>
@@ -13,7 +13,7 @@
         <li>How to stay motivated with intrinsic and extrinsic rewards</li>
     </ul>
 }
-else if (Href == "course1_distractions")
+else if (Lesson == typeof(Distractions))
 {
     <h2>Distractions <span class="badge bg-secondary">10 minutes</span></h2>
     <ul>
@@ -23,7 +23,7 @@ else if (Href == "course1_distractions")
         <li>How long an interruption affects you when you study</li>
     </ul>
 }
-else if (Href == "course1_procrastination")
+else if (Lesson == typeof(Procrastination))
 {
     <h2>Procrastination <span class="badge bg-secondary">10 minutes</span></h2>
     <ul>
@@ -33,7 +33,7 @@ else if (Href == "course1_procrastination")
         <li>Two tools that will help you stop procrastination</li>
     </ul>
 }
-else if (Href == "course1_environment")
+else if (Lesson == typeof(StudyEnvironment))
 {
     <h2>Study environment <span class="badge bg-secondary">10 minutes</span></h2>
     <ul>
@@ -42,7 +42,7 @@ else if (Href == "course1_environment")
         <li>How music affects your studies</li>
     </ul>
 }
-else if (Href == "course1_partners")
+else if (Lesson == typeof(Partners))
 {
     <h2>Partners <span class="badge bg-secondary">10 minutes</span></h2>
     <ul>
@@ -51,12 +51,12 @@ else if (Href == "course1_partners")
         <li>How to work with an accountability partner</li>
     </ul>
 }
-else if (Href == "course1_upgrade")
+else if (Lesson == typeof(EndOfLevel1))
 {
     <h2>The free course is over <span class="badge bg-secondary">10 minutes</span></h2>
     <p>You have reached the end of the free course, but we have so much more to show you. Watch the video to learn about Study Sauce premium.</p>
 }  
-else if (Href == "course1_introduction")
+else if (Lesson == typeof(Introduction))
 {
     <h2>Introduction to Study Sauce <span class="badge bg-secondary">10 minutes</span></h2>
     <ul>

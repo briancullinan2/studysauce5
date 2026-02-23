@@ -1,0 +1,47 @@
+@using System.ComponentModel
+@using System.ComponentModel.DataAnnotations
+@code
+{
+    public class ViewPack : DataLayer.Entities.Entity<Pack>
+    {
+        public static EntityMetadata Metadata => new EntityMetadata(typeof(ViewPack));
+        [Category("Content")]
+        [Display(Name = "Cards", GroupName = "Display", Description = "Set of card content to display to users")]
+        public new ICollection<Controls.CardsControl.ViewCard> Cards { get; set; } = new HashSet<Controls.CardsControl.ViewCard>();
+
+    }
+
+    public class EditPack : DataLayer.Entities.Pack
+    {
+        public static EntityMetadata Metadata => new EntityMetadata(typeof(EditPack));
+
+    }
+
+
+    [Parameter] public PropertyMetadata? Model { get; set; }
+    [Parameter] public EventCallback<object> ValueChanged { get; set; }
+    public DataLayer.Customization.ControlMode Mode
+    {
+        get
+        {
+            return Model?.DeclaringType == typeof(EditPack) ? DataLayer.Customization.ControlMode.Edit : DataLayer.Customization.ControlMode.View;
+        }
+    }
+    private IEnumerable<PropertyMetadata>? CardLayout;
+    protected override void OnInitialized()
+    {
+        CardLayout = EntityMetadata.Card.Groups["Display"]?.ToList();
+    }
+
+}
+
+This is a pack
+@if(Mode == DataLayer.Customization.ControlMode.Edit)
+{
+    <span>Editing</span>
+    <MetadataControl TModel="PropertyMetadata" Model="@CardLayout"></MetadataControl>
+
+} else
+{
+    <span>Viewing</span>
+}

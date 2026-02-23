@@ -6,6 +6,15 @@
 @page "/course/{Level:int}/{Lesson}/Quiz"
 @page "/course/{Level:int}/{Lesson}/Reward"
 @inject NavigationManager Nav
+@using StudySauce.Shared.Controls
+
+@code
+{
+
+    private IEnumerable<PackControl.ViewPack>? CurrentQuiz;
+    private IEnumerable<PropertyMetadata>? PackLayout;
+
+}
 
 <div class="course-container">
     @if (ActiveItem != null)
@@ -16,9 +25,20 @@
                 @switch (Step)
                 {
                     case StepMode.Intro:
+                        // TODO: change this to load dynamically from menu when i get bored of updating it
                         <div class="flash-card animate-in">
-                            <h3>Welcome to @ActiveItem.Title</h3>
-                            <p>Get ready to master this concept.</p>
+                            @if(ActiveItem.Course == typeof(Course1))
+                            {
+                                <Course1 Lesson="@ActiveItem.Lesson" />
+                            }
+                            else if (ActiveItem.Course == typeof(Course2))
+                            {
+                                <Course2 Lesson="@ActiveItem.Lesson" />
+                            }
+                            else if (ActiveItem.Course == typeof(Course3))
+                            {
+                                <Course3 Lesson="@ActiveItem.Lesson" />
+                            }
                             <button @onclick="() => Next(StepMode.Video)">Start Lesson</button>
                         </div>
                         break;
@@ -30,8 +50,7 @@
                         break;
                     case StepMode.Quiz:
                         <div class="flash-card animate-in">
-                            <h3>Knowledge Check</h3>
-                            @* Insert Quiz Component here *@
+                            <MetadataControl TModel="PackControl.ViewPack" Model="@PackLayout"></MetadataControl>
                             <button @onclick="() => Next(StepMode.Reward)">Submit Answers</button>
                         </div>
                         break;
@@ -65,6 +84,7 @@
     [CascadingParameter] public MainLayout? Layout { get; set; }
     protected override void OnInitialized()
     {
+        PackLayout = Controls.PackControl.ViewPack.Metadata.Groups["Display"]?.ToList();
     }
 
     protected override void OnParametersSet()
@@ -95,12 +115,12 @@
         }
         Layout?.Tag = ActiveItem;
 
-        Layout?.SetHeaderTitle(builder => builder.AddContent(0, ActiveItem?.Title));
+        Layout?.SetHeaderTitle(builder => builder.AddContent(0, ActiveItem?.Title + " - " + Step.ToString()));
 
         Layout?.SetHeaderMenu(@<StudySauce.Shared.Pages.Shared.Course Step="@((int)Step)" Level="@Level" Lesson="@Lesson" />);
     }
 
-    private void Next(StepMode nextStep) => Nav.NavigateTo<Pages.Course.Course>(c => new() { Level = Level, Lesson = Lesson, Step = nextStep });
+    private void Next(StepMode nextStep) => Nav.NavigateTo<Pages.Course.Course>(c => new() { Level = ActiveItem != null ? ActiveItem.Level : 1, Lesson = ActiveItem != null ? ActiveItem.Lesson.Name.ToSafe() : "", Step = nextStep });
 
     private void Finish() { /* Navigate back or to next lesson */ }
 }

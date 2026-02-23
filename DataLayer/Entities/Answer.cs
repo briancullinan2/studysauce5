@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace DataLayer.Entities
 {
     [Table("answer")]
-    public class Answer
+    public class Answer : Entity<Answer>
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

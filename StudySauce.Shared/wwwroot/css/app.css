@@ -2,6 +2,7 @@ html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     padding: 0;
     margin: 0;
+    max-width: 100%;
     /* TODO: look up cross platform system backups font-family: Verdana, Geneva, Tahoma, sans-serif; */
 }
 

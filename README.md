@@ -17,6 +17,11 @@ The only reason I am here is because I heard about 2 years ago while I was worki
 available in the browser, something TypeScript couldn't even accomplish.
 I added CSS scoping and PHP -> JavaScript before php-babel was a meme.
 
+#### 2/22/2026
+
+Added a strictly typed NavigateTo(), GetUri() system because broken links suck! Using strong typing on as much dynamic layout content as possible so if something moves or names change
+the compiler will stop it and not have to wait for testing suite.
+
 ## TODO
 
 * Priority #1: write as little fucking &lt;html&gt; control code as possible, model and css only

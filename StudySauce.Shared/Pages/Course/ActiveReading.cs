@@ -1,4 +1,5 @@
-﻿using DataLayer.Entities;
+﻿using DataLayer.Customization;
+using DataLayer.Entities;
 
 namespace StudySauce.Shared.Pages.Course
 {
@@ -11,7 +12,7 @@ namespace StudySauce.Shared.Pages.Course
                {
                     PackId = 1,
                     Content = "What is active reading?",
-                    ResponseType = Card.SHORT_ANSWER,
+                    ResponseType = CardType.Short,
                     Answers = new List<Answer>
                     {
                         new Answer
@@ -26,7 +27,7 @@ namespace StudySauce.Shared.Pages.Course
                 {
                     PackId = 1,
                     Content = "Highlighting and underlining is an effective tool for active reading.",
-                    ResponseType = Card.MULTIPLE_CHOICE,
+                    ResponseType = CardType.Multiple,
                     Answers = new List<Answer>
                     {
                         new Answer { Content = "True", IsCorrect = false, Value = "1" },
@@ -37,7 +38,7 @@ namespace StudySauce.Shared.Pages.Course
                 {
                     PackId = 1,
                     Content = "Skimming through the reading is an effective tool for active reading.",
-                    ResponseType = Card.MULTIPLE_CHOICE,
+                    ResponseType = CardType.Multiple,
                     Answers = new List<Answer>
                     {
                         new Answer { Content = "True", IsCorrect = true, Value = "1" },
@@ -48,7 +49,7 @@ namespace StudySauce.Shared.Pages.Course
                 {
                     PackId = 1,
                     Content = "Self-explanation is an effective tool for active reading",
-                    ResponseType = Card.MULTIPLE_CHOICE,
+                    ResponseType = CardType.Multiple,
                     Answers = new List<Answer>
                     {
                         new Answer { Content = "True", IsCorrect = true, Value = "1" },

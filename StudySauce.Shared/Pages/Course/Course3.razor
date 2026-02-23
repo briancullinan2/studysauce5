@@ -1,8 +1,8 @@
 @code {
-    [Parameter] public string? Href { get; set; }
+    [Parameter] public Type? Lesson { get; set; }
 }
 
-@if (Href == "course3_strategies")
+@if (Lesson == typeof(IntroToStrategies))
 {
     <h2>Introduction to study strategies <span class="badge bg-secondary">10 minutes</span></h2>
     <ul>
@@ -10,7 +10,7 @@
         <li>Why self-testing is so effective</li>
     </ul>
 }
-else if (Href == "course3_group_study")
+else if (Lesson == typeof(GroupStudy))
 {
     <h2>Group study <span class="badge bg-secondary">10 minutes</span></h2>
     <ul>
@@ -19,7 +19,7 @@ else if (Href == "course3_group_study")
         <li>What to do when you meet as a study groups</li>
     </ul>
 }
-else if (Href == "course3_teaching")
+else if (Lesson == typeof(TeachToLearn))
 {
     <h2>Teaching to learn <span class="badge bg-secondary">10 minutes</span></h2>
     <ul>
@@ -28,7 +28,7 @@ else if (Href == "course3_teaching")
         <li>How to use it even when you don't have someone to teach</li>
     </ul>
 }
-else if (Href == "course3_active_reading")
+else if (Lesson == typeof(ActiveReading))
 {
     <h2>Active reading <span class="badge bg-secondary">10 minutes</span></h2>
     <ul>
@@ -37,7 +37,7 @@ else if (Href == "course3_active_reading")
         <li>How to use it</li>
     </ul>
 }
-else if (Href == "course3_spaced_repetition")
+else if (Lesson == typeof(SpacedRepetition))
 {
     <h2>Spaced repetition <span class="badge bg-secondary">10 minutes</span></h2>
     <ul>

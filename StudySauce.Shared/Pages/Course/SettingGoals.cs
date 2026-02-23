@@ -1,4 +1,5 @@
-﻿using DataLayer.Entities;
+﻿using DataLayer.Customization;
+using DataLayer.Entities;
 
 namespace StudySauce.Shared.Pages.Course
 {
@@ -6,7 +7,46 @@ namespace StudySauce.Shared.Pages.Course
     {
         public static IEnumerable<DataLayer.Entities.Card> Generate()
         {
-            return [];
+            return [
+                new Card
+                {
+                    PackId = 1, // Setting Goals Pack
+                    Content = "How much more likely are you to perform at a higher level if you set specific and challenging goals?",
+                    ResponseType = CardType.Multiple,
+                    Answers = new List<Answer>
+                    {
+                        new Answer { Content = "20%", Value = "20", IsCorrect = false },
+                        new Answer { Content = "40%", Value = "40", IsCorrect = false },
+                        new Answer { Content = "60%", Value = "60", IsCorrect = false },
+                        new Answer { Content = "90%", Value = "90", IsCorrect = true }
+                    }
+                },
+                new Card
+                {
+                    PackId = 1,
+                    Content = "What does the SMART acronym stand for?",
+                    ResponseType = CardType.Short,
+                    Answers = new List<Answer>
+                    {
+                        new Answer { Content = "Specific", IsCorrect = true, Value = "quiz-specific" },
+                        new Answer { Content = "Measurable", IsCorrect = true, Value = "quiz-measurable" },
+                        new Answer { Content = "Achievable", IsCorrect = true, Value = "quiz-achievable" },
+                        new Answer { Content = "Relevant", IsCorrect = true, Value = "quiz-relevant" },
+                        new Answer { Content = "Time-bound", IsCorrect = true, Value = "quiz-timeBound" }
+                    }
+                },
+                new Card
+                {
+                    PackId = 1,
+                    Content = "What are the two types of motivation?",
+                    ResponseType = CardType.Short,
+                    Answers = new List<Answer>
+                    {
+                        new Answer { Content = "Intrinsic", IsCorrect = true, Value = "quiz-intrinsic" },
+                        new Answer { Content = "Extrinsic", IsCorrect = true, Value = "quiz-extrinsic" }
+                    }
+                }
+            ];
         }
     }
 }

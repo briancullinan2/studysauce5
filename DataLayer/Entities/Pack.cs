@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using DataLayer.Customization;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.RegularExpressions;
@@ -44,10 +45,16 @@ namespace DataLayer.Entities
         public decimal Price { get; set; } = 0;
 
         [Required]
+        [Range(0, 999999)]
+        [Category("Economics")]
+        [Display(Name = "Tokens", Description = "Set the purchase tokens for this pack")]
+        public int Tokens { get; set; } = 0;
+
+        [Required]
         [MaxLength(16)]
         [Category("Status")]
         [Display(Name = "Status", Description = "Current publication state")]
-        public string Status { get; set; } = "UNPUBLISHED";
+        public PackStatus Status { get; set; } = PackStatus.Unpublished;
 
         [Category("Stats")]
         [Display(Name = "Downloads", Description = "Total number of times this pack was acquired")]
@@ -82,6 +89,8 @@ namespace DataLayer.Entities
         //public virtual ICollection<Group> Groups { get; set; } = new HashSet<Group>();
         //public virtual ICollection<Coupon> Coupons { get; set; } = new HashSet<Coupon>();
         //public virtual ICollection<UserPack> UserPacks { get; set; } = new HashSet<UserPack>();
-        //public virtual ICollection<Card> Cards { get; set; } = new HashSet<Card>();
+        [Category("Content")]
+        [Display(Name = "Cards", Description = "Set of card content to display to users")]
+        public virtual ICollection<Card> Cards { get; set; } = new HashSet<Card>();
     }
 }

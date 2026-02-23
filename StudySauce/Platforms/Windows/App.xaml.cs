@@ -84,26 +84,28 @@ namespace StudySauce.WinUI
             //webApp.UseCors(policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             //webApp.UseAntiforgery();
 
-            //webApp.MapStaticAssets();
-            //webApp.UseBlazorFrameworkFiles();
             webApp.UseAntiforgery();
 
-            webApp.UseStaticFiles();
             webApp.UseDirectoryBrowser(new DirectoryBrowserOptions
             {
                 FileProvider = new PhysicalFileProvider(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot")),
                 RequestPath = "/wwwroot" // Or just "" if you want it at the root
             });
+            webApp.UseStaticFiles();
             webApp.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot", "_framework")),
                 RequestPath = "/_framework"
             });
+            //webApp.UseBlazorFrameworkFiles();
 
+            // TODO: or here?
+            //webApp.UseAntiforgery();
             webApp.UseRouting();
             webApp.MapBlazorHub();
+            //webApp.MapStaticAssets();
 
-            //
+
 
             webApp.MapRazorComponents<Components.App>()
                 .AddInteractiveServerRenderMode()

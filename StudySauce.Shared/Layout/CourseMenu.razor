@@ -12,7 +12,11 @@
         var course = CourseMenu.MenuStructure.FirstOrDefault(c =>
             CourseMap.TryGetValue(c.Lesson!, out var id) && id == level);
 
-        if (string.IsNullOrEmpty(lesson)) return course;
+        if (string.IsNullOrEmpty(lesson))
+        {
+            // TODO: grab the first menu item for this course
+            return course?.Children?.FirstOrDefault();
+        }
 
         // Find the specific lesson within that course
         return course?.Children?.FirstOrDefault(l =>

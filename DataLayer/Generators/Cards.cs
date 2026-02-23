@@ -1,4 +1,5 @@
-﻿using DataLayer.Entities;
+﻿using DataLayer.Customization;
+using DataLayer.Entities;
 
 namespace DataLayer.Generators
 {
@@ -13,7 +14,7 @@ namespace DataLayer.Generators
                 {
                     PackId = 1,
                     Content = "Which of the following are usually bad times to study as a group?",
-                    ResponseType = Card.MULTIPLE_CHOICE,
+                    ResponseType = CardType.Multiple,
                     Answers = new List<Answer>
                     {
                         new Answer { Content = "Writing a paper", IsCorrect = true, Value = "writing" },
@@ -25,7 +26,7 @@ namespace DataLayer.Generators
                 {
                     PackId = 1,
                     Content = "Study groups should take breaks too.",
-                    ResponseType = Card.MULTIPLE_CHOICE,
+                    ResponseType = CardType.Multiple,
                     ResponseContent = "True. Try not to meet for too long or everyone will get exhausted and you will be less productive.",
                     Answers = new List<Answer>
                     {
@@ -39,7 +40,7 @@ namespace DataLayer.Generators
                 {
                     PackId = 1,
                     Content = "Which of the following are reasons to track your study hours?",
-                    ResponseType = Card.MULTIPLE_CHOICE,
+                    ResponseType = CardType.Multiple,
                     Answers = new List<Answer>
                     {
                         new Answer { Content = "By studying a certain number of hours per week, you guarantee you will be prepared.", IsCorrect = false, Value = "guarantee" },
@@ -51,7 +52,7 @@ namespace DataLayer.Generators
                 {
                     PackId = 1,
                     Content = "Why does everyone else look like they have it all together?",
-                    ResponseType = Card.SHORT_ANSWER,
+                    ResponseType = CardType.Short,
                     ResponseContent = "They don't. They just typically put on a brave face so that you will think they are smart. Everyone struggles in school."
                 },
 
@@ -60,7 +61,7 @@ namespace DataLayer.Generators
                 {
                     PackId = 1,
                     Content = "Leading up to the test, it is a super good idea to cram.",
-                    ResponseType = Card.MULTIPLE_CHOICE,
+                    ResponseType = CardType.Multiple,
                     ResponseContent = "SAY NO TO CRAMMING!!!",
                     Answers = new List<Answer>
                     {
@@ -72,7 +73,7 @@ namespace DataLayer.Generators
                 {
                     PackId = 1,
                     Content = "What is the name of the breathing exercise demonstrated in this video?",
-                    ResponseType = Card.SHORT_ANSWER,
+                    ResponseType = CardType.Short,
                     ResponseContent = "It is called four-part breathing. It is also sometimes called combat or tactical breathing."
                 },
 
@@ -81,14 +82,14 @@ namespace DataLayer.Generators
                 {
                     PackId = 1,
                     Content = "What is it called when you study the same class material for multiple study session?",
-                    ResponseType = Card.SHORT_ANSWER,
+                    ResponseType = CardType.Short,
                     ResponseContent = "Blocked practice."
                 },
                 new Card
                 {
                     PackId = 1,
                     Content = "What is another name for interleaving?",
-                    ResponseType = Card.SHORT_ANSWER,
+                    ResponseType = CardType.Short,
                     ResponseContent = "Varied practice."
                 },
 
@@ -97,14 +98,14 @@ namespace DataLayer.Generators
                 {
                     PackId = 1,
                     Content = "What is active reading?",
-                    ResponseType = Card.SHORT_ANSWER,
+                    ResponseType = CardType.Short,
                     ResponseContent = "Active reading is simply trying to understand what you are reading and recognizing which parts are most important to your needs."
                 },
                 new Card
                 {
                     PackId = 1,
                     Content = "Highlighting and underlining is an effective tool for active reading.",
-                    ResponseType = Card.MULTIPLE_CHOICE,
+                    ResponseType = CardType.Multiple,
                     ResponseContent = "False. Highlighting and underlining are passive and can lead to a false sense of security.",
                     Answers = new List<Answer>
                     {
@@ -117,7 +118,7 @@ namespace DataLayer.Generators
                 {
                     PackId = 1,
                     Content = "What is active reading?",
-                    ResponseType = Card.SHORT_ANSWER,
+                    ResponseType = CardType.Short,
                     Answers = new List<Answer>
                     {
                         new Answer
@@ -132,7 +133,7 @@ namespace DataLayer.Generators
                 {
                     PackId = 1,
                     Content = "Highlighting and underlining is an effective tool for active reading.",
-                    ResponseType = Card.MULTIPLE_CHOICE,
+                    ResponseType = CardType.Multiple,
                     Answers = new List<Answer>
                     {
                         new Answer { Content = "True", IsCorrect = false, Value = "1" },
@@ -143,7 +144,7 @@ namespace DataLayer.Generators
                 {
                     PackId = 1,
                     Content = "Skimming through the reading is an effective tool for active reading.",
-                    ResponseType = Card.MULTIPLE_CHOICE,
+                    ResponseType = CardType.Multiple,
                     Answers = new List<Answer>
                     {
                         new Answer { Content = "True", IsCorrect = true, Value = "1" },
@@ -154,7 +155,7 @@ namespace DataLayer.Generators
                 {
                     PackId = 1,
                     Content = "Self-explanation is an effective tool for active reading",
-                    ResponseType = Card.MULTIPLE_CHOICE,
+                    ResponseType = CardType.Multiple,
                     Answers = new List<Answer>
                     {
                         new Answer { Content = "True", IsCorrect = true, Value = "1" },
@@ -167,7 +168,7 @@ namespace DataLayer.Generators
                 {
                     PackId = 1,
                     Content = "Which of the following are examples of self-testing?",
-                    ResponseType = Card.MULTIPLE_CHOICE,
+                    ResponseType = CardType.Multiple,
                     Answers = new List<Answer>
                     {
                         new Answer { Content = "Reading and rereading your notes", IsCorrect = false, Value = "reading" },
@@ -182,7 +183,7 @@ namespace DataLayer.Generators
                 {
                     PackId = 1,
                     Content = "Spacing out your study sessions isn't important at all.",
-                    ResponseType = Card.MULTIPLE_CHOICE,
+                    ResponseType = CardType.Multiple,
                     ResponseContent = "False. Spaced repetition is critical for long-term retention.",
                     Answers = new List<Answer>
                     {
@@ -195,7 +196,7 @@ namespace DataLayer.Generators
                 {
                     PackId = 1,
                     Content = "How much more likely are you to perform at a higher level if you set specific and challenging goals?",
-                    ResponseType = Card.MULTIPLE_CHOICE,
+                    ResponseType = CardType.Multiple,
                     Answers = new List<Answer>
                     {
                         new Answer { Content = "20%", IsCorrect = false, Value = "20" },
@@ -207,7 +208,7 @@ namespace DataLayer.Generators
                 {
                     PackId = 1,
                     Content = "What are the two types of motivation?",
-                    ResponseType = Card.SHORT_ANSWER,
+                    ResponseType = CardType.Short,
                     ResponseContent = "Intrinsic and extrinsic motivation."
                 },
 
@@ -216,7 +217,7 @@ namespace DataLayer.Generators
                 {
                     PackId = 1,
                     Content = "Select the two main ways an accountability partners can help you in school:",
-                    ResponseType = Card.MULTIPLE_CHOICE,
+                    ResponseType = CardType.Multiple,
                     Answers = new List<Answer>
                     {
                         new Answer { Content = "To motivate you", IsCorrect = true, Value = "motivate" },
@@ -228,7 +229,7 @@ namespace DataLayer.Generators
                 {
                     PackId = 1,
                     Content = "Besides school, name two other things mentioned where accountability partners are used.",
-                    ResponseType = Card.MULTIPLE_CHOICE,
+                    ResponseType = CardType.Multiple,
                     Answers = new List<Answer>
                     {
                         new Answer { Content = "Dieting", IsCorrect = true, Value = "dieting" },
@@ -242,14 +243,14 @@ namespace DataLayer.Generators
                 {
                     PackId = 1,
                     Content = "You have short and long term memory. What are these two types of memory also called?",
-                    ResponseType = Card.SHORT_ANSWER,
+                    ResponseType = CardType.Short,
                     ResponseContent = "Active memory and Reference memory."
                 },
                 new Card
                 {
                     PackId = 1,
                     Content = "What are two of the most effective tools to reduce procrastination?",
-                    ResponseType = Card.SHORT_ANSWER,
+                    ResponseType = CardType.Short,
                     ResponseContent = "Creating and analyzing your deadlines and building a good study plan."
                 },
 
@@ -258,7 +259,7 @@ namespace DataLayer.Generators
                 {
                     PackId = 1,
                     Content = "What grade are you in?",
-                    ResponseType = Card.MULTIPLE_CHOICE,
+                    ResponseType = CardType.Multiple,
                     Answers = new List<Answer>
                     {
                         new Answer { Content = "High school student", IsCorrect = true, Value = "highschool" },
@@ -272,7 +273,7 @@ namespace DataLayer.Generators
                 {
                     PackId = 1,
                     Content = "True or False. You are excellent at multitasking.",
-                    ResponseType = Card.MULTIPLE_CHOICE,
+                    ResponseType = CardType.Multiple,
                     ResponseContent = "False. You are not good at multitasking. No one is.",
                     Answers = new List<Answer>
                     {
@@ -284,7 +285,7 @@ namespace DataLayer.Generators
                 {
                     PackId = 1,
                     Content = "How long does it take to get back 'into the swing of things' after being distracted by a phone?",
-                    ResponseType = Card.MULTIPLE_CHOICE,
+                    ResponseType = CardType.Multiple,
                     Answers = new List<Answer>
                     {
                         new Answer { Content = "1-3 minutes", IsCorrect = false, Value = "3" },
@@ -298,7 +299,7 @@ namespace DataLayer.Generators
                 {
                     PackId = 1,
                     Content = "Multiply your class hours by ___ to get the total number of hours you should study per week.",
-                    ResponseType = Card.MULTIPLE_CHOICE,
+                    ResponseType = CardType.Multiple,
                     Answers = new List<Answer>
                     {
                         new Answer { Content = "1", IsCorrect = false, Value = "1" },
@@ -310,7 +311,7 @@ namespace DataLayer.Generators
                 {
                     PackId = 1,
                     Content = "What are two methods you can use to help yourself stick with a study plan?",
-                    ResponseType = Card.SHORT_ANSWER,
+                    ResponseType = CardType.Short,
                     ResponseContent = "Starting immediately to get momentum and choosing study locations ahead of time."
                 },
 
@@ -319,7 +320,7 @@ namespace DataLayer.Generators
                 {
                     PackId = 1,
                     Content = "Your bed is a great place to study since getting comfortable is critical to memory retention.",
-                    ResponseType = Card.MULTIPLE_CHOICE,
+                    ResponseType = CardType.Multiple,
                     ResponseContent = "False - Your brain associates your bed with sleeping.",
                     Answers = new List<Answer>
                     {
@@ -331,7 +332,7 @@ namespace DataLayer.Generators
                 {
                     PackId = 1,
                     Content = "You should study for several hours to get the greatest benefit of prolonged focus.",
-                    ResponseType = Card.MULTIPLE_CHOICE,
+                    ResponseType = CardType.Multiple,
                     ResponseContent = "False - Taking breaks is critical. Try to study for 50-60 minutes then take a 10 minute break.",
                     Answers = new List<Answer>
                     {
@@ -344,7 +345,7 @@ namespace DataLayer.Generators
                 {
                     PackId = 1,
                     Content = "How much more likely are you to perform at a higher level if you set specific and challenging goals?",
-                    ResponseType = Card.MULTIPLE_CHOICE,
+                    ResponseType = CardType.Multiple,
                     Answers = new List<Answer>
                     {
                         new Answer { Content = "20%", IsCorrect = false, Value = "20" },
@@ -356,14 +357,14 @@ namespace DataLayer.Generators
                 {
                     PackId = 1,
                     Content = "What does the SMART acronym stand for in goal setting?",
-                    ResponseType = Card.SHORT_ANSWER,
+                    ResponseType = CardType.Short,
                     ResponseContent = "Specific, Measurable, Achievable, Relevant, and Time-bound."
                 },
                 new Card
                 {
                     PackId = 1,
                     Content = "What are the two types of motivation?",
-                    ResponseType = Card.SHORT_ANSWER,
+                    ResponseType = CardType.Short,
                     ResponseContent = "Intrinsic (motivation from within) and Extrinsic (external rewards like grades)."
                 },
 
@@ -372,7 +373,7 @@ namespace DataLayer.Generators
                 {
                     PackId = 1,
                     Content = "Select the two main ways an accountability partner can help you in school:",
-                    ResponseType = Card.MULTIPLE_CHOICE,
+                    ResponseType = CardType.Multiple,
                     ResponseContent = "The two main ways are by keeping you focused and motivated.",
                     Answers = new List<Answer>
                     {
@@ -386,7 +387,7 @@ namespace DataLayer.Generators
                 {
                     PackId = 1,
                     Content = "Which of the following is NOT a key attribute to look for when choosing your accountability partner?",
-                    ResponseType = Card.MULTIPLE_CHOICE,
+                    ResponseType = CardType.Multiple,
                     ResponseContent = "You should choose someone you trust, who will challenge you and celebrate successes. 'Someone that knows you best' is not necessarily a requirement.",
                     Answers = new List<Answer>
                     {
@@ -400,14 +401,14 @@ namespace DataLayer.Generators
                 {
                     PackId = 1,
                     Content = "How often should you talk with your accountability partner?",
-                    ResponseType = Card.SHORT_ANSWER,
+                    ResponseType = CardType.Short,
                     ResponseContent = "Ideally, you should communicate with your accountability partner on a weekly basis."
                 },
                 new Card
                 {
                     PackId = 1,
                     Content = "According to the video, which of the following are examples of other ways accountability partners are used?",
-                    ResponseType = Card.MULTIPLE_CHOICE,
+                    ResponseType = CardType.Multiple,
                     ResponseContent = "The video specifically highlights gyms, dieting, and churches.",
                     Answers = new List<Answer>
                     {
@@ -422,7 +423,7 @@ namespace DataLayer.Generators
                 {
                     PackId = 1,
                     Content = "Which of the following are usually bad times to study as a group?",
-                    ResponseType = Card.MULTIPLE_CHOICE,
+                    ResponseType = CardType.Multiple,
                     ResponseContent = "Writing a paper and looking at material for the first time are usually independent activities.",
                     Answers = new List<Answer>
                     {
@@ -435,7 +436,7 @@ namespace DataLayer.Generators
                 {
                     PackId = 1,
                     Content = "Study groups should take breaks too.",
-                    ResponseType = Card.MULTIPLE_CHOICE,
+                    ResponseType = CardType.Multiple,
                     ResponseContent = "True. Taking breaks helps keep everyone fresh and prevents exhaustion.",
                     Answers = new List<Answer>
                     {
@@ -449,7 +450,7 @@ namespace DataLayer.Generators
                 {
                     PackId = 1,
                     Content = "Which of the following are reasons to track your study hours?",
-                    ResponseType = Card.MULTIPLE_CHOICE,
+                    ResponseType = CardType.Multiple,
                     Answers = new List<Answer>
                     {
                         new Answer { Content = "By studying a certain number of hours per week, you guarantee you will be prepared.", IsCorrect = false, Value = "guarantee" },
@@ -461,7 +462,7 @@ namespace DataLayer.Generators
                 {
                     PackId = 1,
                     Content = "Why does everyone else look like they have it all together?",
-                    ResponseType = Card.SHORT_ANSWER,
+                    ResponseType = CardType.Short,
                     ResponseContent = "They don't. They just typically put on a brave face so that you will think they are smart. Everyone struggles in school."
                 },
 
@@ -470,7 +471,7 @@ namespace DataLayer.Generators
                 {
                     PackId = 1,
                     Content = "Leading up to the test, it is a super good idea to cram.",
-                    ResponseType = Card.MULTIPLE_CHOICE,
+                    ResponseType = CardType.Multiple,
                     ResponseContent = "SAY NO TO CRAMMING!!!",
                     Answers = new List<Answer>
                     {
@@ -482,14 +483,14 @@ namespace DataLayer.Generators
                 {
                     PackId = 1,
                     Content = "What is the name of the breathing exercise demonstrated in this video?",
-                    ResponseType = Card.SHORT_ANSWER,
+                    ResponseType = CardType.Short,
                     ResponseContent = "Four-part breathing (also called combat or tactical breathing)."
                 },
                 new Card
                 {
                     PackId = 1,
                     Content = "What should you be looking for when you skim the test?",
-                    ResponseType = Card.SHORT_ANSWER,
+                    ResponseType = CardType.Short,
                     ResponseContent = "The number of questions, the type of questions, and the value of questions to help pace yourself."
                 },
 
@@ -498,21 +499,21 @@ namespace DataLayer.Generators
                 {
                     PackId = 1,
                     Content = "What is it called when you study the same class material for multiple study sessions?",
-                    ResponseType = Card.SHORT_ANSWER,
+                    ResponseType = CardType.Short,
                     ResponseContent = "Blocked practice."
                 },
                 new Card
                 {
                     PackId = 1,
                     Content = "What is another name for interleaving?",
-                    ResponseType = Card.SHORT_ANSWER,
+                    ResponseType = CardType.Short,
                     ResponseContent = "Varied practice."
                 },
                 new Card
                 {
                     PackId = 1,
                     Content = "When interleaving, alternating similar types of courses is most effective because your brain is already in the right mode.",
-                    ResponseType = Card.MULTIPLE_CHOICE,
+                    ResponseType = CardType.Multiple,
                     ResponseContent = "False, try to alternate very different subjects to activate different parts of the brain.",
                     Answers = new List<Answer>
                     {
@@ -526,7 +527,7 @@ namespace DataLayer.Generators
                 {
                     PackId = 1,
                     Content = "Which of the following types of tests are objective?",
-                    ResponseType = Card.MULTIPLE_CHOICE,
+                    ResponseType = CardType.Multiple,
                     Answers = new List<Answer>
                     {
                         new Answer { Content = "Essay", IsCorrect = false, Value = "essay" },
@@ -538,7 +539,7 @@ namespace DataLayer.Generators
                 {
                     PackId = 1,
                     Content = "What are two tips for open notes tests?",
-                    ResponseType = Card.SHORT_ANSWER,
+                    ResponseType = CardType.Short,
                     ResponseContent = "1: You still have to study (maybe even more). 2: Organize your notes so you can find information immediately."
                 },
 
@@ -547,14 +548,14 @@ namespace DataLayer.Generators
                 {
                     PackId = 1,
                     Content = "What is active reading?",
-                    ResponseType = Card.SHORT_ANSWER,
+                    ResponseType = CardType.Short,
                     ResponseContent = "Trying to understand what you are reading and recognizing which parts are most important to your needs; being curious."
                 },
                 new Card
                 {
                     PackId = 1,
                     Content = "Highlighting and underlining is an effective tool for active reading.",
-                    ResponseType = Card.MULTIPLE_CHOICE,
+                    ResponseType = CardType.Multiple,
                     ResponseContent = "False. Highlighting and underlining are passive and can lead to a false sense of security.",
                     Answers = new List<Answer>
                     {
@@ -568,14 +569,14 @@ namespace DataLayer.Generators
                 {
                     PackId = 1,
                     Content = "Why is using the 'teaching to learn' strategy similar to learning a new language?",
-                    ResponseType = Card.SHORT_ANSWER,
+                    ResponseType = CardType.Short,
                     ResponseContent = "You lose the ability to guess based on context and are forced to understand at a deeper level."
                 },
                 new Card
                 {
                     PackId = 1,
                     Content = "True or false, teaching to learn is an effective strategy for memorizing lots of information.",
-                    ResponseType = Card.MULTIPLE_CHOICE,
+                    ResponseType = CardType.Multiple,
                     ResponseContent = "False. It is better for understanding concepts deeply than for raw memorization.",
                     Answers = new List<Answer>
                     {
@@ -589,7 +590,7 @@ namespace DataLayer.Generators
                 {
                     PackId = 1,
                     Content = "Spacing out your study sessions isn't important at all.",
-                    ResponseType = Card.MULTIPLE_CHOICE,
+                    ResponseType = CardType.Multiple,
                     ResponseContent = "False. Spaced repetition is critical for long-term retention.",
                     Answers = new List<Answer>
                     {
@@ -601,7 +602,7 @@ namespace DataLayer.Generators
                 {
                     PackId = 1,
                     Content = "What is another name for Spaced Repetition?",
-                    ResponseType = Card.MULTIPLE_CHOICE,
+                    ResponseType = CardType.Multiple,
                     ResponseContent = "Spaced practice and Distributed practice.",
                     Answers = new List<Answer>
                     {

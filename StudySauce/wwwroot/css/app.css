@@ -3,6 +3,7 @@
 }
 
 html, body {
+    /* leaving these here so we can see what's affecting */
     padding: 0;
     margin: 0;
     /* TODO: look up cross platform system backups font-family: Verdana, Geneva, Tahoma, sans-serif; */

@@ -29,20 +29,38 @@
 </div>
 
 @code {
-    [Parameter] public IEnumerable<TModel>? Model { get; set; }
+    [Parameter] public IEnumerable<PropertyMetadata>? Model { get; set; }
+    [Parameter] public IEnumerable<TModel>? Data { get; set; }
 
     private List<(PropertyMetadata Metadata, Dictionary<string, object?> Params)>? _parameterCache;
 
     public static readonly Dictionary<Type, Type> TypeToControl = new()
         {
-            { typeof(string), typeof(StringControl) },
-            //{ typeof(bool), typeof(CheckBoxControl) },
+            // order matters, put more specific types first, then general system types last
+            { typeof(StudySauce.Shared.Controls.PackControl.ViewPack), typeof(PackControl) },
+            { typeof(StudySauce.Shared.Controls.CardsControl.ViewCard), typeof(CardControl) },
+            { typeof(StudySauce.Shared.Controls.PackControl.EditPack), typeof(PackControl) },
+            { typeof(StudySauce.Shared.Controls.CardsControl.EditCard), typeof(CardControl) },
+            { typeof(IEnumerable<StudySauce.Shared.Controls.CardsControl.EditCard>), typeof(CardsControl) },
+            { typeof(IEnumerable<StudySauce.Shared.Controls.CardsControl.ViewCard>), typeof(CardsControl) },
             //{ typeof(DateTime), typeof(DateControl) },
             //{ typeof(int), typeof(NumberControl) }
+            { typeof(string), typeof(StringControl) },
+            { typeof(object), typeof(TypeControl) },
         };
 
     public static Type GetControl(Type modelPropertyType)
-        => TypeToControl.GetValueOrDefault(modelPropertyType, typeof(TypeLabel));
+    {
+        foreach(var kvp in TypeToControl)
+        {
+            if(kvp.Key.IsAssignableFrom(modelPropertyType))
+            {
+                return kvp.Value;
+            }
+        }
+        return typeof(TypeControl);
+    }
+    
 
     protected override void OnParametersSet()
     {

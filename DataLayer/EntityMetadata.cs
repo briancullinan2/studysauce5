@@ -26,7 +26,7 @@ namespace DataLayer
         public int? Order { get; private set; }
         public string? Category { get; private set; }
 
-        internal PropertyMetadata(PropertyInfo info)
+        public PropertyMetadata(PropertyInfo info)
         {
             _info = info ?? throw new ArgumentNullException(nameof(info));
 
@@ -138,7 +138,7 @@ namespace DataLayer
         public Type EntityType { get; private set; }
 
 
-        protected EntityMetadata(Type entityType) : base()
+        public EntityMetadata(Type entityType) : base()
         {
             EntityType = entityType;
 
@@ -197,7 +197,7 @@ namespace DataLayer
         }
     }
 
-    public class EntityMetadata<T> : EntityMetadata where T : DataLayer.Entities.IEntity<T>
+    public class EntityMetadata<T> : EntityMetadata where T : Entities.IEntity<T>
     {
         new public ModelAccessor<T, int> MaxLength;
         public EntityMetadata() : base(typeof(T))

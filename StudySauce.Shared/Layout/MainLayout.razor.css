@@ -3,10 +3,13 @@
     position: relative;
     display: flex;
     flex-direction: column;
+    max-width: 100%;
 }
 
 main {
     flex: 1;
+    max-width: 100%;
+    min-width: 200px;
 }
 
 .sidebar {
@@ -20,27 +23,42 @@ main {
     height: 3.5rem;
     display: flex;
     align-items: center;
+    max-width: 100%;
 }
 
     .top-row > span:first-child,
-    .top-row > h2,
     .top-row > .contextual-menu {
         flex-grow: 1;
     }
 
-    .top-row > * {
-        flex-shrink: 1;
+    .top-row > .contextual-menu {
+        white-space: nowrap;
+        max-width: 100%;
+        min-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        flex-grow: 1;
+        text-align: right;
+        display: flex;
+        justify-content: flex-end;
     }
+
+        .top-row > * {
+            flex-shrink: 1;
+        }
 
     .top-row > h2 {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        flex-grow: initial;
+        min-width: 0;
+        margin:0;
     }
 
         .top-row > h2 ~ .contextual-menu {
-            flex-shrink: 1;
-            flex-grow: initial;
+            display:flex;
+            align-items: flex-end;
         }
 
     .top-row ::deep a, .top-row ::deep .btn-link {
