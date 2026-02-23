@@ -50,11 +50,11 @@ namespace StudySauce.Shared.Utilities.Extensions
         public static Dictionary<string, string?> ToDictionary<TDelegate>(this Expression<TDelegate> ex)
         {
             var values = new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
-            if (ex?.Body is NewExpression ne && ne.Members != null)
+            if (ex?.Body is NewExpression ne)
             {
                 values = ne.ToDictionary();
             }
-            else if (ex?.Body is MemberInitExpression mi && mi.Bindings != null)
+            else if (ex?.Body is MemberInitExpression mi)
             {
                 values = mi.ToDictionary();
             }

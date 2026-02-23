@@ -38,9 +38,8 @@
         {
             // order matters, put more specific types first, then general system types last
             { typeof(StudySauce.Shared.Controls.PackControl.ViewPack), typeof(PackControl) },
-            { typeof(StudySauce.Shared.Controls.CardsControl.ViewCard), typeof(CardControl) },
             { typeof(StudySauce.Shared.Controls.PackControl.EditPack), typeof(PackControl) },
-            { typeof(StudySauce.Shared.Controls.CardsControl.EditCard), typeof(CardControl) },
+            { typeof(DataLayer.Entities.Card), typeof(CardControl) },
             { typeof(IEnumerable<StudySauce.Shared.Controls.CardsControl.EditCard>), typeof(CardsControl) },
             { typeof(IEnumerable<StudySauce.Shared.Controls.CardsControl.ViewCard>), typeof(CardsControl) },
             //{ typeof(DateTime), typeof(DateControl) },

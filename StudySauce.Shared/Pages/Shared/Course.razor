@@ -17,19 +17,20 @@
     [Parameter] public int? Level { get; set; }
     [Parameter] public string? Lesson { get; set; }
     [Parameter] public int? Step { get; set; }
-    public CourseMenuItem? ActiveItem { get; set; }
+    public ICourseMenuItem? ActiveItem { get; set; }
 
-    public class SharedMenuItem : NavMenuItem
+    public class SharedMenuItem : NavMenuItem<Pages.Course.Course>
     {
         public Pages.Course.Course.StepMode Step { get; set; }
 
         public Func<Pages.Course.Course.StepMode, string>? GetHref { get; set; }
 
-        public override string Href { get
+        public override string Href { 
+            get
             {
                 return GetHref != null ? GetHref(Step) : throw new InvalidOperationException("Set the callback on the SharedMenuItem first.");
             } 
-            set => base.Href = value; }
+        }
     }
 
     public string GetHref(Pages.Course.Course.StepMode Step)

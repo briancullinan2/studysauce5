@@ -2,19 +2,19 @@
 @using System.ComponentModel
 @code
 {
-    public class EditCard : DataLayer.Entities.Card
+    public class EditCard
     {
         public static EntityMetadata Metadata => new EntityMetadata(typeof(EditCard));
+        public DataLayer.Entities.Card? Card { get; set; }
 
     }
 
-    public class ViewCard : DataLayer.Entities.Card
+    public class ViewCard
     {
         public static EntityMetadata Metadata => new EntityMetadata(typeof(ViewCard));
         [Category("Content")]
         [Display(Name = "Cards", GroupName = "Display", Description = "Card currently being viewed by the user")]
-        public ViewCard? Card { get; set; } = null;
-
+        public DataLayer.Entities.Card? Card { get; set; }
     }
 
     [Parameter] public PropertyMetadata? Model { get; set; }

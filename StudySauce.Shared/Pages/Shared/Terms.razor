@@ -7,12 +7,12 @@
 }
 
 @code {
-    private List<NavMenuItem> HeaderLinks = new()
+    private List<INavMenuItem> HeaderLinks = new()
     {
-        new() { Title = "About Us", Href = "about", Icon = "bi-info-circle" },
-        new() { Title = "Terms", Href = "terms", Icon = "bi-file-earmark-text" },
-        new() { Title = "Privacy", Href = "privacy", Icon = "bi-shield-lock" },
-        new() { Title = "Contact", Href = "contact", Icon = "bi-envelope-at" }
+        new NavMenuItem<Pages.Landing.About>() { Title = "About Us", Icon = "bi-info-circle" },
+        new NavMenuItem<Pages.Landing.Terms>() { Title = "Terms", Icon = "bi-file-earmark-text" },
+        new NavMenuItem<Pages.Landing.Privacy>() { Title = "Privacy", Icon = "bi-shield-lock" },
+        new NavMenuItem<Pages.Landing.Contact>() { Title = "Contact", Icon = "bi-envelope-at" }
     };
 
 }

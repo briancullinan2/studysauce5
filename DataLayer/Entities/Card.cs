@@ -31,7 +31,7 @@ namespace DataLayer.Entities
         [MaxLength(16)]
         [Category("Settings")]
         [Display(Name = "Content Type", Description = "Format of the front (TEXT, IMAGE, etc.)")]
-        public string ContentType { get; set; } = "TEXT";
+        public DisplayType ContentType { get; set; } = DisplayType.Text;
 
         [MaxLength(16)]
         [Category("Settings")]

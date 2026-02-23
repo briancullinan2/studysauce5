@@ -17,61 +17,62 @@
 }
 
 <div class="course-container">
-    @if (ActiveItem != null)
+    @if (ActiveItem == null)
     {
-        <div class="card-viewer">
-
-            <div class="card-stage">
-                @switch (Step)
-                {
-                    case StepMode.Intro:
-                        // TODO: change this to load dynamically from menu when i get bored of updating it
-                        <div class="flash-card animate-in">
-                            @if(ActiveItem.Course == typeof(Course1))
-                            {
-                                <Course1 Lesson="@ActiveItem.Lesson" />
-                            }
-                            else if (ActiveItem.Course == typeof(Course2))
-                            {
-                                <Course2 Lesson="@ActiveItem.Lesson" />
-                            }
-                            else if (ActiveItem.Course == typeof(Course3))
-                            {
-                                <Course3 Lesson="@ActiveItem.Lesson" />
-                            }
-                            <button @onclick="() => Next(StepMode.Video)">Start Lesson</button>
-                        </div>
-                        break;
-                    case StepMode.Video:
-                        <div class="flash-card animate-in">
-                            <div class="video-placeholder">Video content for @Lesson</div>
-                            <button @onclick="() => Next(StepMode.Quiz)">Take Quiz</button>
-                        </div>
-                        break;
-                    case StepMode.Quiz:
-                        <div class="flash-card animate-in">
-                            <MetadataControl TModel="PackControl.ViewPack" Model="@PackLayout"></MetadataControl>
-                            <button @onclick="() => Next(StepMode.Reward)">Submit Answers</button>
-                        </div>
-                        break;
-                    case StepMode.Reward:
-                        <div class="flash-card animate-in">
-                            <div class="badge">🏆</div>
-                            <h3>You earned 10 Trivial Bux!</h3>
-                            <button @onclick="() => Next(StepMode.Investment)">Invest Tokens</button>
-                        </div>
-                        break;
-                    case StepMode.Investment:
-                        <div class="flash-card animate-in">
-                            <h3>Buddy Backup Investment</h3>
-                            <p>Allocate your tokens to secure your study vault.</p>
-                            <button @onclick="Finish">Complete Lesson</button>
-                        </div>
-                        break;
-                }
-            </div>
-        </div>
+        return;
     }
+    <div class="card-viewer">
+
+        <div class="card-stage">
+            @switch (Step)
+            {
+                case StepMode.Intro:
+                    // TODO: change this to load dynamically from menu when i get bored of updating it
+                    <div class="flash-card animate-in">
+                        @if(ActiveItem.Course == typeof(Course1))
+                        {
+                            <Course1 Lesson="@ActiveItem.Lesson" />
+                        }
+                        else if (ActiveItem.Course == typeof(Course2))
+                        {
+                            <Course2 Lesson="@ActiveItem.Lesson" />
+                        }
+                        else if (ActiveItem.Course == typeof(Course3))
+                        {
+                            <Course3 Lesson="@ActiveItem.Lesson" />
+                        }
+                        <button @onclick="() => Next(StepMode.Video)">Start Lesson</button>
+                    </div>
+                    break;
+                case StepMode.Video:
+                    <div class="flash-card animate-in">
+                        <div class="video-placeholder">Video content for @Lesson</div>
+                        <button @onclick="() => Next(StepMode.Quiz)">Take Quiz</button>
+                    </div>
+                    break;
+                case StepMode.Quiz:
+                    <div class="flash-card animate-in">
+                        <MetadataControl TModel="PackControl.ViewPack" Model="@PackLayout"></MetadataControl>
+                        <button @onclick="() => Next(StepMode.Reward)">Submit Answers</button>
+                    </div>
+                    break;
+                case StepMode.Reward:
+                    <div class="flash-card animate-in">
+                        <div class="badge">🏆</div>
+                        <h3>You earned 10 Trivial Bux!</h3>
+                        <button @onclick="() => Next(StepMode.Investment)">Invest Tokens</button>
+                    </div>
+                    break;
+                case StepMode.Investment:
+                    <div class="flash-card animate-in">
+                        <h3>Buddy Backup Investment</h3>
+                        <p>Allocate your tokens to secure your study vault.</p>
+                        <button @onclick="Finish">Complete Lesson</button>
+                    </div>
+                    break;
+            }
+        </div>
+    </div>
 </div>
 
 @code {
@@ -79,7 +80,7 @@
     [Parameter] public string? Lesson { get; set; }
     public StepMode Step { get; set; } = StepMode.Intro;
 
-    public CourseMenuItem? ActiveItem { get; set; }
+    public ICourseMenuItem? ActiveItem { get; set; }
     public enum StepMode { Intro, Video, Quiz, Reward, Investment }
     [CascadingParameter] public MainLayout? Layout { get; set; }
     protected override void OnInitialized()
@@ -102,7 +103,7 @@
             newStep = segments[3].TryParse<StepMode>() ?? StepMode.Intro;
         }
 
-        if (ActiveItem == newItem && newStep == Step)
+        if (ActiveItem?.Course == newItem?.Course && newStep == Step)
         {
             return;
         }

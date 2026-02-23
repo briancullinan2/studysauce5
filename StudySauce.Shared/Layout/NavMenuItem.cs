@@ -1,41 +1,50 @@
-﻿using StudySauce.Shared.Utilities.Extensions;
+﻿using Microsoft.AspNetCore.Components;
+using StudySauce.Shared.Utilities.Extensions;
+using System.Linq.Expressions;
 
 namespace StudySauce.Shared.Layout
 {
     public interface INavMenuItem<TChildren> where TChildren : class
     {
         string Title { get; set; }
-        string Href { get; set; }
+        string Href { get; }
         string Icon { get; set; }
         string? RoleRequired { get; set; }
         bool IsBeta { get; set; }
         bool IsCollapsed { get; set; }
-        IEnumerable<INavMenuItem> Children { get; set; }
+        IEnumerable<TChildren> Children { get; set; }
 
     }
 
-    public interface INavMenuItem : INavMenuItem<NavMenuItem>
+    public interface INavMenuItem : INavMenuItem<INavMenuItem>
     {
     }
 
-    public class NavMenuItem<TChildren> : INavMenuItem where TChildren : NavMenuItem<TChildren>
+    public class NavMenuItem<TComponent> : INavMenuItem
+        where TComponent : IComponent, new()
     {
+        public NavMenuItem() { }
         public string Title { get; set; } = string.Empty;
-        virtual public string Href { get; set; } = string.Empty;
+        virtual public string Href { get => NavigationExtensions.GetUri(Uri); }
+        public Expression<Func<TComponent, TComponent>>? Uri { get; set; } = c => new TComponent();
         public string Icon { get; set; } = "bi-circle";
         public string? RoleRequired { get; set; }
         public bool IsBeta { get; set; } = false;
         public bool IsCollapsed { get; set; } = true; // Added state
-        public IEnumerable<TChildren> Children { get; set; } = [];
-        IEnumerable<INavMenuItem> INavMenuItem<NavMenuItem>.Children { get => Children; set => Children = value.OfType<TChildren>(); }
+        public virtual IEnumerable<INavMenuItem> Children { get; set; } = [];
     }
 
-    public class NavMenuItem : NavMenuItem<NavMenuItem>
+
+    public interface ICourseMenuItem : INavMenuItem<ICourseMenuItem>
     {
-
+        Type? Lesson { get; set; }
+        int? Level { get; set; }
+        Type? Course { get; }
+        bool IsCourse { get; }
     }
 
-    public class CourseMenuItem : NavMenuItem<CourseMenuItem>
+
+    public class CourseMenuItem : NavMenuItem<Pages.Course.Course>, ICourseMenuItem
     {
         public Type? Lesson { get; set; }
         public int? Level { get; set; }
@@ -70,5 +79,10 @@ namespace StudySauce.Shared.Layout
                 });
             }
         }
+
+        public new IEnumerable<CourseMenuItem> Children { get => base.Children.OfType<CourseMenuItem>(); set => base.Children = value; }
+
+        IEnumerable<ICourseMenuItem> INavMenuItem<ICourseMenuItem>.Children { get => Children.OfType<ICourseMenuItem>(); set => Children = value.OfType<CourseMenuItem>(); }
     }
+
 }

@@ -2,16 +2,16 @@
 @using System.ComponentModel.DataAnnotations
 @code
 {
-    public class ViewPack : DataLayer.Entities.Entity<Pack>
+    public class ViewPack
     {
         public static EntityMetadata Metadata => new EntityMetadata(typeof(ViewPack));
         [Category("Content")]
         [Display(Name = "Cards", GroupName = "Display", Description = "Set of card content to display to users")]
-        public new ICollection<Controls.CardsControl.ViewCard> Cards { get; set; } = new HashSet<Controls.CardsControl.ViewCard>();
+        public ICollection<Controls.CardsControl.ViewCard> Cards { get; set; } = new HashSet<Controls.CardsControl.ViewCard>();
 
     }
 
-    public class EditPack : DataLayer.Entities.Pack
+    public class EditPack
     {
         public static EntityMetadata Metadata => new EntityMetadata(typeof(EditPack));
 
