@@ -11,24 +11,20 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 // Add device-specific services used by the StudySauce.Shared project
 builder.Services.AddSingleton<IFormFactor, FormFactor>();
 builder.Services.AddSingleton<ILocalServer, LocalServer>();
-builder.Services.AddSingleton<HttpClient>(sp => new HttpClient
+builder.Services.AddScoped<HttpClient>(sp => new HttpClient
 {
     BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
 });
-//builder.Services.AddSingleton<IQueryCompiler, RemoteQuery>();
-//builder.Services.AddDbContext<TranslationContext>((serviceProvider, options) =>
-//{
-//    options.UseInMemoryDatabase("RemoteShell");
-//});
-builder.Services
-           //.AddEntityFrameworkInMemoryDatabase()
-           .AddDbContext<TranslationContext>((sp, options) =>
-           {
-               options.UseInMemoryDatabase("RemoteShell"); //.UseInternalServiceProvider(sp);
-               options.ReplaceService<IQueryCompiler, RemoteQuery>();
-           });
+builder.Services.AddDbContext<TranslationContext>((sp, options) =>
+{
+    options.UseInMemoryDatabase("RemoteShell");
+
+    options.ReplaceService<IQueryCompiler, RemoteQuery>();
+});
 
 var app = builder.Build();
+RemoteQuery._service = app.Services;
+
 var runtime = app.Services.GetRequiredService<IJSRuntime>();
 var navigation = app.Services.GetRequiredService<NavigationManager>();
 var localServer = (LocalServer)app.Services.GetRequiredService<ILocalServer>();

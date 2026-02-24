@@ -8,6 +8,7 @@
 @inject NavigationManager Nav
 @inject TranslationContext Context
 @using StudySauce.Shared.Controls
+@using Microsoft.EntityFrameworkCore
 
 @code
 {
@@ -18,62 +19,61 @@
 }
 
 <div class="course-container">
-    @if (ActiveItem == null)
+@if (ActiveItem != null)
     {
-        return;
-    }
-    <div class="card-viewer">
+        <div class="card-viewer">
 
-        <div class="card-stage">
-            @switch (Step)
-            {
-                case StepMode.Intro:
-                    // TODO: change this to load dynamically from menu when i get bored of updating it
-                    <div class="flash-card animate-in">
-                        @if(ActiveItem.Course == typeof(Course1))
-                        {
-                            <Course1 Lesson="@ActiveItem.Lesson" />
-                        }
-                        else if (ActiveItem.Course == typeof(Course2))
-                        {
-                            <Course2 Lesson="@ActiveItem.Lesson" />
-                        }
-                        else if (ActiveItem.Course == typeof(Course3))
-                        {
-                            <Course3 Lesson="@ActiveItem.Lesson" />
-                        }
-                        <button @onclick="() => Next(StepMode.Video)">Start Lesson</button>
-                    </div>
-                    break;
-                case StepMode.Video:
-                    <div class="flash-card animate-in">
-                        <div class="video-placeholder">Video content for @Lesson</div>
-                        <button @onclick="() => Next(StepMode.Quiz)">Take Quiz</button>
-                    </div>
-                    break;
-                case StepMode.Quiz:
-                    <div class="flash-card animate-in">
-                        <MetadataControl TModel="PackControl.ViewPack" Model="@PackLayout"></MetadataControl>
-                        <button @onclick="() => Next(StepMode.Reward)">Submit Answers</button>
-                    </div>
-                    break;
-                case StepMode.Reward:
-                    <div class="flash-card animate-in">
-                        <div class="badge">🏆</div>
-                        <h3>You earned 10 Trivial Bux!</h3>
-                        <button @onclick="() => Next(StepMode.Investment)">Invest Tokens</button>
-                    </div>
-                    break;
-                case StepMode.Investment:
-                    <div class="flash-card animate-in">
-                        <h3>Buddy Backup Investment</h3>
-                        <p>Allocate your tokens to secure your study vault.</p>
-                        <button @onclick="Finish">Complete Lesson</button>
-                    </div>
-                    break;
-            }
+            <div class="card-stage">
+                @switch (Step)
+                {
+                    case StepMode.Intro:
+                        // TODO: change this to load dynamically from menu when i get bored of updating it
+                        <div class="flash-card animate-in">
+                            @if (ActiveItem.Course == typeof(Course1))
+                            {
+                                <Course1 Lesson="@ActiveItem.Lesson" />
+                            }
+                            else if (ActiveItem.Course == typeof(Course2))
+                            {
+                                <Course2 Lesson="@ActiveItem.Lesson" />
+                            }
+                            else if (ActiveItem.Course == typeof(Course3))
+                            {
+                                <Course3 Lesson="@ActiveItem.Lesson" />
+                            }
+                            <button @onclick="() => Next(StepMode.Video)">Start Lesson</button>
+                        </div>
+                        break;
+                    case StepMode.Video:
+                        <div class="flash-card animate-in">
+                            <div class="video-placeholder">Video content for @Lesson</div>
+                            <button @onclick="() => Next(StepMode.Quiz)">Take Quiz</button>
+                        </div>
+                        break;
+                    case StepMode.Quiz:
+                        <div class="flash-card animate-in">
+                            <MetadataControl TModel="PackControl.ViewPack" Model="@PackLayout"></MetadataControl>
+                            <button @onclick="() => Next(StepMode.Reward)">Submit Answers</button>
+                        </div>
+                        break;
+                    case StepMode.Reward:
+                        <div class="flash-card animate-in">
+                            <div class="badge">🏆</div>
+                            <h3>You earned 10 Trivial Bux!</h3>
+                            <button @onclick="() => Next(StepMode.Investment)">Invest Tokens</button>
+                        </div>
+                        break;
+                    case StepMode.Investment:
+                        <div class="flash-card animate-in">
+                            <h3>Buddy Backup Investment</h3>
+                            <p>Allocate your tokens to secure your study vault.</p>
+                            <button @onclick="Finish">Complete Lesson</button>
+                        </div>
+                        break;
+                }
+            </div>
         </div>
-    </div>
+    }
 </div>
 
 @code {
@@ -87,7 +87,23 @@
     protected override void OnInitialized()
     {
         PackLayout = Controls.PackControl.ViewPack.Metadata.Groups["Display"]?.ToList();
-        Console.WriteLine("Pack count: ");
+        // TODO: make sure this goes through RemoteQuery on web assembly client
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // If this fails, the catch block handles it gracefully
+            // instead of blowing up the RenderTreeBuilder
+            var result = await Context.Packs.CountAsync();
+            Console.WriteLine("Pack count: " + result);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"RemoteQuery failed: {ex.Message}");
+            // Set a default value or error state so the UI stays stable
+        }
     }
 
     protected override void OnParametersSet()

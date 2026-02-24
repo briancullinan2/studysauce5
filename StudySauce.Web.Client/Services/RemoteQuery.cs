@@ -9,15 +9,11 @@ namespace StudySauce.Web.Client.Services
     public class RemoteQuery : IQueryCompiler
     {
         private readonly HttpClient _httpClient;
+        internal static IServiceProvider _service;
 
         public RemoteQuery()
         {
-
-        }
-
-        public RemoteQuery(HttpClient httpClient)
-        {
-            _httpClient = httpClient;
+            _httpClient = _service.GetRequiredService<HttpClient>();
         }
 
 
@@ -48,16 +44,23 @@ namespace StudySauce.Web.Client.Services
         {
             // 1. Serialize the expression tree using your converter
             var serialized = query.ToXDocument().ToString();
+            try
+            {
+                // 2. Perform the async network call
+                var response = await _httpClient.PostAsJsonAsync("api/query", serialized, cancellationToken);
 
-            // 2. Perform the async network call
-            var response = await _httpClient.PostAsJsonAsync("api/query", serialized, cancellationToken);
+                // Ensure the request was successful
+                response.EnsureSuccessStatusCode();
 
-            // Ensure the request was successful
-            response.EnsureSuccessStatusCode();
-
-            // 3. Deserialize and return the result
-            // Note: If T is a collection, ensure your API returns the expected format
-            return await response.Content.ReadFromJsonAsync<T>(cancellationToken: cancellationToken);
+                // 3. Deserialize and return the result
+                // Note: If T is a collection, ensure your API returns the expected format
+                return await response.Content.ReadFromJsonAsync<T>(cancellationToken: cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return default(T);
+            }
         }
 
         public Func<QueryContext, TResult> CreateCompiledAsyncQuery<TResult>(Expression query)
