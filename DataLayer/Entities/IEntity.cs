@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System.Collections;
 using System.ComponentModel;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -16,21 +17,24 @@ namespace DataLayer.Entities
     public interface IEntity<T> : INotifyPropertyChanged, IEntity where T : IEntity
     {
         abstract new public event PropertyChangedEventHandler? PropertyChanged;
-        abstract internal static T Create(T target);
-        abstract internal static T Wrap(T target);
+        abstract internal static T Create(T target, IServiceProvider service);
+        internal IServiceProvider _service { get; }
+        abstract internal static T Wrap(T target, IServiceProvider service);
     }
 
     abstract public class Entity : DispatchProxy
     {
         protected abstract override object? Invoke(MethodInfo? targetMethod, object?[]? args);
 
-        public static IEntity Wrap(IEntity target)
+        public static IEntity Wrap(IEntity target, IServiceProvider service)
         {
             object generic = typeof(Entity<>).MakeGenericType(target.GetType());
             object proxy = System.Reflection.DispatchProxy.Create(generic.GetType(), target.GetType());
 
-            var prop = proxy.GetType().GetField("_target");
+            var prop = proxy.GetType().GetField(nameof(Entity<>._target));
             prop.SetValue(proxy, target);
+            var prop2 = proxy.GetType().GetField(nameof(Entity<>._service));
+            prop2.SetValue(proxy, service);
 
             return proxy as IEntity;
         }
@@ -47,27 +51,29 @@ namespace DataLayer.Entities
         }
 
         internal T _target = default!;
+        internal IServiceProvider _service = default!;
+
+        IServiceProvider IEntity<T>._service => this._service;
 
         // 1. You create a static helper to wrap the real object
-        public static T Create(T target)
+        public static T Create(T target, IServiceProvider service)
         {
             // This calls the internal EF/WPF magic to create the proxy
             object proxy = DispatchProxy.Create<T, Entity<T>>();
 
             // This sets the _target field so Invoke can use it later
             ((Entity<T>)proxy)._target = target;
+            ((Entity<T>)proxy)._service = service;
 
             return (T)proxy;
         }
 
 
-        public static T Wrap(T target)
+
+        static T IEntity<T>.Wrap(T target, IServiceProvider service)
         {
-            // 1. This generates the 'Magic' proxy object at runtime
-
-            return (T)Wrap((IEntity)target);
+            return (T)Wrap((IEntity)target, service);
         }
-
 
         protected void SetValue<T>(ref T field, T value, [CallerMemberName] string propertyName = "")
         {
@@ -104,29 +110,32 @@ namespace DataLayer.Entities
             if (targetMethod?.Name.StartsWith("get_") == true && result == null)
             {
                 var prop = _target.GetType().GetProperty(targetMethod.Name.Substring(4));
+                using var scope = _service.CreateScope();
+                var context = scope.ServiceProvider.GetRequiredService<TranslationContext>();
 
                 if (typeof(IEntity<>).IsAssignableFrom(prop.PropertyType))
                 {
                     // 1. Force EF to hit the DB/Disk/Cloud
-                    TranslationContext.Current.Entry(_target).Reference(prop.Name).Load();
+                    context.Entry(_target).Reference(prop.Name).Load();
 
                     // 2. Retrieve the now-populated value
                     var rawValue = prop.GetValue(_target) as IEntity;
 
                     // 3. Make it "Smart" before returning it to the UI
-                    result = rawValue != null ? Entity.Wrap(rawValue) : null;
+                    result = rawValue != null ? Entity.Wrap(rawValue, _service) : null;
                 }
                 else if (typeof(IEnumerable).IsAssignableFrom(prop.PropertyType))
                 {
                     // 1. Force load the collection
-                    TranslationContext.Current.Entry(_target).Collection(prop.Name).Load();
+                    context.Entry(_target).Collection(prop.Name).Load();
 
                     // 2. Collections are slightly different; we want the proxy to 
                     // track the collection itself or wrap the items.
-                    result = (prop.GetValue(_target) as IEnumerable<IEntity>).Select(e => Entity.Wrap(e));
+                    result = (prop.GetValue(_target) as IEnumerable<IEntity>).Select(e => Entity.Wrap(e, _service));
                 }
             }
             return result;
         }
+
     }
 }

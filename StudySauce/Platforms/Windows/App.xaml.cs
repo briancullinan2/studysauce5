@@ -3,7 +3,7 @@
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.FileProviders;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using StudySauce.Services;
 using StudySauce.Shared.Services;
@@ -15,6 +15,8 @@ namespace StudySauce.WinUI
     /// </summary>
     public partial class App : MauiWinUIApplication
     {
+        private static KeepAlive _keepAlive;
+
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -37,7 +39,11 @@ namespace StudySauce.WinUI
                 ContentRootPath = AppContext.BaseDirectory,
                 ApplicationName = "StudySauce"
             });
-
+#if DEBUG
+            webBuilder.Environment.EnvironmentName = Environments.Development;
+#else
+            webBuilder.Environment.EnvironmentName = Environments.Production;
+#endif
 
             webBuilder.Services.AddDirectoryBrowser();
             webBuilder.Services.AddRazorComponents()
@@ -48,6 +54,13 @@ namespace StudySauce.WinUI
             // Add device-specific services used by the StudySauce.Shared project
             webBuilder.Services.AddSingleton<IFormFactor, FormFactor>();
             webBuilder.Services.AddSingleton<ILocalServer, LocalServer>();
+            _keepAlive = new KeepAlive("Data Source=:memory:");
+            _keepAlive.Open();
+            webBuilder.Services.AddDbContext<DataLayer.TranslationContext>((serviceProvider, options) =>
+            {
+                options.UseSqlite(_keepAlive);
+            });
+
 
             webBuilder.Environment.WebRootPath = Path.Combine(AppContext.BaseDirectory, "wwwroot");
             webBuilder.WebHost.ConfigureKestrel(options =>
@@ -61,8 +74,14 @@ namespace StudySauce.WinUI
                 webBuilder.Configuration);
 
             var webApp = webBuilder.Build();
-
-            webApp.UsePathBase("/");
+            using (var scope = webApp.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<DataLayer.TranslationContext>();
+                var conn = db.Database.GetDbConnection();
+                if (conn.State != System.Data.ConnectionState.Open) conn.Open();
+                db.Database.EnsureCreated();
+                var _pack = db.Packs.FirstOrDefault(p => p.Title == "something");
+            }
 
             var localServer = (LocalServer)webApp.Services.GetRequiredService<ILocalServer>();
             localServer.Initialize(webApp);
@@ -84,26 +103,25 @@ namespace StudySauce.WinUI
             //webApp.UseCors(policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             //webApp.UseAntiforgery();
 
+            //webApp.UseDirectoryBrowser(new DirectoryBrowserOptions
+            //{
+            //    FileProvider = new PhysicalFileProvider(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot")),
+            //    RequestPath = "/wwwroot" // Or just "" if you want it at the root
+            //});
+            //webApp.UseStaticFiles(new StaticFileOptions
+            //{
+            //    FileProvider = new PhysicalFileProvider(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot", "_framework")),
+            //    RequestPath = "/_framework"
+            //});
+
+            webApp.UsePathBase("/");
+            webApp.UseStaticFiles(); // Move this UP
+            webApp.UseBlazorFrameworkFiles();
             webApp.UseAntiforgery();
+            webApp.UseRouting();     // Move this UP
 
-            webApp.UseDirectoryBrowser(new DirectoryBrowserOptions
-            {
-                FileProvider = new PhysicalFileProvider(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot")),
-                RequestPath = "/wwwroot" // Or just "" if you want it at the root
-            });
-            webApp.UseStaticFiles();
-            webApp.UseStaticFiles(new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot", "_framework")),
-                RequestPath = "/_framework"
-            });
-            //webApp.UseBlazorFrameworkFiles();
-
-            // TODO: or here?
-            //webApp.UseAntiforgery();
-            webApp.UseRouting();
-            webApp.MapBlazorHub();
-            //webApp.MapStaticAssets();
+            // 2. Mapping happens AFTER routing is configured
+            //webApp.MapBlazorHub();
 
 
 
@@ -141,6 +159,24 @@ namespace StudySauce.WinUI
                 new App();
             });
         }
+        protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
+        {
+            base.OnLaunched(args);
 
+            // Get the handle from the first window in the MAUI application
+            var mauiWindow = Microsoft.Maui.Controls.Application.Current.Windows[0];
+            var nativeWindow = mauiWindow.Handler.PlatformView as Microsoft.UI.Xaml.Window;
+
+            if (nativeWindow != null)
+            {
+                var handle = WinRT.Interop.WindowNative.GetWindowHandle(nativeWindow);
+                var windowId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(handle);
+                var appWindow = Microsoft.UI.Windowing.AppWindow.GetFromWindowId(windowId);
+
+                // This path looks in your bin output folder for the icon
+                // Ensure "appicon.ico" is actually being copied there by our MSBuild target
+                appWindow.SetIcon("teardrop.ico");
+            }
+        }
     }
 }

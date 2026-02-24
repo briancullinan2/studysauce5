@@ -87,6 +87,7 @@
     protected override void OnInitialized()
     {
         PackLayout = Controls.PackControl.ViewPack.Metadata.Groups["Display"]?.ToList();
+        Console.WriteLine("Pack count: ");
     }
 
     protected override void OnParametersSet()
@@ -123,7 +124,7 @@
     
         if (ActiveItem?.Lesson != null)
         {
-            CurrentQuiz = new PackControl.ViewPack { Pack = Context.Packs.Where(p => p.Title == ActiveItem.Lesson.Name).FirstOrDefault() };
+            //CurrentQuiz = new PackControl.ViewPack { Pack = Context.Packs.Where(p => p.Title == ActiveItem.Lesson.Name).FirstOrDefault() };
         }
 
     }

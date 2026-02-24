@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Xml;
@@ -228,8 +229,11 @@ namespace DataLayer.Utilities.Extensions
             return ToXDocument(query.Expression).ToString();
         }
 
-        public static IQueryable ToQueryable(string query)
+        public static IQueryable ToQueryable(string query, IServiceProvider _service)
         {
+            using var scope = _service.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<TranslationContext>();
+
             using (XmlReader reader = XmlReader.Create(new StringReader(query)))
             {
                 reader.MoveToContent();
@@ -241,8 +245,8 @@ namespace DataLayer.Utilities.Extensions
                 // 2. Reconstruct the raw Expression tree
                 // TODO: fix this, won't know how until i debug expressions and see what parts of the trees it can show in
                 DbSet<Entities.Entity> set;
-                Expression finalExpression = root.ToExpression(TranslationContext.Current, out set);
-                return TranslationContext.Current.Set<Entities.Entity>().AsQueryable().Provider.CreateQuery(finalExpression);
+                Expression finalExpression = root.ToExpression(context, out set);
+                return context.Set<Entities.Entity>().AsQueryable().Provider.CreateQuery(finalExpression);
             }
         }
 

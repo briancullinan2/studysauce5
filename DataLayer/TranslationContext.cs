@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DataLayer.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace DataLayer
 {
@@ -20,38 +23,23 @@ namespace DataLayer
 
         public TranslationContext(DbContextOptions<TranslationContext> ctx) : base(ctx)
         {
-
         }
 
         public string ConnectString
         {
             get
             {
+                if (!Database.IsRelational()) return "RemoteShell";
                 return Database.GetDbConnection().ConnectionString;
             }
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            _contexts.Add(this);
-
+            base.OnConfiguring(options);
+            options.AddInterceptors(new WrapperInterceptor());
         }
 
-        private static readonly List<TranslationContext> _contexts = new();
-
-        // Access a specific database context by its App.config Name
-        public static TranslationContext? Get(string opt) => _contexts.FirstOrDefault(ctx => ctx.Database.GetConnectionString()?.Contains(opt) == true);
-
-
-
-        public TranslationContext? this[string name]
-        {
-            get
-            {
-                _currentConfigure = name;
-                return _contexts.FirstOrDefault(ctx => ctx.Database.GetConnectionString()?.Contains(name) == true);
-            }
-        }
 
 
         protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
@@ -67,6 +55,8 @@ namespace DataLayer
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Ignore<System.Text.RegularExpressions.Capture>();
             modelBuilder.Ignore<System.Text.RegularExpressions.Match>();
             modelBuilder.Ignore<System.Text.RegularExpressions.Group>();
@@ -97,23 +87,20 @@ namespace DataLayer
 
         }
 
-        //private static string _currentString = "Data Source=:memory:";
-        private static string? _currentConfigure;
-        private bool _databaseChecked;
-
-        public static TranslationContext Current
+    }
+    public class WrapperInterceptor : IMaterializationInterceptor
+    {
+        public object InitializedInstance(MaterializationInterceptionData materializationData, object instance)
         {
-            get
+            // If it's one of our entities, wrap it in the Smart Proxy
+            if (instance is IEntity entity)
             {
-                if (_currentConfigure == null)
-                {
-                    throw new InvalidOperationException("Create a database with a configuration before using TranslationContext.Current");
-                }
-                return Get(_currentConfigure);
+                var serviceProvider = materializationData.Context.GetService<IServiceProvider>();
+                return Entity.Wrap(entity, serviceProvider);
             }
+            return instance;
         }
     }
-
     public partial class EntityMetadata
     {
         public static EntityMetadata<Entities.Answer> Answer => new EntityMetadata<Entities.Answer>();

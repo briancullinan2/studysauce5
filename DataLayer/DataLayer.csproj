@@ -9,6 +9,10 @@
 		<!-- changed based on what we are building for -->
 		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
 		<OutputPath>..\StudySauce\bin\$(Configuration)\$(RuntimeIdentifier)\</OutputPath>
+		<Platforms>AnyCPU</Platforms>
+		<PlatformTarget>AnyCPU</PlatformTarget>
+
+		<Prefer32Bit>false</Prefer32Bit>
 	</PropertyGroup>
 
 	<ItemGroup>

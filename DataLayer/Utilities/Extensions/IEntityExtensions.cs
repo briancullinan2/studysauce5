@@ -1,5 +1,6 @@
 ﻿using DataLayer.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System.Data;
 
 namespace DataLayer.Utilities.Extensions
@@ -14,8 +15,8 @@ namespace DataLayer.Utilities.Extensions
         {
             if (entity == null) throw new ArgumentNullException(nameof(entity));
 
-            var context = TranslationContext.Current;
-
+            using var scope = entity._service.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<TranslationContext>();
             var entry = context.Entry(entity);
 
             // If the entity isn't being tracked, we need to attach it first
@@ -31,7 +32,9 @@ namespace DataLayer.Utilities.Extensions
         public static void Save<T>(this T ent, bool? recurse = false) where T : class, IEntity<T>
         {
             // Start the Transaction
-            using (var transaction = TranslationContext.Current.Database.BeginTransaction())
+            using var scope = ent._service.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<TranslationContext>();
+            using (var transaction = context.Database.BeginTransaction())
             {
                 try
                 {
@@ -40,10 +43,10 @@ namespace DataLayer.Utilities.Extensions
                     //    throw new Exception("Invalid Facility Link");
 
                     // 2. Add the primary entity
-                    TranslationContext.Current.Set<T>().Add(ent);
+                    context.Set<T>().Add(ent);
 
                     // 3. Commit the changes
-                    TranslationContext.Current.SaveChanges();
+                    context.SaveChanges();
 
                     // 4. Finalize the transaction
                     transaction.Commit();
@@ -87,34 +90,10 @@ namespace DataLayer.Utilities.Extensions
             return cmd.ExecuteNonQuery();
         }
 
-        public static T AsSmart<T>(this T? x) where T : class, IEntity<T>, new()
-        {
-            // Logic to ensure returned entities are wrapped in your Proxy logic
-            return Entities.Entity<T>.Wrap(x) ?? Entities.Entity<T>.Create(new T());
-        }
-
-        public static IQueryable<T> AsSmart<T>(this DbSet<T> set) where T : class, IEntity<T>
-        {
-            // Logic to ensure returned entities are wrapped in your Proxy logic
-            return set.Select(x => Entities.Entity<T>.Wrap(x));
-        }
-
-        public static IEnumerable<T> AsSmart<T>(this IEnumerable<T> set) where T : class, IEntity<T>
-        {
-            // Logic to ensure returned entities are wrapped in your Proxy logic
-            return set.Select(x => Entities.Entity<T>.Wrap(x));
-        }
-
-        public static IQueryable<T> AsSmart<T>(this IQueryable<T> set) where T : class, IEntity<T>
-        {
-            // Logic to ensure returned entities are wrapped in your Proxy logic
-            return set.Select(x => Entities.Entity<T>.Wrap(x));
-        }
-
 
         public static T Wrap<T>(this T target) where T : class, IEntity<T>
         {
-            return T.Wrap(target);
+            return T.Wrap(target, target._service);
         }
 
 

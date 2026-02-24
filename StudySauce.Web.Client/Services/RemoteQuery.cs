@@ -10,6 +10,11 @@ namespace StudySauce.Web.Client.Services
     {
         private readonly HttpClient _httpClient;
 
+        public RemoteQuery()
+        {
+
+        }
+
         public RemoteQuery(HttpClient httpClient)
         {
             _httpClient = httpClient;
@@ -18,6 +23,7 @@ namespace StudySauce.Web.Client.Services
 
         public TResult Execute<TResult>(Expression query)
         {
+            Console.WriteLine("Executing: " + query.ToString());
             // This is exactly where you use your Expression Tree Converter
             var serialized = query.ToXDocument().ToString();
 
@@ -30,6 +36,7 @@ namespace StudySauce.Web.Client.Services
         // You must also implement ExecuteAsync for ToListAsync() support
         public TResult ExecuteAsync<TResult>(Expression query, CancellationToken cancellationToken = default)
         {
+            Console.WriteLine("Executing: " + query.ToString());
             // Same logic, but returning a Task/ValueTask
             return (TResult)typeof(RemoteQuery)
                 .GetMethod(nameof(ExecuteRemoteAsync))

@@ -81,6 +81,16 @@
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="10.0.0" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Remove="teardrop.ico" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="teardrop.ico">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	</ItemGroup>
+
     <ItemGroup>
     <PackageReference Include="EntityFramework" Version="6.5.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.3" />
@@ -99,20 +109,11 @@
     </ProjectReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="DataLayer">
-      <HintPath>bin\Debug\win-x64\DataLayer.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 	<Target Name="ForceMauiIconToCustomPath" AfterTargets="Resizetizer">
 		<ItemGroup>
 			<_GeneratedWinIcon Include="$(IntermediateOutputPath)resizetizer\r\teardrop.ico" />
 		</ItemGroup>
 
-		<Copy SourceFiles="@(_GeneratedWinIcon)"
-			  DestinationFolder="$(OutputPath)"
-			  Condition="Exists('%(_GeneratedWinIcon.Identity)')"
-			  SkipUnchangedFiles="true" />
+		<Copy SourceFiles="@(_GeneratedWinIcon)" DestinationFolder="$(OutputPath)" Condition="Exists('%(_GeneratedWinIcon.Identity)')" SkipUnchangedFiles="true" />
 	</Target>
 </Project>
