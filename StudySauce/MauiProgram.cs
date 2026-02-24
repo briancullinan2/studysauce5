@@ -3,6 +3,7 @@
 using Microsoft.Extensions.Logging;
 #endif
 #endif
+using DataLayer.Entities;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using StudySauce.Services;
@@ -10,9 +11,32 @@ using StudySauce.Shared.Services;
 
 namespace StudySauce
 {
+    public class KeepAlive : SqliteConnection
+    {
+        public KeepAlive(string conn) : base(conn)
+        {
+
+        }
+
+        public override void Close()
+        {
+
+        }
+
+        public override Task CloseAsync()
+        {
+            return Task.CompletedTask;
+        }
+        protected override void Dispose(bool disposing)
+        {
+
+        }
+    }
+
     public static class MauiProgram
     {
-        private static SqliteConnection _keepAliveConnection;
+        private static KeepAlive _keepAliveConnection;
+        private static Pack? _pack;
 #if WINDOWS
         public static Microsoft.AspNetCore.Builder.WebApplication? ServerInstance { get; set; }
 #endif
@@ -29,7 +53,7 @@ namespace StudySauce
 
             // Add device-specific services used by the StudySauce.Shared project
             builder.Services.AddSingleton<IFormFactor, FormFactor>();
-            _keepAliveConnection = new Microsoft.Data.Sqlite.SqliteConnection("Data Source=:memory:");
+            _keepAliveConnection = new KeepAlive("Data Source=:memory:");
             _keepAliveConnection.Open(); // The DB is born
             builder.Services.AddDbContext<DataLayer.TranslationContext>((serviceProvider, options) =>
             {
@@ -62,8 +86,10 @@ namespace StudySauce
                 var db = scope.ServiceProvider.GetRequiredService<DataLayer.TranslationContext>();
                 var conn = db.Database.GetDbConnection();
                 if (conn.State != System.Data.ConnectionState.Open) conn.Open();
-                db.Database.Migrate();
+                db.Database.EnsureCreated();
+                _pack = db.Packs.FirstOrDefault(p => p.Title == "something");
             }
+
 
             // 3. Return the built app
             return mauiApp;

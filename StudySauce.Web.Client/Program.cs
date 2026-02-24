@@ -33,7 +33,7 @@ using (var scope = app.Services.CreateScope())
     var db = scope.ServiceProvider.GetRequiredService<TranslationContext>();
     var conn = db.Database.GetDbConnection();
     if (conn.State != System.Data.ConnectionState.Open) conn.Open();
-    db.Database.Migrate();
+    db.Database.EnsureCreated();
 }
 
 localServer.Initialize(app, runtime, navigation);
