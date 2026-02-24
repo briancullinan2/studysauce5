@@ -7,6 +7,8 @@
         public static EntityMetadata Metadata => new EntityMetadata(typeof(EditCard));
         public DataLayer.Entities.Card? Card { get; set; }
 
+        [Category("Answers")]
+        public ICollection<Answer> Answers { get => Card.Answers; }
     }
 
     public class ViewCard
@@ -15,6 +17,8 @@
         [Category("Content")]
         [Display(Name = "Cards", GroupName = "Display", Description = "Card currently being viewed by the user")]
         public DataLayer.Entities.Card? Card { get; set; }
+        [Category("Answers")]
+        public ICollection<Answer> Answers { get => Card.Answers; }
     }
 
     [Parameter] public PropertyMetadata? Model { get; set; }

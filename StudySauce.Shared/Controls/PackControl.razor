@@ -5,6 +5,7 @@
     public class ViewPack
     {
         public static EntityMetadata Metadata => new EntityMetadata(typeof(ViewPack));
+        public DataLayer.Entities.Pack? Pack { get; set;  }
         [Category("Content")]
         [Display(Name = "Cards", GroupName = "Display", Description = "Set of card content to display to users")]
         public ICollection<Controls.CardsControl.ViewCard> Cards { get; set; } = new HashSet<Controls.CardsControl.ViewCard>();
@@ -14,6 +15,7 @@
     public class EditPack
     {
         public static EntityMetadata Metadata => new EntityMetadata(typeof(EditPack));
+        public DataLayer.Entities.Pack? Pack { get; set; }
 
     }
 

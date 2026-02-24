@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.RegularExpressions;
+
 
 namespace DataLayer.Entities
 {
@@ -18,11 +18,11 @@ namespace DataLayer.Entities
         public int? GroupId { get; set; }
 
         [ForeignKey(nameof(GroupId))]
-        public virtual Group? Group { get; set; }
+        public virtual Entities.Group? Group { get; set; }
 
         [Category("Ownership")]
         [Display(Name = "Created By", Description = "The user who created this pack")]
-        public int? UserId { get; set; }
+        public string? UserId { get; set; }
 
         [ForeignKey(nameof(UserId))]
         public virtual User? User { get; set; }

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataLayer.Entities
 {
-    [Table("Role")]
+    [Table("role")]
     public class Role : Entity<Role>
     {
         [Key]

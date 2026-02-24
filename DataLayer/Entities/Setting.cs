@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace DataLayer.Entities
 {
     [PrimaryKey(nameof(Name), nameof(Guid), nameof(Role))]
-    [Table("Setting")]
+    [Table("setting")]
     public class Setting : Entity<Setting>
     {
         public string Name { get; set; }

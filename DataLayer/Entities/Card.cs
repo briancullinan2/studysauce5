@@ -56,6 +56,7 @@ namespace DataLayer.Entities
 
         // Navigation for Anki-style responses and multiple choice answers
         //public virtual ICollection<Response> Responses { get; set; } = new HashSet<Response>();
+        [Category("Answers")]
         public virtual ICollection<Answer> Answers { get; set; } = new HashSet<Answer>();
     }
 }

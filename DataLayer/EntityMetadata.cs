@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -136,6 +137,7 @@ namespace DataLayer
         public AttributeValueIndexer<int?> MaxLength { get; private set; }
         public AttributeTypeIndexer Attributes { get; private set; }
         public Type EntityType { get; private set; }
+        public string? TableName { get; private set; }
 
 
         public EntityMetadata(Type entityType) : base()
@@ -152,6 +154,7 @@ namespace DataLayer
             Uncategorized = new ObservableCollection<PropertyMetadata>(AllProperties.Where(p => string.IsNullOrWhiteSpace(p.Category) && string.IsNullOrWhiteSpace(p.GroupName)));
 
             // Nested Indexers for the XAML [Brackets]
+            TableName = entityType.GetCustomAttributes().OfType<TableAttribute>().FirstOrDefault()?.Name ?? entityType.Name;
             Groups = new AttributeIndexer(AllProperties, p => p.GroupName);
             Categories = new AttributeIndexer(AllProperties, p => p.Category);
             Ungrouped = new AttributeIndexer(AllProperties.Where(p => string.IsNullOrWhiteSpace(p.GroupName)), p => p.Category);

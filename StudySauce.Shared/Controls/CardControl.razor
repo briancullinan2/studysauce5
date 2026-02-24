@@ -11,10 +11,11 @@
             return Model?.DeclaringType == typeof(CardsControl.EditCard) ? DataLayer.Customization.ControlMode.Edit : DataLayer.Customization.ControlMode.View;
         }
     }
+    private IEnumerable<PropertyMetadata>? AnswerLayout;
     private IEnumerable<PropertyMetadata>? CardLayout;
     protected override void OnInitialized()
     {
-        //CardLayout = CardsControl.ViewCard.Metadata.Categories["Content"]?.ToList();
+        AnswerLayout = CardsControl.ViewCard.Metadata.Categories["Answers"]?.ToList();
         // TODO: AnswerLayout
     }
 
@@ -30,7 +31,6 @@ This is a card
 else
 {
     <span>Viewing</span>
-    @*<MetadataControl TModel="PropertyMetadata" Model="@CardLayout"></MetadataControl>*@
 }
 
 
@@ -62,12 +62,7 @@ else
         }
         else if (Data?.Card?.ResponseType == DataLayer.Customization.CardType.Multiple) // Multiple Choice
         {
-            @foreach (var ans in Data?.Card?.Answers ?? [])
-            {
-                <button class="preview-response" @onclick="() => HandleAnswer(ans.Value)">
-                    @ans.Content
-                </button>
-            }
+            <MetadataControl TModel="PropertyMetadata" Model="@AnswerLayout"></MetadataControl>
         }
     </div>
     <div class="preview-count">@CurrentIndex of @TotalCards</div>

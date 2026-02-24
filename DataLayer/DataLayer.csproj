@@ -4,6 +4,11 @@
 		<TargetFramework>net10.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+		<!-- changed based on what we are building for -->
+		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+		<OutputPath>..\StudySauce\bin\$(Configuration)\$(RuntimeIdentifier)\</OutputPath>
 	</PropertyGroup>
 
 	<ItemGroup>

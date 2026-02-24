@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataLayer.Entities
 {
-    [Table("User")]
+    [Table("user")]
     public class User : Entity<User>
     {
         [Key]

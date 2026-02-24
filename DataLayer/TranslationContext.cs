@@ -1,6 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Collections.Concurrent;
-using System.Data;
 
 namespace DataLayer
 {
@@ -12,22 +10,17 @@ namespace DataLayer
         public DbSet<DataLayer.Entities.User> Users { get; set; }
         public DbSet<DataLayer.Entities.Setting> Settings { get; set; }
         public DbSet<DataLayer.Entities.Message> Messages { get; set; }
+        public DbSet<DataLayer.Entities.Pack> Packs { get; set; }
+        public DbSet<DataLayer.Entities.Card> Cards { get; set; }
+        public DbSet<DataLayer.Entities.Answer> Answers { get; set; }
+        public DbSet<DataLayer.Entities.Group> Groups { get; set; }
+        public DbSet<DataLayer.Entities.File> Files { get; set; }
+
         // Add other entities here...
 
-        public TranslationContext(Func<DbContextOptionsBuilder, string>? configure) : base()
+        public TranslationContext(DbContextOptions<TranslationContext> ctx) : base(ctx)
         {
-            if (configure == null)
-            {
-                throw new NotSupportedException();
-            }
-            _currentConfigure = _configure = configure;
 
-
-            var conn = this.Database.GetDbConnection();
-            if (conn.State != ConnectionState.Open) conn.Open();
-
-            this.Database.EnsureCreated();
-            //this.Database.Migrate();
         }
 
         public string ConnectString
@@ -40,18 +33,14 @@ namespace DataLayer
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            if (_configure == null)
-            {
-                throw new NotSupportedException();
-            }
-            var connection = _configure.Invoke(options);
-            _contexts.TryAdd(connection, this);
+            _contexts.Add(this);
+
         }
 
-        private static readonly ConcurrentDictionary<string, TranslationContext> _contexts = new ConcurrentDictionary<string, TranslationContext>();
+        private static readonly List<TranslationContext> _contexts = new();
 
         // Access a specific database context by its App.config Name
-        public static TranslationContext Get(Func<DbContextOptionsBuilder?, string> opt) => _contexts.GetOrAdd(opt(null), (key) => new TranslationContext(opt));
+        public static TranslationContext? Get(string opt) => _contexts.FirstOrDefault(ctx => ctx.Database.GetConnectionString()?.Contains(opt) == true);
 
 
 
@@ -59,22 +48,16 @@ namespace DataLayer
         {
             get
             {
-                return _contexts.Values.FirstOrDefault(ctx => ctx.Database.GetConnectionString()?.Contains(name) == true);
+                _currentConfigure = name;
+                return _contexts.FirstOrDefault(ctx => ctx.Database.GetConnectionString()?.Contains(name) == true);
             }
         }
 
-        public TranslationContext this[Func<DbContextOptionsBuilder?, string> opt]
-        {
-            get
-            {
-                _currentConfigure = opt;
-                return _contexts.GetOrAdd(opt(null), (key) => new TranslationContext(opt));
-            }
-        }
 
         protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
         {
             // This makes the conversion "implicit" for the database layer globally.
+            configurationBuilder.Properties<Customization.DisplayType>().HaveConversion<int>();
             configurationBuilder.Properties<Customization.ControlMode>().HaveConversion<int>();
             configurationBuilder.Properties<Customization.Gender>().HaveConversion<int>();
             configurationBuilder.Properties<Customization.PackMode>().HaveConversion<int>();
@@ -84,12 +67,21 @@ namespace DataLayer
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Ignore<System.Text.RegularExpressions.Capture>();
+            modelBuilder.Ignore<System.Text.RegularExpressions.Match>();
+            modelBuilder.Ignore<System.Text.RegularExpressions.Group>();
+
             // Explicitly map the Message entity to the "Message" table
-            modelBuilder.Entity<Entities.Message>().ToTable("Message");
-            modelBuilder.Entity<Entities.Permission>().ToTable("Permission");
-            modelBuilder.Entity<Entities.Role>().ToTable("Role");
-            modelBuilder.Entity<Entities.Setting>().ToTable("User");
-            modelBuilder.Entity<Entities.User>().ToTable("User");
+            modelBuilder.Entity<Entities.Message>().ToTable(EntityMetadata.Message.TableName);
+            modelBuilder.Entity<Entities.Permission>().ToTable(EntityMetadata.Permission.TableName);
+            modelBuilder.Entity<Entities.Role>().ToTable(EntityMetadata.Role.TableName);
+            modelBuilder.Entity<Entities.Setting>().ToTable(EntityMetadata.Setting.TableName);
+            modelBuilder.Entity<Entities.User>().ToTable(EntityMetadata.User.TableName);
+            modelBuilder.Entity<Entities.Card>().ToTable(EntityMetadata.Card.TableName);
+            modelBuilder.Entity<Entities.Pack>().ToTable(EntityMetadata.Pack.TableName);
+            modelBuilder.Entity<Entities.Answer>().ToTable(EntityMetadata.Answer.TableName);
+            modelBuilder.Entity<Entities.Group>().ToTable(EntityMetadata.Group.TableName);
+            modelBuilder.Entity<Entities.File>().ToTable(EntityMetadata.File.TableName);
 
             /*
             modelBuilder.Entity<User>()
@@ -106,9 +98,20 @@ namespace DataLayer
         }
 
         //private static string _currentString = "Data Source=:memory:";
-        private static Func<DbContextOptionsBuilder, string>? _currentConfigure;
-        private Func<DbContextOptionsBuilder, string> _configure;
-        public static TranslationContext Current => Get(_currentConfigure);
+        private static string? _currentConfigure;
+        private bool _databaseChecked;
+
+        public static TranslationContext Current
+        {
+            get
+            {
+                if (_currentConfigure == null)
+                {
+                    throw new InvalidOperationException("Create a database with a configuration before using TranslationContext.Current");
+                }
+                return Get(_currentConfigure);
+            }
+        }
     }
 
     public partial class EntityMetadata
@@ -121,6 +124,8 @@ namespace DataLayer
         public static EntityMetadata<Entities.Role> Role => new EntityMetadata<Entities.Role>();
         public static EntityMetadata<Entities.Setting> Setting => new EntityMetadata<Entities.Setting>();
         public static EntityMetadata<Entities.Message> Message => new EntityMetadata<Entities.Message>();
+        public static EntityMetadata<Entities.File> File => new EntityMetadata<Entities.File>();
+        public static EntityMetadata<Entities.Group> Group => new EntityMetadata<Entities.Group>();
 
     }
 }

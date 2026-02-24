@@ -1,6 +1,4 @@
-﻿using DataLayer.Entities;
-
-namespace StudySauce.Shared.Pages.Course
+﻿namespace StudySauce.Shared.Pages.Course
 {
     public class Interleaving : DataLayer.Generators.IGenerator<DataLayer.Entities.Card>
     {

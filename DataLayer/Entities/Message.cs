@@ -1,9 +1,8 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataLayer.Entities
 {
-    [Table("Message")]
+    [Table("message")]
     public class Message : Entity<Message>
     {
         public string Title { get; set; }

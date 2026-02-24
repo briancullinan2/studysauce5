@@ -67,7 +67,7 @@ namespace StudySauce.WinUI
             var localServer = (LocalServer)webApp.Services.GetRequiredService<ILocalServer>();
             localServer.Initialize(webApp);
 
-            //MauiProgram.ServerInstance = webApp;
+            MauiProgram.ServerInstance = webApp;
 
             //webApp.MapGet("/api/status", () => new { Status = "Online", Machine = Environment.MachineName });
 

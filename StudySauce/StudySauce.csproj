@@ -20,7 +20,7 @@
     <EnableDefaultCssItems>false</EnableDefaultCssItems>
     <Nullable>enable</Nullable>
 
-    <!-- Enable XAML source generation for faster build times and improved performance.
+	  <!-- Enable XAML source generation for faster build times and improved performance.
          This generates C# code from XAML at compile time instead of runtime inflation.
          To disable, remove this line.
          For individual files, you can override by setting Inflator metadata:
@@ -46,12 +46,14 @@
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">24.0</SupportedOSPlatformVersion>
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
     <TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
-  </PropertyGroup>
 
-	<PropertyGroup>
-		<RequiresAspNetWebAssets>true</RequiresAspNetWebAssets>
+	  <RequiresAspNetWebAssets>true</RequiresAspNetWebAssets>
 		<DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN</DefineConstants>
-	</PropertyGroup>
+	  <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+	  <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+	  <RuntimeIdentifier Condition="$(TargetFramework.Contains('-windows'))">win-x64</RuntimeIdentifier>
+	  <OutputPath>.\bin\$(Configuration)\$(RuntimeIdentifier)\</OutputPath>
+  </PropertyGroup>
 	
   <ItemGroup>
     <!-- App Icon -->
@@ -75,17 +77,20 @@
     <Content Remove="wwwroot\_framework\blazor.web.js.gz" />
   </ItemGroup>
 
-  <ItemGroup>
+	<ItemGroup Condition="$(TargetFramework.Contains('-windows'))">
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="10.0.0" />
+	</ItemGroup>
+
+    <ItemGroup>
+    <PackageReference Include="EntityFramework" Version="6.5.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.3" />
     <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Maui" Version="$(MauiVersion)" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0" />
-	  <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="10.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DataLayer\DataLayer.csproj">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </ProjectReference>
+    <ProjectReference Include="..\DataLayer\DataLayer.csproj" />
     <ProjectReference Include="..\StudySauce.Shared\StudySauce.Shared.csproj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </ProjectReference>
@@ -96,8 +101,18 @@
 
   <ItemGroup>
     <Reference Include="DataLayer">
-      <HintPath>bin\Debug\net10.0-windows10.0.19041.0\win-x64\DataLayer.dll</HintPath>
+      <HintPath>bin\Debug\win-x64\DataLayer.dll</HintPath>
     </Reference>
   </ItemGroup>
 
+	<Target Name="ForceMauiIconToCustomPath" AfterTargets="Resizetizer">
+		<ItemGroup>
+			<_GeneratedWinIcon Include="$(IntermediateOutputPath)resizetizer\r\teardrop.ico" />
+		</ItemGroup>
+
+		<Copy SourceFiles="@(_GeneratedWinIcon)"
+			  DestinationFolder="$(OutputPath)"
+			  Condition="Exists('%(_GeneratedWinIcon.Identity)')"
+			  SkipUnchangedFiles="true" />
+	</Target>
 </Project>

@@ -1,0 +1,24 @@
+@using System.ComponentModel.DataAnnotations
+@using System.ComponentModel
+@code
+{
+    [Parameter] public IEnumerable<DataLayer.Entities.Answer>? Data { get; set; }
+    [Parameter] public PropertyMetadata? Model { get; set; }
+    [Parameter] public EventCallback<object> ValueChanged { get; set; }
+    public DataLayer.Customization.ControlMode Mode
+    {
+        get
+        {
+            // TODO: declaring type
+            return DataLayer.Customization.ControlMode.View;
+        }
+    }
+    private IEnumerable<PropertyMetadata>? CardLayout;
+    protected override void OnInitialized()
+    {
+    }
+
+}
+
+This is a list of answers
+@* TODO: repeat all controls of CardControl for every card in new Data property *@
