@@ -2,7 +2,8 @@
 
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-logo">
-        <img width="48" height="48" src="_content/StudySauce.Shared/logo_4_trans_2.png" alt="LOGO" /> <a class="navbar-brand" href="">StudySauce</a>
+        <img width="48" height="48" @onclick="() => Layout?.SetStudyMode(_studyMode = !Layout.Study)" src="_content/StudySauce.Shared/logo_4_trans_2.png" alt="LOGO" />
+        <a class="navbar-brand" href="">Study Sauce</a>
     </div>
 </div>
 
@@ -12,7 +13,7 @@
     <nav class="nav flex-column">
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+                <span class="bi bi-house-door-fill" aria-hidden="true"></span> Home
             </NavLink>
         </div>
 
@@ -37,12 +38,15 @@
 </div>
 
 @code {
+    [CascadingParameter] public MainLayout? Layout { get; set; }
+    public bool _studyMode = false;
+
     private void HandleClick(INavMenuItem item)
     {
         var currentUrl = Nav.ToBaseRelativePath(Nav.Uri);
         bool isOnTargetPage = string.Equals(currentUrl, item.Href.Trim('/'), StringComparison.InvariantCultureIgnoreCase);
 
-        if(item.Children.Count() == 0)
+        if(item.Children.Count() == 0 || _studyMode)
         {
             Nav.NavigateTo(item.Href);
         }

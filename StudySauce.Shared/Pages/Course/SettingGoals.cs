@@ -10,7 +10,6 @@ namespace StudySauce.Shared.Pages.Course
             return [
                 new Card
                 {
-                    PackId = 1, // Setting Goals Pack
                     Content = "How much more likely are you to perform at a higher level if you set specific and challenging goals?",
                     ResponseType = CardType.Multiple,
                     Answers = new List<Answer>
@@ -23,7 +22,6 @@ namespace StudySauce.Shared.Pages.Course
                 },
                 new Card
                 {
-                    PackId = 1,
                     Content = "What does the SMART acronym stand for?",
                     ResponseType = CardType.Short,
                     Answers = new List<Answer>
@@ -37,7 +35,6 @@ namespace StudySauce.Shared.Pages.Course
                 },
                 new Card
                 {
-                    PackId = 1,
                     Content = "What are the two types of motivation?",
                     ResponseType = CardType.Short,
                     Answers = new List<Answer>

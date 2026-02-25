@@ -1,16 +1,8 @@
 ﻿.auto-form-container {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding: 20px;
+
 }
 
 .form-field {
-    display: grid;
-    /* Label takes 150px, Input takes the rest */
-    grid-template-columns: 150px 1fr;
-    align-items: center;
-    gap: 15px;
 }
 
     .form-field label {

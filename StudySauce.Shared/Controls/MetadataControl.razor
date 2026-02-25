@@ -1,7 +1,7 @@
 @using System.Reflection
 @typeparam TModel
 
-<div class="auto-form-container">
+<div class="@containerClass auto-form-container">
     @if (_parameterCache != null)
     {
         @foreach (var entry in _parameterCache)
@@ -31,6 +31,7 @@
 @code {
     [Parameter] public IEnumerable<PropertyMetadata>? Model { get; set; }
     [Parameter] public IEnumerable<TModel>? Data { get; set; }
+    string? containerClass;
 
     private List<(PropertyMetadata Metadata, Dictionary<string, object?> Params)>? _parameterCache;
 
@@ -75,6 +76,27 @@
                     { "ValueChanged", EventCallback.Factory.Create<object>(this, (val) => {})}
                 }
             )).ToList();
+        }
+
+        var modelType = typeof(TModel);
+
+        // Check if it's a generic collection or an array (excluding string)
+        bool isEnumerable = modelType != typeof(string) &&
+                           (modelType.IsArray ||
+                            modelType.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEnumerable<>)));
+
+        if (isEnumerable)
+        {
+            // Get the inner type name, e.g., List<User> -> "User-list"
+            var innerType = modelType.IsArray
+                ? modelType.GetElementType()
+                : modelType.GetGenericArguments().FirstOrDefault();
+
+            containerClass = $"{(innerType?.Name ?? "enumerable").ToSafe()}-list-container";
+        }
+        else
+        {
+            containerClass = $"{modelType.Name.ToSafe()}-form-container";
         }
     }
 }

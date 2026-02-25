@@ -10,8 +10,7 @@ namespace StudySauce.Shared.Pages.Course
             return [
                new Card
                {
-                    PackId = 1,
-                    Content = "What is active reading?",
+                                        Content = "What is active reading?",
                     ResponseType = CardType.Short,
                     Answers = new List<Answer>
                     {
@@ -25,8 +24,7 @@ namespace StudySauce.Shared.Pages.Course
                 },
                 new Card
                 {
-                    PackId = 1,
-                    Content = "Highlighting and underlining is an effective tool for active reading.",
+                                        Content = "Highlighting and underlining is an effective tool for active reading.",
                     ResponseType = CardType.Multiple,
                     Answers = new List<Answer>
                     {
@@ -36,8 +34,7 @@ namespace StudySauce.Shared.Pages.Course
                 },
                 new Card
                 {
-                    PackId = 1,
-                    Content = "Skimming through the reading is an effective tool for active reading.",
+                                        Content = "Skimming through the reading is an effective tool for active reading.",
                     ResponseType = CardType.Multiple,
                     Answers = new List<Answer>
                     {
@@ -47,8 +44,7 @@ namespace StudySauce.Shared.Pages.Course
                 },
                 new Card
                 {
-                    PackId = 1,
-                    Content = "Self-explanation is an effective tool for active reading",
+                                        Content = "Self-explanation is an effective tool for active reading",
                     ResponseType = CardType.Multiple,
                     Answers = new List<Answer>
                     {

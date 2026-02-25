@@ -15,7 +15,7 @@ namespace StudySauce.WinUI
     /// </summary>
     public partial class App : MauiWinUIApplication
     {
-        private static KeepAlive _keepAlive;
+        private static KeepAlive? _keepAlive;
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -53,6 +53,9 @@ namespace StudySauce.WinUI
 
             // Add device-specific services used by the StudySauce.Shared project
             webBuilder.Services.AddSingleton<IFormFactor, FormFactor>();
+            webBuilder.Services.AddSingleton<ITitleService, TitleTrackerService>();
+            // FUCK DI
+            TitleService._setTitle = SetTitle;
             webBuilder.Services.AddSingleton<ILocalServer, LocalServer>();
             _keepAlive = new KeepAlive("Data Source=:memory:");
             _keepAlive.Open();
@@ -93,6 +96,9 @@ namespace StudySauce.WinUI
             if (webApp.Environment.IsDevelopment())
             {
                 webApp.UseWebAssemblyDebugging();
+                // Add this to allow the browser to receive "File Changed" signals
+                //webApp.UseMigrationsEndPoint();
+                //webApp.UseDeveloperExceptionPage();
             }
             else
             {
@@ -159,24 +165,31 @@ namespace StudySauce.WinUI
                 new App();
             });
         }
+        private static Microsoft.UI.Xaml.Window? _nativeWindow;
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
             base.OnLaunched(args);
 
             // Get the handle from the first window in the MAUI application
-            var mauiWindow = Microsoft.Maui.Controls.Application.Current.Windows[0];
-            var nativeWindow = mauiWindow.Handler.PlatformView as Microsoft.UI.Xaml.Window;
+            var mauiWindow = Microsoft.Maui.Controls.Application.Current?.Windows[0];
+            _nativeWindow = mauiWindow?.Handler.PlatformView as Microsoft.UI.Xaml.Window;
 
-            if (nativeWindow != null)
+            if (_nativeWindow != null)
             {
-                var handle = WinRT.Interop.WindowNative.GetWindowHandle(nativeWindow);
+                var handle = WinRT.Interop.WindowNative.GetWindowHandle(_nativeWindow);
                 var windowId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(handle);
-                var appWindow = Microsoft.UI.Windowing.AppWindow.GetFromWindowId(windowId);
+                var _appWindow = Microsoft.UI.Windowing.AppWindow.GetFromWindowId(windowId);
 
                 // This path looks in your bin output folder for the icon
                 // Ensure "appicon.ico" is actually being copied there by our MSBuild target
-                appWindow.SetIcon("teardrop.ico");
+                _appWindow.SetIcon("teardrop.ico");
             }
+        }
+
+        internal static void SetTitle(string? title)
+        {
+            StudySauce.App.Current?.Windows.FirstOrDefault()?.Title = title;
+            _nativeWindow?.Title = title;
         }
     }
 }

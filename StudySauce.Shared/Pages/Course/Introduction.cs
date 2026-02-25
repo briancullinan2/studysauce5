@@ -10,8 +10,7 @@ namespace StudySauce.Shared.Pages.Course
             return [
                 new Card
                 {
-                    PackId = 1, // Introduction Pack
-                    Content = "What grade are you in?",
+                                        Content = "What grade are you in?",
                     ResponseType = CardType.Multiple,
                     Answers = new List<Answer>
                     {
@@ -25,8 +24,7 @@ namespace StudySauce.Shared.Pages.Course
                 },
                 new Card
                 {
-                    PackId = 1,
-                    Content = "Which do you agree with more regarding academic ability?",
+                                        Content = "Which do you agree with more regarding academic ability?",
                     ResponseType = CardType.Multiple,
                     Answers = new List<Answer>
                     {
@@ -36,8 +34,7 @@ namespace StudySauce.Shared.Pages.Course
                 },
                 new Card
                 {
-                    PackId = 1,
-                    Content = "How do you manage your time studying for exams?",
+                                        Content = "How do you manage your time studying for exams?",
                     ResponseType = CardType.Multiple,
                     Answers = new List<Answer>
                     {
@@ -48,8 +45,7 @@ namespace StudySauce.Shared.Pages.Course
                 },
                 new Card
                 {
-                    PackId = 1,
-                    Content = "How do you manage your electronic devices when you study?",
+                                        Content = "How do you manage your electronic devices when you study?",
                     ResponseType = CardType.Multiple,
                     Answers = new List<Answer>
                     {
@@ -59,8 +55,7 @@ namespace StudySauce.Shared.Pages.Course
                 },
                 new Card
                 {
-                    PackId = 1,
-                    Content = "How much do you study per day?",
+                                        Content = "How much do you study per day?",
                     ResponseType = CardType.Multiple,
                     Answers = new List<Answer>
                     {

@@ -19,6 +19,14 @@ namespace DataLayer.Entities
 
         [ForeignKey(nameof(GroupId))]
         public virtual Entities.Group? Group { get; set; }
+        // Add these to your existing Pack class:
+
+        [Category("Structure")]
+        [Display(Name = "Parent Course", Description = "The course this pack belongs to")]
+        public int? CourseId { get; set; }
+
+        [ForeignKey(nameof(CourseId))]
+        public virtual Course? Course { get; set; }
 
         [Category("Ownership")]
         [Display(Name = "Created By", Description = "The user who created this pack")]

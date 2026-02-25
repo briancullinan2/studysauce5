@@ -3,6 +3,11 @@
     height: 400px;
 }
 
+.course-container {
+    margin: auto;
+    max-width: 800px;
+}
+
 .flash-card {
     background: white;
     border-radius: 15px;
@@ -11,6 +16,16 @@
     transition: all 0.5s ease-in-out;
 }
 
+
+
+::deep .preview-wrong,
+::deep .preview-right {
+    padding: 12px;
+    background: lightgreen;
+}
+::deep .preview-wrong {
+    background: red;
+}
 .animate-in {
     animation: slideUp 0.4s forwards;
 }

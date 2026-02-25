@@ -7,14 +7,17 @@
 @page "/course/{Level:int}/{Lesson}/Reward"
 @inject NavigationManager Nav
 @inject TranslationContext Context
+@inject ITitleService TitleService
 @using StudySauce.Shared.Controls
 @using Microsoft.EntityFrameworkCore
+@using StudySauce.Shared.Services
 
 @code
 {
 
     private PackControl.ViewPack? CurrentQuiz;
     private IEnumerable<PropertyMetadata>? PackLayout;
+    private List<DataLayer.Entities.Response> Responses = new();
 
 }
 
@@ -52,8 +55,11 @@
                         break;
                     case StepMode.Quiz:
                         <div class="flash-card animate-in">
-                            <MetadataControl TModel="PackControl.ViewPack" Model="@PackLayout"></MetadataControl>
-                            <button @onclick="() => Next(StepMode.Reward)">Submit Answers</button>
+                            <MetadataControl TModel="PackControl.ViewPack" Model="@PackLayout" Data="@([CurrentQuiz])"></MetadataControl>
+                            @if (Responses.Count() == CardCount)
+                            {
+                                <button @onclick="() => Next(StepMode.Reward)">See Reward</button>
+                            }
                         </div>
                         break;
                     case StepMode.Reward:
@@ -80,6 +86,7 @@
     [Parameter] public int? Level { get; set; }
     [Parameter] public string? Lesson { get; set; }
     public StepMode Step { get; set; } = StepMode.Intro;
+    public int CardCount { get; set; } = 0;
 
     public ICourseMenuItem? ActiveItem { get; set; }
     public enum StepMode { Intro, Video, Quiz, Reward, Investment }
@@ -96,6 +103,7 @@
         {
             // If this fails, the catch block handles it gracefully
             // instead of blowing up the RenderTreeBuilder
+            //CardCount = await CurrentQuiz.Cards.CountAsync<int>();
             var result = await Context.Packs.CountAsync();
             Console.WriteLine("Pack count: " + result);
         }
@@ -134,7 +142,8 @@
         }
         Layout?.Tag = ActiveItem;
 
-        Layout?.SetHeaderTitle(builder => builder.AddContent(0, ActiveItem?.Title + " - " + Step.ToString()));
+        TitleService.UpdateTitle(ActiveItem?.Title + " - " + Step.ToString());
+        //Layout?.SetHeaderTitle(builder => builder.AddContent(0, ActiveItem?.Title + " - " + Step.ToString()));
 
         Layout?.SetHeaderMenu(@<StudySauce.Shared.Pages.Shared.Course Step="@((int)Step)" Level="@Level" Lesson="@Lesson" />);
     

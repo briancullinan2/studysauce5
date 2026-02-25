@@ -11,6 +11,7 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 // Add device-specific services used by the StudySauce.Shared project
 builder.Services.AddSingleton<IFormFactor, FormFactor>();
 builder.Services.AddSingleton<ILocalServer, LocalServer>();
+builder.Services.AddSingleton<ITitleService, TitleService>();
 builder.Services.AddScoped<HttpClient>(sp => new HttpClient
 {
     BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
@@ -23,6 +24,7 @@ builder.Services.AddDbContext<TranslationContext>((sp, options) =>
 });
 
 var app = builder.Build();
+// FUCK DI
 RemoteQuery._service = app.Services;
 
 var runtime = app.Services.GetRequiredService<IJSRuntime>();

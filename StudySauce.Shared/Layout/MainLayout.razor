@@ -1,13 +1,15 @@
 ﻿@using StudySauce.Shared.Services
+@inject ITitleService TitleService
 @inherits LayoutComponentBase
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+<div class="@(Study ? "study-mode" : "") page">
+    <CascadingValue Value="this">
+        <div class="sidebar">
+            <NavMenu />
+        </div>
 
-    <main>
-        <header class="top-row px-4">
+        <main>
+            <header class="top-row px-4">
             @if (HeaderTitle != null)
             {
                 <h2>@HeaderTitle</h2>            
@@ -23,23 +25,22 @@
             {
                 <span>&nbsp;</span>
             }
-            <NavLink class="header-link" href="@(NavigationExtensions.GetUri<Pages.Course.Course>(c => new() {Level = 1}))" Match="NavLinkMatch.All">
+            <NavLink class="header-link" href="@(NavigationExtensions.GetUri<Pages.Landing.About>())" Match="NavLinkMatch.All">
                 <i class="bi bi-info-circle" aria-hidden="true"></i>
                 <span class="header-text">About</span>
             </NavLink>
 
-        </header>
+            </header>
 
-        <article class="content px-4">
-            @* We pass the Layout instance to the Body so pages can set the HeaderMenu *@
-            <CascadingValue Value="this">
+            <article class="content px-4">
+                @* We pass the Layout instance to the Body so pages can set the HeaderMenu *@
                 @Body
-            </CascadingValue>
-        </article>
+            </article>
 
 
         @* Connected to @server.BaseUrl *@
-    </main>
+        </main>
+    </CascadingValue>
 
 </div>
 
@@ -51,25 +52,52 @@
 
 @code {
     public RenderFragment? HeaderMenu { get; private set; }
-    public RenderFragment? HeaderTitle { get; private set; }
+    public string? HeaderTitle { get; private set; }
     public object? Tag { get; set; } // for comparing states for implementers
+    public bool Study { get; set; } = false;
+    
+    protected override void OnInitialized()
+    {
+        // Subscribe to the push event
+        TitleService.OnTitleChanged += SetHeaderTitle;
+    }
+
+    public void SetStudyMode(bool study)
+    {
+        Study = study;
+        this.StateHasChanged();
+    }
 
     public void SetHeaderMenu(RenderFragment? menu)
     {
-        HeaderMenu = menu;
-        StateHasChanged(); // Force layout to re-render when a page sets the menu
+        if (menu != HeaderMenu)
+        {
+            HeaderMenu = menu;
+            StateHasChanged(); // Force layout to re-render when a page sets the menu
+        }
     }
 
-    public void SetHeaderTitle(RenderFragment? title)
+    private void SetHeaderTitle(string? title)
     {
-        HeaderTitle = title;
-        StateHasChanged(); // Force layout to re-render when a page sets the menu
+        if (HeaderTitle != title)
+        {
+            HeaderTitle = title;
+            StateHasChanged(); // Force layout to re-render when a page sets the menu
+        }
     }
+
     protected override void OnParametersSet()
     {
         // This runs every time the @Body content changes
         SetHeaderMenu(null);
-        SetHeaderTitle(null);
+        //SetHeaderTitle(null);
+        TitleService.UpdateTitle(null);
         Tag = null;
+    }
+
+    public void Dispose()
+    {
+        // Unsubscribe to prevent memory leaks
+        TitleService.OnTitleChanged -= SetHeaderTitle;
     }
 }
