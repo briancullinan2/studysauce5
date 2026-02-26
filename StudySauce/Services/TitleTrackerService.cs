@@ -27,7 +27,7 @@ namespace StudySauce.Services
             {
                 _title = title + " - " + _appName;
             }
-            OnTitleChanged?.Invoke(_title);
+            OnTitleChanged?.Invoke(title);
         }
 
     }

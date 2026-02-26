@@ -20,28 +20,31 @@
     </div>
 
     <main>
-        <header class="top-row px-4">
-        @if (HeaderTitle != null)
+        @if (ShowHeader != false)
         {
-            <h2>@HeaderTitle</h2>            
-        }
-        @* This is where the contextual menu will appear *@
-        @if (HeaderMenu != null)
-        {
-            <div class="contextual-menu">
-                @HeaderMenu
-            </div>
-        }
-        @if(HeaderMenu == null && HeaderTitle == null)
-        {
-            <span>&nbsp;</span>
-        }
-        <NavLink class="header-link" href="@(NavigationExtensions.GetUri<Pages.Landing.About>())" Match="NavLinkMatch.All">
-            <i class="bi bi-info-circle" aria-hidden="true"></i>
-            <span class="header-text">About</span>
-        </NavLink>
+            <header class="top-row px-4">
+                @if (HeaderTitle != null)
+                {
+                    <h2>@HeaderTitle</h2>            
+                }
+                @* This is where the contextual menu will appear *@
+                @if (HeaderMenu != null)
+                {
+                    <div class="contextual-menu">
+                        @HeaderMenu
+                    </div>
+                }
+                @if (HeaderMenu == null && HeaderTitle == null)
+                {
+                    <span>&nbsp;</span>
+                }
+                <NavLink class="header-link" href="@(NavigationExtensions.GetUri<Pages.Landing.About>())" Match="NavLinkMatch.All">
+                    <i class="bi bi-info-circle" aria-hidden="true"></i>
+                    <span class="header-text">About</span>
+                </NavLink>
 
-        </header>
+            </header>
+        }
 
         <article class="content px-4">
             @* We pass the Layout instance to the Body so pages can set the HeaderMenu *@
@@ -66,10 +69,11 @@
     //public object? Tag { get; set; } // for comparing states for implementers
     public bool? Study { get; set; }
     public string? PageClass { get; set; }
+    public bool? ShowHeader { get; set; }
 
     /*
      * This is so fucking dumb this isn't more obvious like Nav.GetComponent(route);
-     * what the fuck is microsoft thinking?
+     * what the fuck is Microsoft thinking?
     public Type? GetPageTypeFromUrl(string url)
     {
         // 1. Get the relative path
@@ -104,8 +108,9 @@
     {
         // Subscribe to the push event
         Nav.LocationChanged += OnLocationChanged;
-        TitleService.OnTitleChanged += SetHeaderTitle;
+        TitleService.OnTitleChanged += SetTitle;
         MenuService.OnMenuChanged += SetHeaderMenu;
+        MenuService.OnHeaderChanged += SetHeader;
         StudyService.OnStudyChanged += SetStudyMode;
         SetPageClass();
     }
@@ -119,21 +124,38 @@
         }
     }
 
+    private void SetHeader(bool? show)
+    {
+        if (show != ShowHeader)
+        {
+            ShowHeader = show;
+            this.StateHasChanged();
+        }
+    }
+
     private void SetHeaderMenu(RenderFragment? menu)
     {
         if (menu != HeaderMenu)
         {
+            if (menu != null)
+            {
+                MenuService.SetHeader(true);
+            }
             HeaderMenu = menu;
             this.StateHasChanged(); 
         }
     }
 
-    private void SetHeaderTitle(string? title)
+    private void SetTitle(string? title)
     {
         if (HeaderTitle != title)
         {
+            //if(title != null)
+            //{
+            //    MenuService.SetHeader(true);
+            //}
             HeaderTitle = title;
-            this.StateHasChanged(); 
+            this.StateHasChanged();
         }
     }
 
@@ -150,9 +172,11 @@
     public void Dispose()
     {
         // Unsubscribe to prevent memory leaks
-        TitleService.OnTitleChanged -= SetHeaderTitle;
+        Nav.LocationChanged -= OnLocationChanged;
+        TitleService.OnTitleChanged -= SetTitle;
         MenuService.OnMenuChanged -= SetHeaderMenu;
         StudyService.OnStudyChanged -= SetStudyMode;
+        MenuService.OnHeaderChanged -= SetHeader;
     }
 
     /*

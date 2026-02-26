@@ -6,6 +6,8 @@ namespace StudySauce.Shared.Services
     {
         Task SetMenu(RenderFragment? menu);
         event Action<RenderFragment?>? OnMenuChanged;
+        Task SetHeader(bool? show);
+        event Action<bool?>? OnHeaderChanged;
     }
 
     public class MenuService : IMenuService
@@ -16,6 +18,13 @@ namespace StudySauce.Shared.Services
         public async Task SetMenu(RenderFragment? menu)
         {
             OnMenuChanged?.Invoke(menu);
+        }
+
+        public event Action<bool?>? OnHeaderChanged;
+
+        public async Task SetHeader(bool? show)
+        {
+            OnHeaderChanged?.Invoke(show);
         }
     }
 }

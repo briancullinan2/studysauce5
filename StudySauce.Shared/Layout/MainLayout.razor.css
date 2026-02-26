@@ -93,6 +93,7 @@
     background-size: 400% 400%;
     /* The "Subtle" part: slow duration (15s+) */
     animation: waveMovement 18s ease infinite;
+    overflow:hidden;
 }
 
 @keyframes waveMovement {

@@ -175,15 +175,20 @@ namespace StudySauce.WinUI
             base.OnLaunched(args);
 
             // Get the handle from the first window in the MAUI application
-            var mauiWindow = Microsoft.Maui.Controls.Application.Current.Windows[0];
-            var nativeWindow = mauiWindow.Handler.PlatformView as Microsoft.UI.Xaml.Window;
+            var mauiWindow = Microsoft.Maui.Controls.Application.Current?.Windows[0];
+            var nativeWindow = mauiWindow?.Handler.PlatformView as Microsoft.UI.Xaml.Window;
 
             if (nativeWindow != null)
             {
+                nativeWindow.ExtendsContentIntoTitleBar = true;
+
                 var handle = WinRT.Interop.WindowNative.GetWindowHandle(nativeWindow);
                 var windowId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(handle);
                 var appWindow = Microsoft.UI.Windowing.AppWindow.GetFromWindowId(windowId);
 
+                appWindow.TitleBar.ExtendsContentIntoTitleBar = true;
+                appWindow.TitleBar.ButtonBackgroundColor = Microsoft.UI.Colors.Transparent;
+                appWindow.TitleBar.ButtonInactiveBackgroundColor = Microsoft.UI.Colors.Transparent;
                 // This path looks in your bin output folder for the icon
                 // Ensure "appicon.ico" is actually being copied there by our MSBuild target
                 appWindow.SetIcon("teardrop.ico");

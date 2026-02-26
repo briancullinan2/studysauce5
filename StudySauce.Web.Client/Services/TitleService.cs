@@ -34,7 +34,7 @@ namespace StudySauce.Web.Client.Services
             // json strings come with their own quotes
             await _js.InvokeVoidAsync("eval", "document.title = " + JsonSerializer.Serialize(_title));
 
-            OnTitleChanged?.Invoke(_title);
+            OnTitleChanged?.Invoke(title);
         }
     }
 }
