@@ -5,12 +5,16 @@
 @page "/course/{Level:int}/{Lesson}/Video"
 @page "/course/{Level:int}/{Lesson}/Quiz"
 @page "/course/{Level:int}/{Lesson}/Reward"
-@inject NavigationManager Nav
-@inject TranslationContext Context
-@inject ITitleService TitleService
+
 @using StudySauce.Shared.Controls
 @using Microsoft.EntityFrameworkCore
 @using StudySauce.Shared.Services
+
+@inject NavigationManager Nav
+@inject TranslationContext Context
+@inject ITitleService TitleService
+@inject IMenuService MenuService
+
 
 @code
 {
@@ -90,14 +94,15 @@
 
     public ICourseMenuItem? ActiveItem { get; set; }
     public enum StepMode { Intro, Video, Quiz, Reward, Investment }
-    [CascadingParameter] public MainLayout? Layout { get; set; }
+
     protected override void OnInitialized()
     {
         PackLayout = Controls.PackControl.ViewPack.Metadata.Groups["Display"]?.ToList();
         // TODO: make sure this goes through RemoteQuery on web assembly client
+        _ = LoadDataAsync();
     }
 
-    protected override async Task OnInitializedAsync()
+    private async Task LoadDataAsync()
     {
         try
         {
@@ -136,16 +141,10 @@
         ActiveItem = newItem;
         Step = newStep ?? StepMode.Intro;
 
-        if(Layout?.Tag == ActiveItem)
-        {
-            return;
-        }
-        Layout?.Tag = ActiveItem;
-
         TitleService.UpdateTitle(ActiveItem?.Title + " - " + Step.ToString());
         //Layout?.SetHeaderTitle(builder => builder.AddContent(0, ActiveItem?.Title + " - " + Step.ToString()));
 
-        Layout?.SetHeaderMenu(@<StudySauce.Shared.Pages.Shared.Course Step="@((int)Step)" Level="@Level" Lesson="@Lesson" />);
+        MenuService.SetMenu(@<StudySauce.Shared.Pages.Shared.Course Step="@((int)Step)" Level="@Level" Lesson="@Lesson" />);
     
         if (ActiveItem?.Lesson != null)
         {

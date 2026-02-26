@@ -1,8 +1,10 @@
-﻿@inject NavigationManager Nav
+﻿@using StudySauce.Shared.Services
+@inject NavigationManager Nav
+@inject IStudyService StudyService
 
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-logo">
-        <img width="48" height="48" @onclick="() => Layout?.SetStudyMode(_studyMode = !Layout.Study)" src="_content/StudySauce.Shared/logo_4_trans_2.png" alt="LOGO" />
+        <img width="48" height="48" @onclick="() => ToggleStudy()" src="_content/StudySauce.Shared/logo_4_trans_2.png" alt="LOGO" />
         <a class="navbar-brand" href="">Study Sauce</a>
     </div>
 </div>
@@ -38,7 +40,6 @@
 </div>
 
 @code {
-    [CascadingParameter] public MainLayout? Layout { get; set; }
     public bool _studyMode = false;
 
     private void HandleClick(INavMenuItem item)
@@ -68,6 +69,11 @@
             // If it's currently collapsed, just expand it
             item.IsCollapsed = false;
         }
+    }
+
+    protected void ToggleStudy()
+    {
+        StudyService?.SetStudyMode(_studyMode = !StudyService.Study);
     }
 
     RenderFragment RenderNavItem(INavMenuItem item) => __builder =>

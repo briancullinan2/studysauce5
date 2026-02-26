@@ -20,11 +20,6 @@ namespace StudySauce.Web.Client.Services
                      .Product;
         }
 
-        public string? GetTitle()
-        {
-            return _title;
-        }
-
         public async Task UpdateTitle(string? title)
         {
             if (title == null)

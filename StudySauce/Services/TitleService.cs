@@ -11,7 +11,7 @@ namespace StudySauce.Services
 
         public event Action<string?>? OnTitleChanged;
 
-        internal TitleService()
+        public TitleService()
         {
             _appName = Assembly.GetEntryAssembly()?
                              .GetCustomAttribute<AssemblyProductAttribute>()?
@@ -23,18 +23,15 @@ namespace StudySauce.Services
         {
             if (title == null)
             {
-                _setTitle(_appName);
+                _title = _appName;
             }
             else
             {
-                _setTitle(title + " - " + _appName);
+                _title = title + " - " + _appName;
             }
-            _title = title;
+            _setTitle(_title);
+            OnTitleChanged?.Invoke(_title);
         }
 
-        public string? GetTitle()
-        {
-            return _title;
-        }
     }
 }

@@ -53,7 +53,9 @@ namespace StudySauce
 
             // Add device-specific services used by the StudySauce.Shared project
             builder.Services.AddSingleton<IFormFactor, FormFactor>();
-            //builder.Services.AddSingleton<ITitleService, TitleService>();
+            builder.Services.AddSingleton<ITitleService, TitleService>();
+            builder.Services.AddSingleton<IMenuService, MenuService>();
+            builder.Services.AddSingleton<IStudyService, StudyService>();
             _keepAliveConnection = new KeepAlive("Data Source=:memory:");
             _keepAliveConnection.Open(); // The DB is born
             builder.Services.AddDbContext<DataLayer.TranslationContext>((serviceProvider, options) =>

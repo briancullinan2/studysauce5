@@ -1,46 +1,46 @@
 ﻿@using StudySauce.Shared.Services
-@inject ITitleService TitleService
 @inherits LayoutComponentBase
+@inject IMenuService MenuService
+@inject IStudyService StudyService
+@inject ITitleService TitleService
 
-<div class="@(Study ? "study-mode" : "") page">
-    <CascadingValue Value="this">
-        <div class="sidebar">
-            <NavMenu />
-        </div>
+<div class="@(Study == true ? "study-mode" : "") page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
 
-        <main>
-            <header class="top-row px-4">
-            @if (HeaderTitle != null)
-            {
-                <h2>@HeaderTitle</h2>            
-            }
-            @* This is where the contextual menu will appear *@
-            @if (HeaderMenu != null)
-            {
-                <div class="contextual-menu">
-                    @HeaderMenu
-                </div>
-            }
-            @if(HeaderMenu == null && HeaderTitle == null)
-            {
-                <span>&nbsp;</span>
-            }
-            <NavLink class="header-link" href="@(NavigationExtensions.GetUri<Pages.Landing.About>())" Match="NavLinkMatch.All">
-                <i class="bi bi-info-circle" aria-hidden="true"></i>
-                <span class="header-text">About</span>
-            </NavLink>
+    <main>
+        <header class="top-row px-4">
+        @if (HeaderTitle != null)
+        {
+            <h2>@HeaderTitle</h2>            
+        }
+        @* This is where the contextual menu will appear *@
+        @if (HeaderMenu != null)
+        {
+            <div class="contextual-menu">
+                @HeaderMenu
+            </div>
+        }
+        @if(HeaderMenu == null && HeaderTitle == null)
+        {
+            <span>&nbsp;</span>
+        }
+        <NavLink class="header-link" href="@(NavigationExtensions.GetUri<Pages.Landing.About>())" Match="NavLinkMatch.All">
+            <i class="bi bi-info-circle" aria-hidden="true"></i>
+            <span class="header-text">About</span>
+        </NavLink>
 
-            </header>
+        </header>
 
-            <article class="content px-4">
-                @* We pass the Layout instance to the Body so pages can set the HeaderMenu *@
-                @Body
-            </article>
+        <article class="content px-4">
+            @* We pass the Layout instance to the Body so pages can set the HeaderMenu *@
+            @Body
+        </article>
 
 
-        @* Connected to @server.BaseUrl *@
-        </main>
-    </CascadingValue>
+    @* Connected to @server.BaseUrl *@
+    </main>
 
 </div>
 
@@ -53,27 +53,32 @@
 @code {
     public RenderFragment? HeaderMenu { get; private set; }
     public string? HeaderTitle { get; private set; }
-    public object? Tag { get; set; } // for comparing states for implementers
-    public bool Study { get; set; } = false;
-    
+    //public object? Tag { get; set; } // for comparing states for implementers
+    public bool? Study { get; set; }
+
     protected override void OnInitialized()
     {
         // Subscribe to the push event
         TitleService.OnTitleChanged += SetHeaderTitle;
+        MenuService.OnMenuChanged += SetHeaderMenu;
+        StudyService.OnStudyChanged += SetStudyMode;
     }
 
     public void SetStudyMode(bool study)
     {
-        Study = study;
-        this.StateHasChanged();
+        if (Study != study)
+        {
+            Study = study;
+            this.StateHasChanged();
+        }
     }
 
-    public void SetHeaderMenu(RenderFragment? menu)
+    private void SetHeaderMenu(RenderFragment? menu)
     {
         if (menu != HeaderMenu)
         {
             HeaderMenu = menu;
-            StateHasChanged(); // Force layout to re-render when a page sets the menu
+            this.StateHasChanged(); 
         }
     }
 
@@ -82,22 +87,36 @@
         if (HeaderTitle != title)
         {
             HeaderTitle = title;
-            StateHasChanged(); // Force layout to re-render when a page sets the menu
+            this.StateHasChanged(); 
         }
     }
 
     protected override void OnParametersSet()
     {
         // This runs every time the @Body content changes
-        SetHeaderMenu(null);
-        //SetHeaderTitle(null);
-        TitleService.UpdateTitle(null);
-        Tag = null;
+        //MenuService.SetMenu(null);
+        //TitleService.UpdateTitle(null);
+        //Tag = null;
+        //this.StateHasChanged(); 
     }
 
     public void Dispose()
     {
         // Unsubscribe to prevent memory leaks
         TitleService.OnTitleChanged -= SetHeaderTitle;
+        MenuService.OnMenuChanged -= SetHeaderMenu;
+        StudyService.OnStudyChanged -= SetStudyMode;
     }
+
+    /*
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Assuming your SectionOutlet renders something with ID 'sync-target'
+            var content = await JSRuntime.InvokeAsync<string>("eval", "document.title");
+            // Now you have it in C#
+        }
+    }
+   */
 }

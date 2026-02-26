@@ -1,4 +1,6 @@
 @page "/privacy"
+@using StudySauce.Shared.Services
+@inject IMenuService MenuService
 
 <SyncedTitle Title="Privacy Policy"></SyncedTitle>
 
@@ -74,13 +76,11 @@
 </div>
 
 @code {
-    [CascadingParameter]
-    public MainLayout? Layout { get; set; }
 
     protected override void OnInitialized()
     {
         // Define the contextual menu for THIS page
-        Layout?.SetHeaderMenu(@<StudySauce.Shared.Pages.Shared.Terms />);
+        MenuService?.SetMenu(@<StudySauce.Shared.Pages.Shared.Terms />);
     }
 
 }

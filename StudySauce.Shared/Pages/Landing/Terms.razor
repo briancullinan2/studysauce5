@@ -1,5 +1,7 @@
 @page "/terms"
 @using StudySauce.Shared.Controls
+@using StudySauce.Shared.Services
+@inject IMenuService MenuService
 
 <div class="panel-pane" id="terms">
     <div class="pane-content">
@@ -134,11 +136,10 @@
     public ElementReference self;
     // TODO: bool StartCollapsed based on CSS style
 
-    [CascadingParameter] public MainLayout? Layout { get; set; }
     protected override void OnInitialized()
     {
         // Define the contextual menu for THIS page
-        Layout?.SetHeaderMenu(@<StudySauce.Shared.Pages.Shared.Terms />);
+        MenuService.SetMenu(@<StudySauce.Shared.Pages.Shared.Terms />);
     }
 
     private void Toggle(object? header)
