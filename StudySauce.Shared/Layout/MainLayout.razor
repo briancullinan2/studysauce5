@@ -1,10 +1,20 @@
-﻿@using StudySauce.Shared.Services
+﻿@using Microsoft.Extensions.DependencyInjection
+@using Microsoft.Extensions.Options
+@using StudySauce.Shared.Services
 @inherits LayoutComponentBase
+@implements IDisposable
+
+@inject IJSRuntime JS
 @inject IMenuService MenuService
 @inject IStudyService StudyService
 @inject ITitleService TitleService
+@inject IServiceProvider ServiceProvider
+@inject NavigationManager Nav
 
-<div class="@(Study == true ? "study-mode" : "") page">
+<div class="canvas-container">
+    <canvas id="lichtenbergCanvas"></canvas>
+</div>
+<div class="@(Study == true ? "study-mode" : "") @PageClass page">
     <div class="sidebar">
         <NavMenu />
     </div>
@@ -55,13 +65,49 @@
     public string? HeaderTitle { get; private set; }
     //public object? Tag { get; set; } // for comparing states for implementers
     public bool? Study { get; set; }
+    public string? PageClass { get; set; }
+
+    /*
+     * This is so fucking dumb this isn't more obvious like Nav.GetComponent(route);
+     * what the fuck is microsoft thinking?
+    public Type? GetPageTypeFromUrl(string url)
+    {
+        // 1. Get the relative path
+        var relativeUri = Nav.ToBaseRelativePath(url);
+
+        // 2. Access the Route Options / Discovery service
+        // This is the same engine the Router uses
+        var routeOptions = ServiceProvider.GetRequiredService<IOptions<RazorPagesOptions>>();
+
+        // Note: In pure WASM, you usually have to reflect into the
+        // assembly to find the [Route] attributes yourself if you want
+        // to bypass the Router component entirely.
+        return typeof(Program).Assembly.GetTypes()
+        .FirstOrDefault(t => t.GetCustomAttributes<RouteAttribute>()
+        .Any(r => r.Template.Equals("/" + relativeUri, StringComparison.OrdinalIgnoreCase)));
+        }
+    */
+
+    protected void OnLocationChanged(object? sender, LocationChangedEventArgs args)
+    {
+        SetPageClass();
+    }
+
+    private void SetPageClass()
+    {
+        var relativePath = Nav.ToBaseRelativePath(Nav.Uri);
+        PageClass = string.IsNullOrWhiteSpace(relativePath) ? "home" : relativePath.ToSafe();
+        StateHasChanged();
+    }
 
     protected override void OnInitialized()
     {
         // Subscribe to the push event
+        Nav.LocationChanged += OnLocationChanged;
         TitleService.OnTitleChanged += SetHeaderTitle;
         MenuService.OnMenuChanged += SetHeaderMenu;
         StudyService.OnStudyChanged += SetStudyMode;
+        SetPageClass();
     }
 
     public void SetStudyMode(bool study)
@@ -97,7 +143,8 @@
         //MenuService.SetMenu(null);
         //TitleService.UpdateTitle(null);
         //Tag = null;
-        //this.StateHasChanged(); 
+        //this.StateHasChanged();
+        //SetPageClass();
     }
 
     public void Dispose()
@@ -119,4 +166,16 @@
         }
     }
    */
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Trigger the JS engine
+            //await JS.InvokeVoidAsync("initLichtenberg", "lichtenbergCanvas");
+            var _module = await JS.InvokeAsync<IJSObjectReference>("import", "/_content/StudySauce.Shared/lichtenberg.js");
+
+            // 2. Call the function from the module
+            await _module.InvokeVoidAsync("initLichtenberg", "lichtenbergCanvas");
+        }
+    }
 }

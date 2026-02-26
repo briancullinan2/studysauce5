@@ -6,6 +6,7 @@
 @using StudySauce.Shared.Controls
 @using StudySauce.Shared.Services
 @inject IFormFactor FormFactor
+@inject IMenuService MenuService
 
 @if(!String.IsNullOrWhiteSpace(notFound))
 {
@@ -33,5 +34,6 @@ Welcome to your new app running on <em>@factor</em> using <em>@platform</em>.
         // Equivalent to: Source={x:Static data:EntityMetadata.User.Categories[Login Info]}
         // We assign the specific "Login Info" object to the Model property
         //CurrentCategory = EntityMetadata.User.Groups["Login Info"]?.ToList();
+        MenuService.SetMenu(null);
     }
 }

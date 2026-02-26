@@ -56,6 +56,7 @@ namespace StudySauce
             builder.Services.AddSingleton<ITitleService, TitleService>();
             builder.Services.AddSingleton<IMenuService, MenuService>();
             builder.Services.AddSingleton<IStudyService, StudyService>();
+            builder.Services.AddSingleton<ICourseService, CourseService>();
             _keepAliveConnection = new KeepAlive("Data Source=:memory:");
             _keepAliveConnection.Open(); // The DB is born
             builder.Services.AddDbContext<DataLayer.TranslationContext>((serviceProvider, options) =>

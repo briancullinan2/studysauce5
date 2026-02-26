@@ -60,6 +60,8 @@ namespace StudySauce.WinUI
             webBuilder.Services.AddSingleton<ITitleService, TitleTrackerService>();
             webBuilder.Services.AddSingleton<IMenuService, MenuService>();
             webBuilder.Services.AddSingleton<IStudyService, StudyService>();
+            webBuilder.Services.AddSingleton<ICourseService, CourseService>();
+
             // FUCK DI
             TitleService._setTitle = SetTitle;
             webBuilder.Services.AddSingleton<ILocalServer, LocalServer>();

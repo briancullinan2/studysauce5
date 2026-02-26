@@ -14,6 +14,7 @@ builder.Services.AddSingleton<ILocalServer, LocalServer>();
 builder.Services.AddSingleton<ITitleService, TitleService>();
 builder.Services.AddSingleton<IMenuService, MenuService>();
 builder.Services.AddSingleton<IStudyService, StudyService>();
+builder.Services.AddSingleton<ICourseService, CourseService>();
 builder.Services.AddScoped<HttpClient>(sp => new HttpClient
 {
     BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)

@@ -1,3 +1,5 @@
+@implements IDisposable
+
 @page "/course"
 @page "/course/{Level:int}"
 @page "/course/{Level:int}/{Lesson}"
@@ -14,6 +16,7 @@
 @inject TranslationContext Context
 @inject ITitleService TitleService
 @inject IMenuService MenuService
+@inject ICourseService CourseService
 
 
 @code
@@ -100,6 +103,10 @@
         PackLayout = Controls.PackControl.ViewPack.Metadata.Groups["Display"]?.ToList();
         // TODO: make sure this goes through RemoteQuery on web assembly client
         _ = LoadDataAsync();
+        Nav.LocationChanged += OnLocationChanged;
+        CourseService.OnStepChanged += OnStepChanged;
+        CourseService.OnCourseChanged += OnCourseChanged;
+        OnSetCourseParameters();
     }
 
     private async Task LoadDataAsync()
@@ -119,10 +126,20 @@
         }
     }
 
-    protected override void OnParametersSet()
+    protected void OnLocationChanged(object? sender, LocationChangedEventArgs args)
     {
-        // Cache the menu item for reference on this page
+        OnSetCourseParameters();
+    }
+
+    protected void OnSetCourseParameters()
+    {
         var newItem = CourseMenu.GetActiveItem(Level, Lesson);
+
+        if (ActiveItem?.Course != newItem?.Course)
+        {
+            CourseService.SetCourse(newItem);
+        }
+
 
         var relativePath = Nav.ToBaseRelativePath(Nav.Uri);
 
@@ -132,15 +149,29 @@
         if (segments.Count() >= 4)
         {
             newStep = segments[3].TryParse<StepMode>() ?? StepMode.Intro;
+            if (newStep != Step)
+            {
+                CourseService.SetStep(newStep ?? StepMode.Intro);
+            }
         }
+    }
 
-        if (ActiveItem?.Course == newItem?.Course && newStep == Step)
-        {
-            return;
-        }
-        ActiveItem = newItem;
-        Step = newStep ?? StepMode.Intro;
+    protected void OnStepChanged(Course.StepMode? step)
+    {
+        Step = step ?? StepMode.Intro;
+        SetCourseTitle();
+        StateHasChanged();
+    }
 
+    protected void OnCourseChanged(ICourseMenuItem? item)
+    {
+        ActiveItem = item;
+        SetCourseTitle();
+        StateHasChanged();
+    }
+
+    protected void SetCourseTitle()
+    {
         TitleService.UpdateTitle(ActiveItem?.Title + " - " + Step.ToString());
         //Layout?.SetHeaderTitle(builder => builder.AddContent(0, ActiveItem?.Title + " - " + Step.ToString()));
 
@@ -151,6 +182,13 @@
             //CurrentQuiz = new PackControl.ViewPack { Pack = Context.Packs.Where(p => p.Title == ActiveItem.Lesson.Name).FirstOrDefault() };
         }
 
+    }
+    
+    public void Dispose()
+    {
+        Nav.LocationChanged -= OnLocationChanged;
+        CourseService.OnStepChanged -= OnStepChanged;
+        CourseService.OnCourseChanged -= OnCourseChanged;
     }
 
     private void Next(StepMode nextStep) => Nav.NavigateTo<Pages.Course.Course>(c => new() { Level = ActiveItem != null ? ActiveItem.Level : 1, Lesson = ActiveItem != null && ActiveItem.Lesson != null ? ActiveItem.Lesson.Name.ToSafe() : "", Step = nextStep });
