@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System.Collections;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
@@ -38,6 +40,7 @@ namespace DataLayer.Entities
 
             return proxy as IEntity;
         }
+
     }
 
     public class Entity<T> : Entity, IEntity<T>, INotifyPropertyChanged where T : IEntity
@@ -68,6 +71,39 @@ namespace DataLayer.Entities
             return (T)proxy;
         }
 
+
+        public override bool Equals(object? obj)
+        {
+            if (this == null || obj == null) return this == obj;
+
+            var type = typeof(T);
+            //var ignoreList = new List<string>(ignore);
+            var foreignKeys = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Select(p => Attribute.GetCustomAttribute(p, typeof(ForeignKeyAttribute))?.TypeId);
+
+            // Get properties that are NOT virtual (Nav properties) and NOT marked [NotMapped]
+            var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(p => !foreignKeys.Contains(p.Name) // TODO: skip all IDs because they might not match on server
+                    && p.GetGetMethod()?.IsVirtual != true
+                    && !Attribute.IsDefined(p, typeof(KeyAttribute))  // TODO: don't match id fields
+                    && !Attribute.IsDefined(p, typeof(NotMappedAttribute))
+                    && !Attribute.IsDefined(p, typeof(ForeignKeyAttribute)) // comparing id is enough
+                    && !typeof(IEnumerable).IsAssignableFrom(p.PropertyType)
+                            //&& !ignoreList.Contains(p.Name)
+                            );
+
+            foreach (var prop in properties)
+            {
+                var selfValue = prop.GetValue(this, null);
+                var toValue = prop.GetValue(obj, null);
+
+                if (selfValue != toValue && (selfValue == null || !selfValue.Equals(toValue)))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
 
 
         static T IEntity<T>.Wrap(T target, IServiceProvider service)

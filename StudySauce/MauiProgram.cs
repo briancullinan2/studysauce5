@@ -57,6 +57,7 @@ namespace StudySauce
             builder.Services.AddSingleton<IMenuService, MenuService>();
             builder.Services.AddSingleton<IStudyService, StudyService>();
             builder.Services.AddSingleton<ICourseService, CourseService>();
+            builder.Services.AddSingleton<IJsonService, JsonService>();
             _keepAliveConnection = new KeepAlive("Data Source=:memory:");
             _keepAliveConnection.Open(); // The DB is born
             builder.Services.AddDbContext<DataLayer.TranslationContext>((serviceProvider, options) =>
@@ -66,6 +67,9 @@ namespace StudySauce
 
             //builder.Services.AddSingleton<DbContext>(new DataLayer.TranslationContext(c => c == null ? "Data Source=:memory:" : c.UseSqlite()));
             builder.Services.AddMauiBlazorWebView();
+#if DEBUG
+            builder.Services.AddBlazorWebViewDeveloperTools();
+#endif
             // Inject the server instance into MAUI's DI
 #if WINDOWS
             if (ServerInstance != null)

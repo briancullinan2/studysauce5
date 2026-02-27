@@ -1,25 +1,25 @@
-﻿using StudySauce.Shared.Layout;
-using StudySauce.Shared.Pages.Course;
+﻿using DataLayer.Customization;
+using StudySauce.Shared.Layout;
 
 namespace StudySauce.Shared.Services
 {
     public interface ICourseService
     {
-        Course.StepMode? Step { get; set; }
-        event Action<Course.StepMode?>? OnStepChanged;
+        StepMode? Step { get; set; }
+        event Action<StepMode?>? OnStepChanged;
         event Action<ICourseMenuItem?>? OnCourseChanged;
-        Task SetStep(Course.StepMode? step);
+        Task SetStep(StepMode? step);
         Task SetCourse(ICourseMenuItem? item);
     }
 
     public class CourseService : ICourseService
     {
-        public event Action<Course.StepMode?>? OnStepChanged;
+        public event Action<StepMode?>? OnStepChanged;
         public event Action<ICourseMenuItem?>? OnCourseChanged;
         public ICourseMenuItem? Course { get; set; } = null;
 
-        public Course.StepMode? Step { get; set; } = Pages.Course.Course.StepMode.Intro;
-        public async Task SetStep(Course.StepMode? step)
+        public StepMode? Step { get; set; } = StepMode.Intro;
+        public async Task SetStep(StepMode? step)
         {
             Step = step;
             OnStepChanged?.Invoke(step);

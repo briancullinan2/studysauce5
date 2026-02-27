@@ -3,6 +3,11 @@ using System.Reflection;
 
 namespace DataLayer.Customization
 {
+
+    [Obfuscation(Exclude = true, ApplyToMembers = true)]
+    public enum StepMode { Intro = 0, Video = 1, Quiz = 2, Reward = 3, Investment = 4 }
+
+
     [Obfuscation(Exclude = true, ApplyToMembers = true)]
     public enum DisplayType
     {

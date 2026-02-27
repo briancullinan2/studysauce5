@@ -1,3 +1,4 @@
+@using DataLayer.Customization
 
 
 @code
@@ -21,9 +22,9 @@
 
     public class SharedMenuItem : NavMenuItem<Pages.Course.Course>
     {
-        public Pages.Course.Course.StepMode Step { get; set; }
+        public StepMode Step { get; set; }
 
-        public Func<Pages.Course.Course.StepMode, string>? GetHref { get; set; }
+        public Func<StepMode, string>? GetHref { get; set; }
 
         public override string Href { 
             get
@@ -33,7 +34,7 @@
         }
     }
 
-    public string GetHref(Pages.Course.Course.StepMode Step)
+    public string GetHref(StepMode Step)
     {
         return NavigationExtensions.GetUri<Pages.Course.Course>(c => new() { Step = Step, Level = Level, Lesson = Lesson });
     }
@@ -41,18 +42,18 @@
     protected override void OnParametersSet()
     {
         ActiveItem = CourseMenu.GetActiveItem(Level, Lesson);
-        IsIntro = Level == null || Lesson == null; // || Step == (int)Pages.Course.Course.StepMode.Intro;
+        IsIntro = Level == null || Lesson == null; // || Step == (int)StepMode.Intro;
     }
 
     public Course()
     {
         CourseLinks = new()
         {
-            new() { GetHref = GetHref, Title = "Introduction", Step = Pages.Course.Course.StepMode.Intro, Icon = "bi-megaphone" },
-            new() { GetHref = GetHref, Title = "Video",        Step = Pages.Course.Course.StepMode.Video, Icon = "bi-play-btn" },
-            new() { GetHref = GetHref, Title = "Quiz",         Step = Pages.Course.Course.StepMode.Quiz,  Icon = "bi-pencil-square" },
-            new() { GetHref = GetHref, Title = "Reward",       Step = Pages.Course.Course.StepMode.Reward, Icon = "bi-trophy" },
-            new() { GetHref = GetHref, Title = "Investment",   Step = Pages.Course.Course.StepMode.Investment, Icon = "bi-bank" }
+            new() { GetHref = GetHref, Title = "Introduction", Step = StepMode.Intro, Icon = "bi-megaphone" },
+            new() { GetHref = GetHref, Title = "Video",        Step = StepMode.Video, Icon = "bi-play-btn" },
+            new() { GetHref = GetHref, Title = "Quiz",         Step = StepMode.Quiz,  Icon = "bi-pencil-square" },
+            new() { GetHref = GetHref, Title = "Reward",       Step = StepMode.Reward, Icon = "bi-trophy" },
+            new() { GetHref = GetHref, Title = "Investment",   Step = StepMode.Investment, Icon = "bi-bank" }
         };
     }
 
@@ -64,8 +65,6 @@
         new() { Title = "Course 3", Lesson = typeof(Pages.Course.Course3), Icon = "bi-mortarboard" },
         new() { Title = "Study Tools", Lesson = typeof(Pages.Course.SpacedRepetition), Icon = "bi-award" }
     };
-
-    public enum StepMode { Intro, Video, Quiz, Reward, Investment }
 
     public List<SharedMenuItem> CourseLinks;
 }

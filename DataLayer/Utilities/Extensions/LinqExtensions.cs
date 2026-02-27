@@ -68,11 +68,11 @@ namespace DataLayer.Utilities.Extensions
             }
 
             var props = type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
-            if (node is UnaryExpression unary)
-            {
-                Console.WriteLine(unary.Operand.ToString());
-                Console.WriteLine(string.Join(" ", props.Select(p => p.Name).ToList()));
-            }
+            //if (node is UnaryExpression unary)
+            //{
+            //    Console.WriteLine(unary.Operand.ToString());
+            //    Console.WriteLine(string.Join(" ", props.Select(p => p.Name).ToList()));
+            //}
             foreach (var prop in props)
             {
                 if (prop.GetIndexParameters().Length > 0) continue;

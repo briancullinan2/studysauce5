@@ -9,6 +9,7 @@
 @inject IStudyService StudyService
 @inject ITitleService TitleService
 @inject IServiceProvider ServiceProvider
+@inject IJsonService JsonService
 @inject NavigationManager Nav
 
 <div class="@(Study == true ? "study-mode" : "") @PageClass page">
@@ -18,6 +19,11 @@
     <div class="sidebar">
         <NavMenu />
     </div>
+
+    @foreach (var item in State)
+    {
+        <input type="hidden" name="state_@item.Key" value="@item.Value" />
+    }
 
     <main>
         @if (ShowHeader != false)
@@ -112,7 +118,20 @@
         MenuService.OnMenuChanged += SetHeaderMenu;
         MenuService.OnHeaderChanged += SetHeader;
         StudyService.OnStudyChanged += SetStudyMode;
+        JsonService.OnStateChanged += SetState;
         SetPageClass();
+    }
+
+    public Dictionary<string, string?> State { get; set; } = new();
+
+    public void SetState(IComponent? state)
+    {
+        if(state == null)
+        {
+            return;
+        }
+        State[state.GetType().Name.ToSafe()] = StudySauce.Shared.Utilities.Extensions.JsonExtensions.ToSerialized(state);
+        this.StateHasChanged();
     }
 
     public void SetStudyMode(bool study)
@@ -177,6 +196,7 @@
         MenuService.OnMenuChanged -= SetHeaderMenu;
         StudyService.OnStudyChanged -= SetStudyMode;
         MenuService.OnHeaderChanged -= SetHeader;
+        JsonService.OnStateChanged -= SetState;
     }
 
     /*

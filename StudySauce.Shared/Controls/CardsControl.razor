@@ -1,5 +1,6 @@
 @using System.ComponentModel.DataAnnotations
 @using System.ComponentModel
+@using System.Text.Json.Serialization
 @code
 {
     public class EditCard
@@ -8,6 +9,7 @@
         public DataLayer.Entities.Card? Card { get; set; }
 
         [Category("Answers")]
+        [JsonIgnore]
         public ICollection<Answer>? Answers { get => Card?.Answers; }
     }
 
@@ -18,6 +20,7 @@
         [Display(Name = "Cards", GroupName = "Display", Description = "Card currently being viewed by the user")]
         public DataLayer.Entities.Card? Card { get; set; }
         [Category("Answers")]
+        [JsonIgnore]
         public ICollection<Answer>? Answers { get => Card?.Answers; }
     }
 

@@ -12,22 +12,15 @@
 @using StudySauce.Shared.Controls
 @using Microsoft.EntityFrameworkCore
 @using StudySauce.Shared.Services
+@using DataLayer.Customization;
+@using System.Text.Json.Serialization
 
 @inject NavigationManager Nav
 @inject TranslationContext Context
 @inject ITitleService TitleService
 @inject IMenuService MenuService
 @inject ICourseService CourseService
-
-
-@code
-{
-
-    private IEnumerable<Controls.CardsControl.ViewCard>? CurrentQuiz;
-    private IEnumerable<PropertyMetadata>? PackLayout;
-    private List<DataLayer.Entities.Response> Responses = new();
-
-}
+@inject IJsonService JsonService
 
 <div class="course-container">
 @if (ActiveItem != null)
@@ -91,13 +84,20 @@
 </div>
 
 @code {
+    [JsonPropertyName("level")]
     [Parameter] public int? Level { get; set; }
+    [JsonPropertyName("lesson")]
     [Parameter] public string? Lesson { get; set; }
+    [JsonPropertyName("step")]
     public StepMode Step { get; set; } = StepMode.Intro;
     public int CardCount { get; set; } = 0;
 
+    [JsonPropertyName("quiz")]
+    private IEnumerable<Controls.CardsControl.ViewCard>? CurrentQuiz { get; set; }
+    private IEnumerable<PropertyMetadata>? PackLayout;
+    private List<DataLayer.Entities.Response> Responses = new();
+
     public ICourseMenuItem? ActiveItem { get; set; }
-    public enum StepMode { Intro, Video, Quiz, Reward, Investment }
 
     protected override void OnInitialized()
     {
@@ -107,33 +107,59 @@
         Nav.LocationChanged += OnLocationChanged;
         CourseService.OnStepChanged += OnStepChanged;
         CourseService.OnCourseChanged += OnCourseChanged;
-        OnSetCourseParameters();
         Console.WriteLine("Course initialized");
     }
 
+    /*
     private async Task LoadDataAsync()
     {
         try
         {
+
             // If this fails, the catch block handles it gracefully
             // instead of blowing up the RenderTreeBuilder
             //CardCount = await CurrentQuiz.Cards.CountAsync<int>();
             var result = await Context.Packs.Where(p => p.CourseId == 0).FirstOrDefaultAsync();
+            Console.WriteLine(ActiveItem?.Lesson);
+            Console.WriteLine(CurrentQuiz);
             if(result == null)
             {
-                var generator = ActiveItem?.Lesson?.GetMethod("Generate", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
-                IEnumerable<DataLayer.Entities.Card>? cards = generator?.Invoke(null, []) as IEnumerable<DataLayer.Entities.Card>;
-                CurrentQuiz = cards?.Select(c => new Controls.CardsControl.ViewCard() { Card = c });
                 StateHasChanged();
-            }
+                }
             Console.WriteLine("Pack count: " + result);
-        }
+            }
         catch (Exception ex)
         {
             Console.WriteLine($"RemoteQuery failed: {ex.Message}");
             // Set a default value or error state so the UI stays stable
+            }
         }
+    */
+
+    protected static IEnumerable<Controls.CardsControl.ViewCard>? GetCurrentQuiz(Type? lesson)
+    {
+        var generator = lesson?.GetMethod("Generate", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+        IEnumerable<DataLayer.Entities.Card>? cards = generator?.Invoke(null, []) as IEnumerable<DataLayer.Entities.Card>;
+        return cards?.Select(c => new Controls.CardsControl.ViewCard() { Card = c });
     }
+
+
+    private PersistingComponentStateSubscription _subscription;
+    protected override async Task OnInitializedAsync()
+    {
+        await JsonService.RestoreState(this);
+        OnSetCourseParameters();
+
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        OnSetCourseParameters();
+        CurrentQuiz = GetCurrentQuiz(ActiveItem?.Lesson);
+        JsonService.SetState(this);
+    }
+
 
     protected void OnLocationChanged(object? sender, LocationChangedEventArgs args)
     {
@@ -165,7 +191,7 @@
         }
     }
 
-    protected void OnStepChanged(Course.StepMode? step)
+    protected void OnStepChanged(StepMode? step)
     {
         Step = step ?? StepMode.Intro;
         SetCourseTitle();
@@ -188,7 +214,7 @@
     
         if (ActiveItem?.Lesson != null)
         {
-            _ = LoadDataAsync();
+            //_ = LoadDataAsync();
             //CurrentQuiz = new PackControl.ViewPack { Pack = Context.Packs.Where(p => p.Title == ActiveItem.Lesson.Name).FirstOrDefault() };
         }
 
@@ -199,6 +225,7 @@
         Nav.LocationChanged -= OnLocationChanged;
         CourseService.OnStepChanged -= OnStepChanged;
         CourseService.OnCourseChanged -= OnCourseChanged;
+        _subscription.Dispose();
     }
 
     private void Next(StepMode nextStep) => Nav.NavigateTo<Pages.Course.Course>(c => new() { Level = ActiveItem != null ? ActiveItem.Level : 1, Lesson = ActiveItem != null && ActiveItem.Lesson != null ? ActiveItem.Lesson.Name.ToSafe() : "", Step = nextStep });

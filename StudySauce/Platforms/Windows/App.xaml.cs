@@ -3,6 +3,7 @@
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using StudySauce.Services;
@@ -61,6 +62,7 @@ namespace StudySauce.WinUI
             webBuilder.Services.AddSingleton<IMenuService, MenuService>();
             webBuilder.Services.AddSingleton<IStudyService, StudyService>();
             webBuilder.Services.AddSingleton<ICourseService, CourseService>();
+            webBuilder.Services.AddSingleton<IJsonService, JsonService>();
 
             // FUCK DI
             TitleService._setTitle = SetTitle;
@@ -100,6 +102,13 @@ namespace StudySauce.WinUI
             MauiProgram.ServerInstance = webApp;
 
             //webApp.MapGet("/api/status", () => new { Status = "Online", Machine = Environment.MachineName });
+            webApp.Use((context, next) =>
+            {
+                context.Response.Headers.Append("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
+                context.Response.Headers.Append("Pragma", "no-cache");
+                context.Response.Headers.Append("Expires", "0");
+                return next();
+            });
 
             if (webApp.Environment.IsDevelopment())
             {
