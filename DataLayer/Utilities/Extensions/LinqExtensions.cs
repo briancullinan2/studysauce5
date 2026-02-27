@@ -29,7 +29,7 @@ namespace DataLayer.Utilities.Extensions
         }
 
         private static readonly int _maxDepth = 2;
-        private static readonly int _maxExpressionDepth = 6;
+        private static readonly int _maxExpressionDepth = 10;
 
         public static XDocument ToXDocument(this Expression expression)
         {
@@ -189,11 +189,26 @@ namespace DataLayer.Utilities.Extensions
                 {ExpressionType.Call, BuildMethodCall},
                 {ExpressionType.Parameter, BuildParameter},
                 {ExpressionType.Constant, BuildConstant},
+                {ExpressionType.Quote, BuildQuote},
                 //{ExpressionType.Extension, BuildExtension}
             };
 
         public delegate Expression? ExpressionFactory(XElement el, Func<XElement, Expression?> ToExpression);
 
+        private static Expression? BuildQuote(XElement el, Func<XElement, Expression?> ToExpression)
+        {
+            var argsEl = el.Element("Operand")?.Elements().FirstOrDefault();
+            if (argsEl == null)
+            {
+                throw new InvalidOperationException("Could not resolve operand element on" + el);
+            }
+            var operand = ToExpression(argsEl);
+            if (operand == null)
+            {
+                throw new InvalidOperationException("Could not resolve operand element on" + el);
+            }
+            return Expression.Quote(operand);
+        }
 
         private static Expression? BuildMethodCall(XElement el, Func<XElement, Expression?> ToExpression)
         {
