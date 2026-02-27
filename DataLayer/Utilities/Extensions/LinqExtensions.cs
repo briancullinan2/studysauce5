@@ -118,6 +118,33 @@ namespace DataLayer.Utilities.Extensions
                         methodInfo.Add(paramsEl);
                         element.Add(propElement);
                     }
+                    /*else if (value is PropertyInfo property)
+                    {
+                        var propElement = new XElement(prop.Name);
+                        var methodInfo = VisitToXml(value, currentDepth + 1, expressionDepth);
+                        propElement.Add(methodInfo);
+                        var parameters = property.GetIndexParameters();
+                        methodInfo.Add(new XAttribute("ParamCount", parameters.Length));
+                        if (property.PropertyType.IsGenericTypeDefinition)
+                        {
+                            var generics = new XElement("GenericArguments");
+                            foreach (var arg in property.PropertyType.GetGenericArguments())
+                            {
+                                // One level of recursion for the arg is usually safe and necessary
+                                generics.Add(new XElement("Type", new XAttribute("AssemblyQualifiedName", arg.AssemblyQualifiedName ?? "")));
+                            }
+                            methodInfo.Add(generics);
+                        }
+                        // Optional: Serialize the parameter types to be 100% sure on overloads
+                        var paramsEl = new XElement("Parameters");
+                        foreach (var p in parameters)
+                        {
+                            paramsEl.Add(new XElement("Parameter",
+                                new XAttribute("Type", p.ParameterType.AssemblyQualifiedName ?? "")));
+                        }
+                        methodInfo.Add(paramsEl);
+                        element.Add(propElement);
+                    }*/
                     else if (value is Type t)
                     {
                         var typeElement = new XElement(prop.Name);
@@ -189,25 +216,108 @@ namespace DataLayer.Utilities.Extensions
                 {ExpressionType.Call, BuildMethodCall},
                 {ExpressionType.Parameter, BuildParameter},
                 {ExpressionType.Constant, BuildConstant},
-                {ExpressionType.Quote, BuildQuote},
+                {ExpressionType.Quote, BuildUnary},
+                {ExpressionType.Lambda, BuildLambda},
+                {ExpressionType.Equal, BuildEquals},
+                {ExpressionType.Convert, BuildUnary},
+                {ExpressionType.MemberAccess, BuildProperty},
+
                 //{ExpressionType.Extension, BuildExtension}
             };
 
         public delegate Expression? ExpressionFactory(XElement el, Func<XElement, Expression?> ToExpression);
 
-        private static Expression? BuildQuote(XElement el, Func<XElement, Expression?> ToExpression)
+        private static Expression? BuildProperty(XElement el, Func<XElement, Expression?> ToExpression)
+        {
+            var expressionEl = el.Element("Expression")?.Elements().FirstOrDefault();
+            if (expressionEl == null)
+            {
+                throw new InvalidOperationException("Could not resolve property expression on " + el);
+            }
+            var expression = ToExpression(expressionEl);
+            var memberInfo = el.Element("Member")?.Elements().FirstOrDefault();
+            if (memberInfo == null)
+            {
+                throw new InvalidOperationException("Could not resolve property member on " + el);
+            }
+            PropertyInfo? propertyInfo = ResolveMetadata(typeof(PropertyInfo), memberInfo.Value, memberInfo) as PropertyInfo;
+            if (propertyInfo == null)
+            {
+                throw new InvalidOperationException("Could not resolve method info on " + el);
+            }
+
+            return Expression.MakeMemberAccess(expression, propertyInfo);
+        }
+
+
+        private static Expression? BuildEquals(XElement el, Func<XElement, Expression?> ToExpression)
+        {
+            var rightEl = el.Element("Right")?.Elements().FirstOrDefault();
+            var leftEl = el.Element("Left")?.Elements().FirstOrDefault();
+            if (rightEl == null || leftEl == null)
+            {
+                throw new InvalidOperationException("Could not resolve right expression on " + el);
+            }
+            var rightOperand = ToExpression(rightEl);
+            var leftOperand = ToExpression(leftEl);
+            if (rightOperand == null || leftOperand == null)
+            {
+                throw new InvalidOperationException("Could not resolve right expression on " + el);
+            }
+            return Expression.Equal(leftOperand, rightOperand);
+        }
+
+        private static Expression? BuildLambda(XElement el, Func<XElement, Expression?> ToExpression)
+        {
+            var parametersEl = el.Element("Parameters")?.Elements();
+            var bodyEl = el.Element("Body")?.Elements().FirstOrDefault();
+            if (bodyEl == null)
+            {
+                throw new InvalidOperationException("Could not resolve lambda body on " + el);
+            }
+            IEnumerable<ParameterExpression>? parameters = parametersEl?.Select(p => ToExpression(p)).Cast<ParameterExpression>();
+            var realBody = ToExpression(bodyEl);
+            if (realBody == null)
+            {
+                throw new InvalidOperationException("Could not resolve lambda body on " + el);
+            }
+            return Expression.Lambda(realBody, parameters);
+        }
+
+        private static Expression? BuildUnary(XElement el, Func<XElement, Expression?> ToExpression)
         {
             var argsEl = el.Element("Operand")?.Elements().FirstOrDefault();
             if (argsEl == null)
             {
-                throw new InvalidOperationException("Could not resolve operand element on" + el);
+                throw new InvalidOperationException("Could not resolve operand element on " + el);
             }
             var operand = ToExpression(argsEl);
             if (operand == null)
             {
-                throw new InvalidOperationException("Could not resolve operand element on" + el);
+                throw new InvalidOperationException("Could not resolve operand element on " + el);
             }
-            return Expression.Quote(operand);
+            if (el.Attribute("NodeType")?.Value == "Quote")
+            {
+                return Expression.Quote(operand);
+            }
+            else if (el.Attribute("NodeType")?.Value == "Convert")
+            {
+                var type = el.Element("Type")?.Attribute("FullName")?.Value;
+                if (type == null)
+                {
+                    throw new InvalidOperationException("Could not resolve operand type on " + el);
+                }
+                var resolvedType = Type.GetType(type);
+                if (resolvedType == null)
+                {
+                    throw new InvalidOperationException("Could not resolve operand type on " + el);
+                }
+                return Expression.Convert(operand, resolvedType);
+            }
+            else
+            {
+                throw new InvalidOperationException("Unary operation not implemented");
+            }
         }
 
         private static Expression? BuildMethodCall(XElement el, Func<XElement, Expression?> ToExpression)
@@ -323,6 +433,44 @@ namespace DataLayer.Utilities.Extensions
                 return method;
             }
 
+            if (targetType == typeof(PropertyInfo))
+            {
+                var declEl = el.Element("DeclaringType");
+                var paramsCount = int.TryParse(el.Attribute("ParamsCount")?.Value, out var pc) ? pc : el.Element("Parameters")?.Elements().Count();
+                var methodSourceType = declEl?.Attribute("AssemblyQualifiedName")?.Value ?? declEl?.Value;
+                var methodName = el.Attribute("Name")?.Value;
+                if (methodSourceType == null || methodName == null)
+                {
+                    throw new InvalidOperationException("Cannot find type name on " + el.ToString());
+                }
+                var declaringType = Type.GetType(methodSourceType);
+                var property = declaringType?.GetProperties()
+                    // TODO: fix arg count when i test Packs.CountAsync(p => p.Qualifier)
+                    .FirstOrDefault(m => m.Name == methodName /*&& m.GetIndexParameters().Length == (paramsCount ?? 0)*/);
+                if (property == null)
+                {
+                    throw new InvalidOperationException("Cannot find property on " + el.ToString());
+                }
+                /*
+                TODO: ???
+                if (method.ContainsGenericParameters)
+                {
+                    var genericsEl = el.Element("GenericArguments");
+                    if (genericsEl == null)
+                    {
+                        throw new InvalidOperationException("Cannot resolve generic arguments on " + el.ToString());
+                    }
+                    var genericTypes = genericsEl.Elements()
+                        .Select(el2 => Type.GetType(el2.Attribute("AssemblyQualifiedName")?.Value ?? ""))
+                        .Cast<Type>().ToArray();
+                    method = method.MakeGenericMethod(genericTypes);
+
+                }
+                */
+                return property;
+
+            }
+
             return null;
         }
 
@@ -351,13 +499,17 @@ namespace DataLayer.Utilities.Extensions
                 return set?.Expression; // This is the "Real" root for EF Core
             }
 
-            throw new InvalidOperationException($"No DbSet found for {entityType.Name} in TranslationContext.");
+            throw new InvalidOperationException($"No DbSet found for {entityType?.Name} in TranslationContext.");
         }
 
         private static ConstantExpression BuildConstant(XElement el, Func<XElement, Expression?> ToExpression)
         {
-            var val = el.Element("Value")?.Value;
-            var typeName = el.Element("DataType")?.Value;
+            var val = el.Attribute("Value")?.Value;
+            var typeName = el.Element("Type")?.Attribute("FullName")?.Value;
+            if (typeName == null)
+            {
+                throw new InvalidOperationException("Could not resolve constant type on: " + el);
+            }
             var type = Type.GetType(typeName) ?? typeof(string);
 
             // Use Activator to convert the string value back to the target type
@@ -371,16 +523,20 @@ namespace DataLayer.Utilities.Extensions
         private static ParameterExpression BuildParameter(XElement el, Func<XElement, Expression?> ToExpression)
         {
             var name = el.Element("Name")?.Value ?? "x";
-            var typeName = el.Element("Type")?.Value; // From your 'fluffy' reflection
+            var typeName = el.Element("Type")?.Attribute("FullName")?.Value; // From your 'fluffy' reflection
+            if (typeName == null)
+            {
+                throw new InvalidOperationException("Could not resolve parameter type on: " + el);
+            }
             var type = Type.GetType(typeName) ?? typeof(object);
 
             // Important: Re-use the same ParameterExpression object for the same name
-            if (!_parameters.TryGetValue(name, out var param))
+            if (!_parameters.TryGetValue(name, out var parameter))
             {
-                param = Expression.Parameter(type, name);
-                _parameters.Add(name, param);
+                parameter = Expression.Parameter(type, name);
+                _parameters.Add(name, parameter);
             }
-            return param;
+            return parameter;
         }
 
         public static string ToSerialized(IQueryable query)
