@@ -22,6 +22,7 @@ namespace StudySauce.Web.Client.Services
             Console.WriteLine("Executing: " + query.ToString());
             // This is exactly where you use your Expression Tree Converter
             var serialized = query.ToXDocument().ToString();
+            Console.WriteLine("Converted: " + query.ToString());
 
             // Send to your remote endpoint
             var response = _httpClient.PostAsJsonAsync("api/query", serialized).Result;
@@ -44,6 +45,7 @@ namespace StudySauce.Web.Client.Services
         {
             // 1. Serialize the expression tree using your converter
             var serialized = query.ToXDocument().ToString();
+            Console.WriteLine("Converted: " + query.ToString());
             try
             {
                 // 2. Perform the async network call

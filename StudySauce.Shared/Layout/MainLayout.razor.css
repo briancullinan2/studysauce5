@@ -15,6 +15,13 @@
     width: 100%;
     background: #0a0514;
     overflow: hidden;
+    top: 0;
+    left: 125px;
+    transition: left ease-in-out 0.6s;
+}
+
+.page.study-mode .canvas-container {
+    left: 40px;
 }
 
     .canvas-container canvas {
@@ -74,15 +81,15 @@
             min-width: 200px;
         }
 
-        .top-row {
-            background-color: #f7f7f7;
-            border-bottom: 1px solid #d6d5d5;
-            justify-content: stretch;
-            height: 3.5rem;
-            display: flex;
-            align-items: center;
-            max-width: 100%;
-        }
+.top-row {
+    /*background-color: #f7f7f7;
+    border-bottom: 1px solid #d6d5d5;*/
+    justify-content: stretch;
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
+    max-width: 100%;
+}
 
         .sidebar {
             background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
@@ -144,12 +151,15 @@
 
 .page ::deep .top-row > a,
 .page ::deep .contextual-menu a {
+
+    color:white;
     transition: color ease-in-out 0.6s;
 }
 
         .top-row > * {
             flex-shrink: 1;
             transition: color ease-in-out 0.6s;
+            color: white;
         }
 
         .top-row > h2 {

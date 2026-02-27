@@ -31,7 +31,7 @@ the compiler will stop it and not have to wait for testing suite.
 * Pre-rendered DRM streaming support, controlled content leaves memory and renders live as an image instead of copy/paste content
 * Entire course content include in basic local access, quizes, study plan creator, pack builder utility
 * Content management and sales panel that shows how similar other content is to yours for possible copyright but really just for technical capabilities
-
+* Add background and title bar and styling options to packs like we had planned in the last version
 
 ## More TODO
 Erasure Coding Math	Library	Witteborn.ReedSolomon (NuGet). It's a port of the Backblaze Java lib. Do not write the Galois Field math yourself; it's a rabbit hole of performance traps.

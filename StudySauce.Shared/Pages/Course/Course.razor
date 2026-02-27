@@ -102,13 +102,15 @@
     {
         PackLayout = Controls.PackControl.ViewPack.Metadata.Groups["Display"]?.ToList();
         // TODO: make sure this goes through RemoteQuery on web assembly client
-        _ = LoadDataAsync();
+        //_ = LoadDataAsync();
         Nav.LocationChanged += OnLocationChanged;
         CourseService.OnStepChanged += OnStepChanged;
         CourseService.OnCourseChanged += OnCourseChanged;
         OnSetCourseParameters();
+        Console.WriteLine("Course initialized");
     }
 
+    /*
     private async Task LoadDataAsync()
     {
         try
@@ -124,7 +126,7 @@
             Console.WriteLine($"RemoteQuery failed: {ex.Message}");
             // Set a default value or error state so the UI stays stable
         }
-    }
+    }*/
 
     protected void OnLocationChanged(object? sender, LocationChangedEventArgs args)
     {

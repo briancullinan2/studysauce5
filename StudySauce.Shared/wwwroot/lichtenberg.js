@@ -30,18 +30,47 @@
         const p1 = project(x1, y1, z1);
         const p2 = project(x2, y2, z2);
 
-        const pulse = (Math.cos(angle + (depth * 0.2)) + 1) / 2;
-        const r = Math.floor(5 + pulse * 50);
-        const g = Math.floor(39 + pulse * 20);
-        const b = Math.floor(103 + pulse * 152);
+        // Create a pulse value (0 to 1) based on time and depth
+        const pulse = (Math.cos(angle + (depth * 0.3)) + 1) / 2;
+
+        // --- NEW COLOR LOGIC ---
+        let color;
+        // We use the 'pulse' and a bit of randomness to decide the color bucket
+        const colorSeed = (pulse + Math.random() * 0.2);
+
+        if (colorSeed > 0.8) {
+            // High pulse: Near White / Bright Cyan
+            color = `rgb(${200 + pulse * 55}, ${220 + pulse * 35}, 255)`;
+        } else if (colorSeed > 0.4) {
+            // Mid pulse: Electric Purples
+            const r = Math.floor(140 + pulse * 100);
+            const g = Math.floor(50 + pulse * 50);
+            const b = 255;
+            color = `rgb(${r}, ${g}, ${b})`;
+        } else {
+            // Low pulse: Deep Blues
+            const r = Math.floor(30 + pulse * 30);
+            const g = Math.floor(80 + pulse * 40);
+            const b = Math.floor(200 + pulse * 55);
+            color = `rgb(${r}, ${g}, ${b})`;
+        }
 
         ctx.beginPath();
         ctx.moveTo(p1.x, p1.y);
         ctx.lineTo(p2.x, p2.y);
-        ctx.strokeStyle = `rgb(${r}, ${g}, ${b})`;
-        ctx.lineWidth = depth * 0.4 * pulse;
+
+        // Add a slight glow effect by setting shadowBlur
+        ctx.shadowBlur = depth * 2;
+        ctx.shadowColor = color;
+
+        ctx.strokeStyle = color;
+        ctx.lineWidth = depth * 0.5 * pulse;
         ctx.stroke();
 
+        // Reset shadowBlur for performance so it doesn't bleed into other operations
+        ctx.shadowBlur = 0;
+
+        // --- RECURSION ---
         const midX = (x1 + x2) / 2 + (Math.random() - 0.5) * depth * jitterScale;
         const midY = (y1 + y2) / 2 + (Math.random() - 0.5) * depth * jitterScale;
         const midZ = (z1 + z2) / 2 + (Math.random() - 0.5) * depth * jitterScale;
@@ -52,7 +81,18 @@
         }
     }
 
-    function animate() {
+    let fps = 20;
+    let fpsInterval = 1000 / fps;
+    let lastDrawTime = performance.now();
+
+    function animate(currentTime) {
+        let elapsed = currentTime - lastDrawTime;
+        if (elapsed < fpsInterval) {
+            requestAnimationFrame(animate);
+            return;
+        }
+        lastDrawTime = currentTime - (elapsed % fpsInterval);
+
         // Darker trail for high-contrast static
         ctx.fillStyle = 'rgba(5, 2, 15, 0.15)';
         ctx.fillRect(0, 0, width, height);
@@ -82,10 +122,16 @@
         // 3. Draw "Wild Static" shooting outward from corners into the void
         nodes.forEach(node => {
             // Shoots 1.5x further out than the corner
-            drawBranch(node[0], node[1], node[2], node[0] * 1.5, node[1] * 1.5, node[2] * 1.5, 3, 25);
+            const reach = 3.5;
+            drawBranch(
+                node[0], node[1], node[2],           // Start at corner
+                node[0] * reach, node[1] * reach, node[2] * reach, // End far out
+                3, 25                                // Depth and jitter
+            );
         });
 
         requestAnimationFrame(animate);
     }
-    animate();
+    animate(0)
+    //setInterval(() => animate(performace.now()), fpsInterval);
 }

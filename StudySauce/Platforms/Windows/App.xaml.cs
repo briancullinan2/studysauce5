@@ -133,6 +133,7 @@ namespace StudySauce.WinUI
 
             // 2. Mapping happens AFTER routing is configured
             //webApp.MapBlazorHub();
+            webApp.MapPost("/api/query", QueryService.RespondQuery);
 
 
 

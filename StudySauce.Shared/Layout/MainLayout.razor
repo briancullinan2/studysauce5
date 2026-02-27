@@ -11,10 +11,10 @@
 @inject IServiceProvider ServiceProvider
 @inject NavigationManager Nav
 
-<div class="canvas-container">
-    <canvas id="lichtenbergCanvas"></canvas>
-</div>
 <div class="@(Study == true ? "study-mode" : "") @PageClass page">
+    <div class="canvas-container">
+        <canvas id="lichtenbergCanvas"></canvas>
+    </div>
     <div class="sidebar">
         <NavMenu />
     </div>
