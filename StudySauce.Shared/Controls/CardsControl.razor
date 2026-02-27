@@ -8,7 +8,7 @@
         public DataLayer.Entities.Card? Card { get; set; }
 
         [Category("Answers")]
-        public ICollection<Answer> Answers { get => Card.Answers; }
+        public ICollection<Answer>? Answers { get => Card?.Answers; }
     }
 
     public class ViewCard
@@ -18,9 +18,10 @@
         [Display(Name = "Cards", GroupName = "Display", Description = "Card currently being viewed by the user")]
         public DataLayer.Entities.Card? Card { get; set; }
         [Category("Answers")]
-        public ICollection<Answer> Answers { get => Card.Answers; }
+        public ICollection<Answer>? Answers { get => Card?.Answers; }
     }
 
+    [Parameter] public IEnumerable<ViewCard>? Data { get; set; }
     [Parameter] public PropertyMetadata? Model { get; set; }
     [Parameter] public EventCallback<object> ValueChanged { get; set; }
     public DataLayer.Customization.ControlMode Mode
@@ -49,5 +50,8 @@ This is a list of cards
 else
 {
     <span>Viewing list of cards</span>
-    <MetadataControl TModel="PropertyMetadata" Model="@CardLayout"></MetadataControl>
+    @foreach (var card in Data ?? [])
+    {
+        <MetadataControl TModel="PropertyMetadata" Model="@CardLayout"></MetadataControl>
+    }
 }

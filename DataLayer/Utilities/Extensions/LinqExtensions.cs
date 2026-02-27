@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System.Collections;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Xml;
@@ -28,7 +29,7 @@ namespace DataLayer.Utilities.Extensions
         }
 
         private static readonly int _maxDepth = 2;
-        private static readonly int _maxExpressionDepth = 5;
+        private static readonly int _maxExpressionDepth = 6;
 
         public static XDocument ToXDocument(this Expression expression)
         {
@@ -39,8 +40,12 @@ namespace DataLayer.Utilities.Extensions
             if (node == null) return new XElement("Null");
 
             var type = node.GetType();
-            var element = new XElement(type.Name);
+            var element = new XElement(type.Name.ToSafe());
 
+            if (expressionDepth >= _maxExpressionDepth)
+            {
+                element.Add(new XAttribute("DepthReached", "True"));
+            }
             if (currentDepth >= _maxDepth || expressionDepth >= _maxExpressionDepth)
             {
                 //element.Add(new XAttribute("DepthReached", "True"));
@@ -49,23 +54,29 @@ namespace DataLayer.Utilities.Extensions
                 return element;
             }
 
-            //if (node is Expression exp)
-            //{
-            //    var propElement = new XElement("NodeType");
-            //    propElement.Add(VisitToXml(exp.NodeType, currentDepth + 1));
-            //    element.Add(propElement);
-            //}
 
-            //if (node is MethodCallExpression method)
-            //{
-            //    var propElement = new XElement("MethodInfo");
-            //    propElement.Add(VisitToXml(method.Method, currentDepth + 1));
-            //    element.Add(propElement);
-            //}
+            if (node is IEnumerable list2 && !(node is string))
+            {
+                foreach (var item in list2)
+                {
+                    // Add items directly to the parent element
+                    element.Add(VisitToXml(item, currentDepth + 1, expressionDepth + 1));
+                }
+                // If it's a collection, we usually don't need its internal properties 
+                // (like Count or Capacity), so we can return here.
+                return element;
+            }
 
             var props = type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
+            if (node is UnaryExpression unary)
+            {
+                Console.WriteLine(unary.Operand.ToString());
+                Console.WriteLine(string.Join(" ", props.Select(p => p.Name).ToList()));
+            }
             foreach (var prop in props)
             {
+                if (prop.GetIndexParameters().Length > 0) continue;
+
                 if (prop.Name == "ImplementedInterfaces" || prop.Name == "DeclaredProperties"
                     || prop.Name == "DeclaredMethods" || prop.Name == "CanReduce" || prop.Name == "TailCall") continue;
 
@@ -152,7 +163,11 @@ namespace DataLayer.Utilities.Extensions
                     }
 
                 }
-                catch { /* Skip problematic properties */ }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(prop.Name);
+                    Console.WriteLine(ex);
+                }
             }
 
             return element;

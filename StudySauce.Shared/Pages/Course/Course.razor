@@ -1,4 +1,5 @@
 @implements IDisposable
+@implements DataLayer.Generators.IGenerator<DataLayer.Entities.Course>
 
 @page "/course"
 @page "/course/{Level:int}"
@@ -22,7 +23,7 @@
 @code
 {
 
-    private PackControl.ViewPack? CurrentQuiz;
+    private IEnumerable<Controls.CardsControl.ViewCard>? CurrentQuiz;
     private IEnumerable<PropertyMetadata>? PackLayout;
     private List<DataLayer.Entities.Response> Responses = new();
 
@@ -62,7 +63,7 @@
                         break;
                     case StepMode.Quiz:
                         <div class="flash-card animate-in">
-                            <MetadataControl TModel="PackControl.ViewPack" Model="@PackLayout" Data="@([CurrentQuiz])"></MetadataControl>
+                            <MetadataControl TModel="CardsControl.ViewCard" Model="@PackLayout" Data="@CurrentQuiz"></MetadataControl>
                             @if (Responses.Count() == CardCount)
                             {
                                 <button @onclick="() => Next(StepMode.Reward)">See Reward</button>
@@ -110,7 +111,6 @@
         Console.WriteLine("Course initialized");
     }
 
-    /*
     private async Task LoadDataAsync()
     {
         try
@@ -118,7 +118,14 @@
             // If this fails, the catch block handles it gracefully
             // instead of blowing up the RenderTreeBuilder
             //CardCount = await CurrentQuiz.Cards.CountAsync<int>();
-            var result = await Context.Packs.CountAsync();
+            var result = await Context.Packs.Where(p => p.CourseId == 0).FirstOrDefaultAsync();
+            if(result == null)
+            {
+                var generator = ActiveItem?.Lesson?.GetMethod("Generate", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+                IEnumerable<DataLayer.Entities.Card>? cards = generator?.Invoke(null, []) as IEnumerable<DataLayer.Entities.Card>;
+                CurrentQuiz = cards?.Select(c => new Controls.CardsControl.ViewCard() { Card = c });
+                StateHasChanged();
+            }
             Console.WriteLine("Pack count: " + result);
         }
         catch (Exception ex)
@@ -126,7 +133,7 @@
             Console.WriteLine($"RemoteQuery failed: {ex.Message}");
             // Set a default value or error state so the UI stays stable
         }
-    }*/
+    }
 
     protected void OnLocationChanged(object? sender, LocationChangedEventArgs args)
     {
@@ -181,6 +188,7 @@
     
         if (ActiveItem?.Lesson != null)
         {
+            _ = LoadDataAsync();
             //CurrentQuiz = new PackControl.ViewPack { Pack = Context.Packs.Where(p => p.Title == ActiveItem.Lesson.Name).FirstOrDefault() };
         }
 
@@ -196,4 +204,11 @@
     private void Next(StepMode nextStep) => Nav.NavigateTo<Pages.Course.Course>(c => new() { Level = ActiveItem != null ? ActiveItem.Level : 1, Lesson = ActiveItem != null && ActiveItem.Lesson != null ? ActiveItem.Lesson.Name.ToSafe() : "", Step = nextStep });
 
     private void Finish() { /* Navigate back or to next lesson */ }
+
+    public static IEnumerable<DataLayer.Entities.Course> Generate()
+    {
+        var newItem = CourseMenu.GetCourse(typeof(Course3));
+
+        return newItem?.Children.Select(mi => new DataLayer.Entities.Course() { Title = "Study Sauce" }) ?? [];
+    }
 }

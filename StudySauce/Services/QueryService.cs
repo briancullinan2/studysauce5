@@ -9,24 +9,58 @@ namespace StudySauce.Services
     {
         public async static void RespondQuery(HttpContext context, IServiceProvider _service)
         {
-            // 1. Read the serialized query from the request body
-            using var scope = _service.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<TranslationContext>();
-            using var reader = new StreamReader(context.Request.Body);
-            var jsonQuery = await reader.ReadToEndAsync();
-            string rawXml = JsonSerializer.Deserialize<string>(jsonQuery);
-
-            // TODO: add marshalling rules here
-            var results = DataLayer.Utilities.Extensions.LinqExtensions.ToQueryable(rawXml, _service);
-
-            context.Response.ContentType = "application/json";
-            var json = JsonSerializer.Serialize(results, new JsonSerializerOptions
+            try
             {
-                WriteIndented = true,
-                ReferenceHandler = ReferenceHandler.IgnoreCycles // Important for EF Entities
-            });
+                // 1. Read the serialized query from the request body
+                context.Response.ContentType = "application/json";
+                using var scope = _service.CreateScope();
+                var dbContext = scope.ServiceProvider.GetRequiredService<TranslationContext>();
+                using var reader = new StreamReader(context.Request.Body);
+                var jsonQuery = await reader.ReadToEndAsync();
+                string? rawXml = JsonSerializer.Deserialize<string>(jsonQuery);
 
-            await context.Response.WriteAsync(json);
+                if (string.IsNullOrWhiteSpace(rawXml))
+                {
+                    var json2 = JsonSerializer.Serialize("");
+                    await context.Response.WriteAsync(json2);
+                    return;
+                }
+
+                // TODO: add marshalling rules here
+                var results = DataLayer.Utilities.Extensions.LinqExtensions.ToQueryable(rawXml, _service);
+
+                var json = JsonSerializer.Serialize(results, new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles // Important for EF Entities
+                });
+
+                await context.Response.WriteAsync(json);
+            }
+            catch (Exception ex)
+            {
+                try
+                {
+                    context.Response.ContentType = "application/json";
+                    var json = JsonSerializer.Serialize(ex.Message, new JsonSerializerOptions
+                    {
+                        WriteIndented = true,
+                        ReferenceHandler = ReferenceHandler.IgnoreCycles // Important for EF Entities
+                    });
+                    await context.Response.WriteAsync(json);
+                }
+                catch (Exception ex2)
+                {
+                    try
+                    {
+                        await context.Response.WriteAsync(ex2.Message);
+                    }
+                    catch (Exception ex3)
+                    {
+                        Console.WriteLine(ex3);
+                    }
+                }
+            }
         }
     }
 }

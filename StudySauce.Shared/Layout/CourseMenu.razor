@@ -3,7 +3,12 @@
 
 @code 
 {
-    public static ICourseMenuItem? GetActiveItem(int? level, string? lesson)
+    public static ICourseMenuItem? GetCourse(Type type)
+    {
+        return CourseMenu.MenuStructure.FirstOrDefault(c => c.Course == type);
+    }
+
+    public static ICourseMenuItem? GetActiveItem(int? level, string? lesson = null)
     {
         // If no level, we are at the root
         if (level == null) return null;

@@ -17,6 +17,7 @@
                         // Manually assign parameters from your dictionary
                         builder.AddAttribute(1, "Model", entry.Metadata);
                         builder.AddAttribute(2, "ValueChanged", entry.Params["ValueChanged"]);
+                        builder.AddAttribute(3, "Data", Data);
                         builder.CloseComponent();
                     };
                 }
@@ -66,9 +67,9 @@
     protected override void OnParametersSet()
     {
         // Only rebuild if the model actually exists and we haven't cached it yet
-        if (Model is IEnumerable<PropertyMetadata> metadataList && _parameterCache == null)
+        if (_parameterCache == null)
         {
-            _parameterCache = metadataList.Select(prop => (
+            _parameterCache = Model?.Select(prop => (
                 prop,
                 new Dictionary<string, object?>
                 {

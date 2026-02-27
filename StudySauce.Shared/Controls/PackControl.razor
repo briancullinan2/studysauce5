@@ -8,7 +8,7 @@
         public DataLayer.Entities.Pack? Pack { get; set;  }
         [Category("Content")]
         [Display(Name = "Cards", GroupName = "Display", Description = "Set of card content to display to users")]
-        public ICollection<Controls.CardsControl.ViewCard> Cards { get; set; } = new HashSet<Controls.CardsControl.ViewCard>();
+        public IEnumerable<Controls.CardsControl.ViewCard>? Cards { get => Pack?.Cards.Select(c => new Controls.CardsControl.ViewCard() { Card = c }); }
 
     }
 

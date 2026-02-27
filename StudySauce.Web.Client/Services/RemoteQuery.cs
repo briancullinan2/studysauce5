@@ -33,7 +33,6 @@ namespace StudySauce.Web.Client.Services
         // You must also implement ExecuteAsync for ToListAsync() support
         public TResult ExecuteAsync<TResult>(Expression query, CancellationToken cancellationToken = default)
         {
-            Console.WriteLine("Executing: " + query.ToString());
             // Same logic, but returning a Task/ValueTask
             return (TResult)typeof(RemoteQuery)
                 .GetMethod(nameof(ExecuteRemoteAsync))
@@ -43,6 +42,7 @@ namespace StudySauce.Web.Client.Services
 
         public async Task<T> ExecuteRemoteAsync<T>(Expression query, CancellationToken cancellationToken = default)
         {
+            Console.WriteLine("Executing: " + query.ToString());
             // 1. Serialize the expression tree using your converter
             var serialized = query.ToXDocument().ToString();
             Console.WriteLine("Converted: " + query.ToString());

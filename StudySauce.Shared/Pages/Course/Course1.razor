@@ -1,6 +1,14 @@
-﻿
+﻿@implements DataLayer.Generators.IGenerator<DataLayer.Entities.Pack>
 @code {
     [Parameter] public Type? Lesson { get; set; }
+
+    public static IEnumerable<DataLayer.Entities.Pack> Generate()
+    {
+        var newItem = CourseMenu.GetCourse(typeof(Course1));
+
+        return newItem?.Children.Select(mi => new DataLayer.Entities.Pack() { Title = mi.Title, CourseId = 0 }) ?? [];
+    }
+
 }
 
 @if (Lesson == typeof(SettingGoals))
