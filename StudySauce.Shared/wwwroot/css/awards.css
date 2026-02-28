@@ -237,10 +237,11 @@
     vertical-align: middle;
     border:5px solid #555;
     background: url(../images/noise_white.png) repeat #ffffff;
-    padding:50px 20px;
+    padding:20px 10px;
     border-radius: 5px;
     width: 500px;
     max-width: 40%;
+    text-align: center;
 }
 
 .award h3

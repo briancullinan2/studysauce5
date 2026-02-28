@@ -24,10 +24,17 @@
     left: 40px;
 }
 
-    .canvas-container canvas {
-        height: 100%;
-        width: 100%;
-    }
+::deep .badge.bg-secondary {
+    background: lightgrey;
+    border: 3px solid grey;
+    border-radius: 10px;
+    padding: 5px;
+}
+
+.canvas-container canvas {
+    height: 100%;
+    width: 100%;
+}
 
     .page.study-mode .sidebar {
         width: 80px;
@@ -360,3 +367,45 @@
             background-color: rgba(244, 67, 54, 0.5) !important;
             transition: none;
         }
+
+
+
+::deep .tab-tracker {
+    list-style: none;
+    font-size: 40px;
+    position: absolute;
+    bottom: 0px;
+    left: 0;
+    z-index: 0;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    display: flex;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+    justify-items: center;
+    pointer-events: none;
+    color: grey;
+}
+
+    ::deep .tab-tracker li {
+        list-style: none;
+        display: inline-block;
+        margin: 10px;
+        vertical-align: middle;
+    }
+
+::deep .step0 .tab-tracker li:first-child,
+::deep .step1 .tab-tracker li:nth-child(2),
+::deep .step2 .tab-tracker li:nth-child(3),
+::deep .step3 .tab-tracker li:nth-child(4),
+::deep .step4 .tab-tracker li:nth-child(5),
+::deep .step5 .tab-tracker li:nth-child(6),
+::deep .step6 .tab-tracker li:nth-child(7),
+::deep .step7 .tab-tracker li:nth-child(8),
+::deep .step8 .tab-tracker li:nth-child(9),
+::deep .step9 .tab-tracker li:nth-child(10) {
+    font-size: 60px;
+    color: #0099BB;
+}

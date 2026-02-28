@@ -5,11 +5,10 @@
 .course-container {
     margin: auto;
     max-width: 800px;
-    position:relative;
+    position: relative;
 }
 
-.card-viewer
-{
+.card-viewer {
     position: relative;
 }
 
@@ -25,15 +24,24 @@
 }
 
 
-
-::deep .preview-wrong,
-::deep .preview-right {
-    padding: 12px;
-    background: lightgreen;
+.reward {
+    display:flex;
+    flex-wrap: nowrap;
 }
+    .reward > * {
+        flex-basis:50%;
+    }
+
+    ::deep .preview-wrong,
+    ::deep .preview-right {
+        padding: 12px;
+        background: lightgreen;
+    }
+
 ::deep .preview-wrong {
     background: red;
 }
+
 .animate-in {
     animation: slideUp 0.4s forwards;
 }
@@ -56,35 +64,32 @@
         flex-basis: 100%;
     }
 
-    ::deep input.large-present + label[for]:hover
-    {
-        background: lightgreen;
+        ::deep input.large-present + label[for]:hover {
+            background: lightgreen;
+        }
 
+    ::deep input.large-present:checked + label[for] {
+        border-width: 10px;
+        border-color: lightgreen;
     }
 
-        ::deep input.large-present:checked + label[for]
-        {
-            border-width:10px;
-            border-color:lightgreen;
-        }
-
-        ::deep .Answers-form-field {
-            display: flex;
-            flex-direction: column;
-        }
+::deep .Answers-form-field {
+    display: flex;
+    flex-direction: column;
+}
 
 
-    @keyframes slideUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
     }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
 
 ::deep .animate-fade-in {
@@ -145,41 +150,3 @@
 }
 
 
- .tab-tracker {
-    list-style: none;
-    font-size: 40px;
-    position: sticky;
-    bottom: 0px;
-    left: 0;
-    z-index: -1;
-    padding: 0;
-    margin: 0;
-    width: 100%;
-    display:flex;
-    align-content:center;
-    align-items: center;
-    justify-content:center;
-    justify-items: center;
-    pointer-events: none;
-}
-
-     .tab-tracker li {
-        list-style: none;
-        display: inline-block;
-        margin: 10px;
-        vertical-align: middle;
-    }
-
-.step0 .tab-tracker li:first-child,
-.step1 .tab-tracker li:nth-child(2),
-.step2 .tab-tracker li:nth-child(3),
-.step3 .tab-tracker li:nth-child(4),
-.step4 .tab-tracker li:nth-child(5),
-.step5 .tab-tracker li:nth-child(6),
-.step6 .tab-tracker li:nth-child(7),
-.step7 .tab-tracker li:nth-child(8),
-.step8 .tab-tracker li:nth-child(9),
-.step9 .tab-tracker li:nth-child(10) {
-    font-size: 60px;
-    color: #0099BB;
-}
