@@ -1,6 +1,5 @@
 ﻿.card-stage {
     position: relative;
-    height: 400px;
 }
 
 .course-container {
@@ -13,7 +12,10 @@
     border-radius: 15px;
     padding: 2rem;
     box-shadow: 0 20px 40px rgba(255,255,255,0.8), 0 10px 20px rgba(0,0,0,1.0);
-    transition: all 0.5s ease-in-out;
+    /*transition: all 0.5s ease-in-out;*/
+    max-height: 400px;
+    max-height: calc(100vh - 5.7rem);
+    overflow: auto;
 }
 
 
@@ -30,14 +32,50 @@
     animation: slideUp 0.4s forwards;
 }
 
-@keyframes slideUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
+::deep input.large-present {
+    height: 0;
+    width: 0;
+    border: 0;
+    opacity: 0;
+    position: absolute;
+    top: -10px;
+    left: 10px;
+}
+
+    ::deep input.large-present + label[for] {
+        padding: 10px;
+        cursor: pointer;
+        border-radius: 10px;
+        border: 2px solid lightgrey;
+        flex-basis: 100%;
     }
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
+    ::deep input.large-present + label[for]:hover
+    {
+        background: lightgreen;
+
     }
-}
+
+        ::deep input.large-present:checked + label[for]
+        {
+            border-width:10px;
+            border-color:lightgreen;
+        }
+
+        ::deep .Answers-form-field {
+            display: flex;
+            flex-direction: column;
+        }
+
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }

@@ -42,19 +42,16 @@
 
 }
 
-This is a list of cards
 @if (Mode == DataLayer.Customization.ControlMode.Edit)
 {
-    <span>Editing list of cards</span>
     @* TODO: repeat all controls of CardControl for every card in new Data property *@
     <MetadataControl TModel="PropertyMetadata" Model="@CardLayout"></MetadataControl>
 
 }
 else
 {
-    <span>Viewing list of cards</span>
     @foreach (var card in Data ?? [])
     {
-        <MetadataControl TModel="PropertyMetadata" Model="@CardLayout"></MetadataControl>
+        <MetadataControl TModel="Controls.CardsControl.ViewCard" Model="@CardLayout" Data="[card]"></MetadataControl>
     }
 }

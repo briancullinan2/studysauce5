@@ -2,7 +2,7 @@
 @using System.ComponentModel
 @code
 {
-    [Parameter] public IEnumerable<DataLayer.Entities.Answer>? Data { get; set; }
+    [Parameter] public IEnumerable<Controls.CardsControl.ViewCard>? Data { get; set; }
     [Parameter] public PropertyMetadata? Model { get; set; }
     [Parameter] public EventCallback<object> ValueChanged { get; set; }
     public DataLayer.Customization.ControlMode Mode
@@ -20,5 +20,8 @@
 
 }
 
-This is a list of answers
-@* TODO: repeat all controls of CardControl for every card in new Data property *@
+@foreach (var answer in Data?.ElementAt(0).Answers ?? [])
+{
+    <input class="large-present" type="radio" value="@answer.Content" id="@answer.Content.ToSafe()" name="@Data?.ElementAt(0).Card?.Content.ToSafe()" />
+    <label for="@answer.Content.ToSafe()">@answer.Content</label>
+}

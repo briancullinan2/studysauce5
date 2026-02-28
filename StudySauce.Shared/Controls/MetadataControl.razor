@@ -6,7 +6,7 @@
     {
         @foreach (var entry in _parameterCache)
         {
-            <div class="form-field">
+            <div class="form-field @entry.Metadata.Name.ToSafe()-form-field">
                 @*<label>@entry.Metadata.PropertyType</label>
                 <label>@GetControl(entry.Metadata.PropertyType).Name</label>*@
                 @{
