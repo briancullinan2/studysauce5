@@ -1,0 +1,85 @@
+
+@if (Lesson == typeof(Interleaving))
+{
+    @* Interleaving Reward *@
+    <h2>Train like an elite athlete.</h2>
+    <div class="meme-container">
+        <img src="bundles/course2/images/reward1.gif" alt="Victory Meme" />
+    </div>
+    <div class="award">
+        <h3>Badge awarded:</h3>
+        <span class="medal beginner-mix"></span>
+        <strong>Mix It Up</strong>
+        <div class="description">
+            "Studying different topics sequentially is an important tool in maximizing your brain's effectiveness to retain information. For maximum benefit, select very different subjects to give parts of your brain a break."
+        </div>
+    </div>
+}
+else if (Lesson == typeof(StudyMetrics))
+{
+    @* Study Metrics Reward *@
+    <h2>Not measuring properly can end poorly...</h2>
+    <div class="meme-container">
+        <img src="bundles/course2/images/reward2.gif" alt="Victory Meme" />
+    </div>
+    <div class="award">
+        <h3>Badge awarded:</h3>
+        <span class="medal study-metrics"></span>
+        <strong>Study Metrics</strong>
+        <div class="description">
+            "Better to measure than let small problems become big ones. But...now you know all about that."
+        </div>
+    </div>
+}
+else if (Lesson == typeof(StudyPlan))
+{
+    @* Study Plan Reward *@
+    <h2>Crack the whip often to stay ahead</h2>
+    <div class="meme-container">
+        <img src="bundles/course2/images/reward3.gif" alt="Victory Meme" />
+    </div>
+    <div class="award">
+        <h3>Badge awarded:</h3>
+        <span class="medal bullwhip"></span>
+        <strong>Crack the whip</strong>
+        <div class="description">
+            "Building and following a study plan takes some discipline. Keep at it and it will pay off."
+        </div>
+    </div>
+}
+else if (Lesson == typeof(StudyingForTests))
+{
+    @* Study Tests Reward *@
+    <h2>Relax, you've got this!</h2>
+    <div class="meme-container">
+        <img src="bundles/course2/images/reward4.gif" alt="Victory Meme" />
+    </div>
+    <div class="award">
+        <h3>Badge awarded:</h3>
+        <span class="medal turtle"></span>
+        <strong>Slow and steady</strong>
+        <div class="description">
+            "The key to studying for tests is to start early and to pace yourself. By spacing out your studies, you will remember more and be far less stressed."
+        </div>
+    </div>
+}
+else if (Lesson == typeof(TestTaking))
+{
+    @* Test Taking Reward *@
+    <h2>Don't get carried away on test day.</h2>
+    <div class="meme-container">
+        <img src="bundles/course2/images/reward5.gif" alt="Victory Meme" />
+    </div>
+    <div class="award">
+        <h3>Badge awarded:</h3>
+        <span class="medal buddha"></span>
+        <strong>Zen master</strong>
+        <div class="description">
+            "Test taking doesn't have to be stressful Grasshopper."
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public Type? Lesson { get; set; }
+}

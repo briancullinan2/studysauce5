@@ -1,0 +1,85 @@
+
+@if (Lesson == typeof(IntroToStrategies))
+{
+    @* Strategies Reward *@
+    <h2>Having a good strategy is key to studying</h2>
+    <div class="meme-container">
+        <img src="bundles/course3/images/reward6.gif" alt="Victory Meme" />
+    </div>
+    <div class="award">
+        <h3>Badge awarded:</h3>
+        <span class="medal beginner-sponsored"></span>
+        <strong>Strategery</strong>
+        <div class="description">
+            "Get ready to become a brilliant strategerist....er, strategist."
+        </div>
+    </div>
+}
+else if (Lesson == typeof(SpacedRepetition))
+{
+    @* Spaced Repetition Reward *@
+    <h2>Study, Rinse, Repeat.</h2>
+    <div class="meme-container">
+        <img src="bundles/course3/images/reward10.gif" alt="Victory Meme" />
+    </div>
+    <div class="award">
+        <h3>Badge awarded:</h3>
+        <span class="medal beginner-checklist"></span>
+        <strong>Space it out</strong>
+        <div class="description">
+            "You have now learned the science behind why it is so important to space out your studies. Make Ebbinghaus proud and defeat the Forgetting Curve."
+        </div>
+    </div>
+}
+else if (Lesson == typeof(GroupStudy))
+{
+    @* Group Study Reward *@
+    <h2>Choose your group wisely.</h2>
+    <div class="meme-container">
+        <img src="bundles/course3/images/reward7.gif" alt="Victory Meme" />
+    </div>
+    <div class="award">
+        <h3>Badge awarded:</h3>
+        <span class="medal ants"></span>
+        <strong>Many hands make light work</strong>
+        <div class="description">
+            "You can now safely put people management on your resume...congrats."
+        </div>
+    </div>
+}
+else if (Lesson == typeof(ActiveReading))
+{
+    @* Active Reading Reward *@
+    <h2>Curiosity is the key</h2>
+    <div class="meme-container">
+        <img src="bundles/course3/images/reward9.gif" alt="Victory Meme" />
+    </div>
+    <div class="award">
+        <h3>Badge awarded:</h3>
+        <span class="medal setup-hours"></span>
+        <strong>Book worm</strong>
+        <div class="description">
+            "Your days of head-bobbing while getting through your reading are over!!! Well, maybe. Use active reading as a tool to defeat the sleep monster and actually remember what you are reading."
+        </div>
+    </div>
+}
+else if (Lesson == typeof(TeachToLearn))
+{
+    @* Teaching Reward *@
+    <h2>Just remember to teach well!</h2>
+    <div class="meme-container">
+        <img src="bundles/course3/images/reward8.gif" alt="Victory Meme" />
+    </div>
+    <div class="award">
+        <h3>Badge awarded:</h3>
+        <span class="medal yoda"></span>
+        <strong>Teach or teach not</strong>
+        <div class="description">
+            "Use your powers of influence wisely. Teaching can be extraordinarily effective as a study strategy."
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public Type? Lesson { get; set; }
+}

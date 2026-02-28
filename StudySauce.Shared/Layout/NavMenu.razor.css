@@ -26,6 +26,9 @@
 .navbar-brand {
     font-size: 1.1rem;
     transition: color ease-in-out 0.6s;
+    color: white;
+    font-weight: bolder;
+    text-decoration: none;
 }
 
 .bi {
@@ -34,7 +37,7 @@
     width: 1.25rem;
     height: 1.25rem;
     margin-right: 0.75rem;
-    top: -1px;
+    top: 2px;
     background-size: cover;
 }
 
@@ -53,7 +56,7 @@
 
 .nav-item {
     font-size: 0.9rem;
-    padding-bottom: 0.5rem;
+    padding: 0.5rem;
     text-wrap: nowrap;
     max-width:100%;
     cursor:pointer;
@@ -61,10 +64,22 @@
     transition: color ease-in-out 0.6s;
 }
 
-.container-logo > img {
-    margin-right: 10px;
-    cursor: pointer;
+.container-logo
+{
+    display:flex;
+    vertical-align: middle;
+    justify-content: flex-start;
 }
+
+    .container-logo > * {
+        vertical-align: middle;
+        margin: auto 0;
+    }
+
+    .container-logo > img {
+        margin: auto 15px;
+        cursor: pointer;
+    }
 
     .nav-item:first-of-type {
         padding-top: 1rem;
@@ -83,6 +98,8 @@
         display: flex;
         align-items: center;
         width: 100%;
+        padding-left: 24px;
+        text-decoration: none;
     }
 
     .nav-text {

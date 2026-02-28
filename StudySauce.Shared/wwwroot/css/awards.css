@@ -1,6 +1,5 @@
-.award > .medal
-{
-    background: url("../awards_compressed.png") no-repeat scroll 0 -150px transparent;
+.award > .medal {
+    background: url("/_content/StudySauce.Shared/awards_compressed.png") no-repeat scroll 0 -150px transparent;
     width: 150px;
     height: 150px;
     z-index: 4;
