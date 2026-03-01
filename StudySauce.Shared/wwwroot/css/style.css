@@ -97,6 +97,7 @@ input.large-present + label[for] {
     border-radius: 10px;
     border: 2px solid lightgrey;
     flex-basis: 100%;
+    margin: 5px;
 }
 
 input.large-present + label[for]:hover {

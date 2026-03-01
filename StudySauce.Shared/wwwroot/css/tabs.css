@@ -3,8 +3,8 @@
 .tab-tracker {
     list-style: none;
     font-size: 40px;
-    position: sticky;
-    bottom: 0px;
+    position: absolute;
+    bottom: 60px;
     left: 0;
     z-index: 0;
     padding: 0;
@@ -15,15 +15,35 @@
     align-items: center;
     justify-content: center;
     justify-items: center;
-    pointer-events: none;
+    color: grey;
+    height:20px;
+}
+
+.preview-count {
+    list-style: none;
+    position: absolute;
+    bottom: 30px;
+    left: 0;
+    z-index: 0;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    display: flex;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+    justify-items: center;
     color: grey;
 }
+
 
 .tab-tracker li {
     list-style: none;
     display: inline-block;
     margin: 10px;
     vertical-align: middle;
+    position: relative;
+    cursor: pointer;
 }
 
 .step0 .tab-tracker li:first-child,
@@ -39,3 +59,34 @@
     font-size: 60px;
     color: #0099BB;
 }
+
+.text-amber-500 {
+    font-size: 60px;
+    color:darkorange;
+}
+
+text-slate-300{
+
+}
+
+.tab-tracker li span
+{
+    font-size: 14px;
+    display:none;
+    position:absolute;
+    border: 2px solid grey;
+    border-radius: 4px;
+    padding: 5px;
+    width: 75px;
+    text-align:center;
+    left: -28px;
+    bottom: 100%;
+    pointer-events: none;
+    background: white;
+}
+
+.tab-tracker li:hover span
+{
+    display:block;
+}
+

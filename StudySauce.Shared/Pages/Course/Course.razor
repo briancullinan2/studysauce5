@@ -23,70 +23,85 @@
 @inject ICourseService CourseService
 @inject IJsonService JsonService
 
-@switch (Step)
-{
-    case StepMode.Intro:
-        // TODO: change this to load dynamically from menu when i get bored of updating it
+<div class="flash-card @GetCurrentClass(StepMode.Intro)">
+    @*TODO: change this to load dynamically from menu when i get bored of updating it*@
+    @if (ActiveItem?.Course == typeof(Course1))
+    {
+        <Course1 Lesson="@ActiveItem.Lesson" />
+    }
+    else if (ActiveItem?.Course == typeof(Course2))
+    {
+        <Course2 Lesson="@ActiveItem.Lesson" />
+    }
+    else if (ActiveItem?.Course == typeof(Course3))
+    {
+        <Course3 Lesson="@ActiveItem.Lesson" />
+    }
+    <button @onclick="() => Next(StepMode.Video)">Start Lesson</button>
+</div>
+
+<div class="flash-card @GetCurrentClass(StepMode.Video)">
+    <div class="video-placeholder">Video content for @Lesson</div>
+    <button @onclick="() => Next(StepMode.Intro)">Back</button>
+    <button typeof="submit" @onclick="() => Next(StepMode.Quiz)">Take Quiz</button>
+</div>
+
+<div class="flash-card @GetCurrentClass(StepMode.Quiz)">
+    @*TODO: integrate this with Pack.razor*@
+    @*Switching this to one card at a time*@
+    <MetadataControl TModel="Controls.CardsControl.ViewCard" Model="@CardLayout" Data="[CurrentQuiz?.ElementAt(QuizStep ?? 0)]"></MetadataControl>
+    <button @onclick="() => Next(StepMode.Video)">Back</button>
+    @if (Responses.Count() == CurrentQuiz?.Count())
+    {
+        <button @onclick="() => Next(StepMode.Reward)">See Reward</button>
+    } 
+    @*else
+    {
+        <button @onclick="() => { QuizStep++; StateHasChanged(); }">Next Question</button>
+    }*@
+</div>
+@*TODO: insert card flipped version here*@
+
+<div class="flash-card @GetCurrentClass(StepMode.Reward)">
+    <div class="reward">
         @if (ActiveItem?.Course == typeof(Course1))
         {
-            <Course1 Lesson="@ActiveItem.Lesson" />
+            <Course1Reward Lesson="@ActiveItem.Lesson" />
         }
         else if (ActiveItem?.Course == typeof(Course2))
         {
-            <Course2 Lesson="@ActiveItem.Lesson" />
+            <Course2Reward Lesson="@ActiveItem.Lesson" />
         }
         else if (ActiveItem?.Course == typeof(Course3))
         {
-            <Course3 Lesson="@ActiveItem.Lesson" />
+            <Course3Reward Lesson="@ActiveItem.Lesson" />
         }
-        <button @onclick="() => Next(StepMode.Video)">Start Lesson</button>
-        break;
-    case StepMode.Video:
-        <div class="video-placeholder">Video content for @Lesson</div>
-        <button @onclick="() => Next(StepMode.Quiz)">Take Quiz</button>
-        break;
-    case StepMode.Quiz:
-        <MetadataControl TModel="CardsControl.ViewCard" Model="@PackLayout" Data="@CurrentQuiz"></MetadataControl>
-        @if (Responses.Count() == CardCount)
-        {
-            <button @onclick="() => Next(StepMode.Reward)">See Reward</button>
-        }
-        break;
-    case StepMode.Reward:
-        <div class="reward">
-            @if (ActiveItem?.Course == typeof(Course1))
-            {
-                <Course1Reward Lesson="@ActiveItem.Lesson" />
-            }
-            else if (ActiveItem?.Course == typeof(Course2))
-            {
-                <Course2Reward Lesson="@ActiveItem.Lesson" />
-            }
-            else if (ActiveItem?.Course == typeof(Course3))
-            {
-                <Course3Reward Lesson="@ActiveItem.Lesson" />
-            }
 
-        </div>
-        <div class="highlighted-link mt-8">
-            <button @onclick="() => Next(StepMode.Investment)">See Activity</button>
-        </div>
-        break;
-    case StepMode.Investment:
-        <CourseInvestment Lesson="@ActiveItem?.Lesson" />
-        break;
-}
+    </div>
+    <div class="highlighted-link">
+        <button @onclick="() => Next(StepMode.Investment)">See Activity</button>
+    </div>
+</div>
+
+<div class="flash-card @GetCurrentClass(StepMode.Investment)">
+    <CourseInvestment Lesson="@ActiveItem?.Lesson" />
+</div>
 
 
 @* Progress Tracker *@
-<ul class="tab-tracker flex justify-center gap-2 mt-6">
-    <li class="text-slate-300">&bullet;</li>
-    <li class="text-slate-300">&bullet;</li>
-    <li class="text-amber-500 text-xl leading-none">&bullet;</li>
-    <li class="text-slate-300">&bullet;</li>
-    <li class="text-slate-300">&bullet;</li>
-</ul>
-
+@if (CurrentIndex != null && TotalCards != null)
+{
+    <ul class="tab-tracker">
+        @for (var i = Math.Max((int)CurrentIndex - 2, 0); i < Math.Min((int)TotalCards, (int)CurrentIndex + 3); i++)
+        {
+            <li class="@(i == CurrentIndex ? "text-amber-500 text-xl" : "text-slate-300")">&bullet;
+                <span>@(IndexToStep(i))</span>
+            </li>
+        }
+    </ul>
+    @*Add one for visual, CurrentIndex is zero based*@
+    <div class="preview-count">@(CurrentIndex + 1) of @TotalCards</div>
+}
 
 @code {
     [JsonPropertyName("level")]
@@ -95,18 +110,31 @@
     [Parameter] public string? Lesson { get; set; }
     [JsonPropertyName("step")]
     public StepMode Step { get; set; } = StepMode.Intro;
-    public int CardCount { get; set; } = 0;
+    public StepMode? PreviousStep { get; set; } = null;
 
     [JsonPropertyName("quiz")]
     private IEnumerable<Controls.CardsControl.ViewCard>? CurrentQuiz { get; set; }
     private IEnumerable<PropertyMetadata>? PackLayout;
+    private IEnumerable<PropertyMetadata>? CardLayout;
+
     private List<DataLayer.Entities.Response> Responses = new();
 
     public ICourseMenuItem? ActiveItem { get; set; }
+    public int? QuizStep { get; set; }
+    public int? CurrentIndex { get => Step < StepMode.Quiz 
+        ? (int)Step : Step > StepMode.Quiz 
+        ? (CurrentQuiz?.Count() + (int)Step) : ((int)Step + Responses.Count()); }
+    public int? TotalCards { get => Enum.GetValues<StepMode>().Count() + CurrentQuiz?.Count(); }
+    public string? IndexToStep(int i) => i < (int)StepMode.Quiz 
+        ? Enum.GetName<StepMode>((StepMode)i)?.ToString() : i > (CurrentQuiz?.Count() + (int)StepMode.Quiz) 
+        ? Enum.GetName<StepMode>((StepMode)(i - CurrentQuiz!.Count()))?.ToString()
+        : "Quiz " + (i - (int)StepMode.Quiz + 1);
 
     protected override void OnInitialized()
     {
         PackLayout = Controls.PackControl.ViewPack.Metadata.Groups["Display"]?.ToList();
+        CardLayout = Controls.CardsControl.ViewCard.Metadata.Groups["Display"]?.ToList();
+
         // TODO: make sure this goes through RemoteQuery on web assembly client
         //_ = LoadDataAsync();
         Nav.LocationChanged += OnLocationChanged;
@@ -127,6 +155,7 @@
     private PersistingComponentStateSubscription _subscription;
     protected override async Task OnInitializedAsync()
     {
+        //Context.Packs.Where(p => p.Id == 0).ToListAsync();
         await JsonService.RestoreState(this);
         OnSetCourseParameters();
 
@@ -174,15 +203,25 @@
         }
     }
 
+    protected string GetCurrentClass(StepMode step)
+    {
+        if (Step == step) return "animate-in";
+        if (PreviousStep == step) return "animate-out";
+        return "hidden";
+    }
+
     protected void OnStepChanged(StepMode? step)
     {
+        PreviousStep = Step;
         Step = step ?? StepMode.Intro;
+        QuizStep = 0;
         SetCourseTitle();
         StateHasChanged();
     }
 
     protected void OnCourseChanged(ICourseMenuItem? item)
     {
+        PreviousStep = null;
         ActiveItem = item;
         SetCourseTitle();
         StateHasChanged();
@@ -217,8 +256,12 @@
 
     public static IEnumerable<DataLayer.Entities.Course> Generate()
     {
-        var newItem = CourseMenu.GetCourse(typeof(Course3));
-
-        return newItem?.Children.Select(mi => new DataLayer.Entities.Course() { Title = "Study Sauce" }) ?? [];
+        var ss = new DataLayer.Entities.Course() { Title = "Study Sauce" };
+        return ((Type[])[typeof(Course1), typeof(Course2), typeof(Course3)]).Select(type => CourseMenu.GetCourse(typeof(Course3)))
+            .Select(mi => new DataLayer.Entities.Course() { 
+                Parent = ss, 
+                Title = "Study Sauce: " + mi?.Title, 
+                Summary = "Course topics:\n* " + string.Join("\n* ", mi?.Children.Select(ci => ci.Title) ?? [])
+            });
     }
 }

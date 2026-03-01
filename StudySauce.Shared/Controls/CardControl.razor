@@ -61,7 +61,6 @@ else
                 <MetadataControl TModel="Controls.CardsControl.ViewCard" Model="@AnswerLayout" Data="Data"></MetadataControl>
             }
         </div>
-        <div class="preview-count">@CurrentIndex of @TotalCards</div>
     </div>
 
     <div class="card-back">
@@ -79,10 +78,13 @@ else
                 <div class="preview-content">@(Data?.ElementAt(0).Card?.ResponseContent?.Replace("\n", "<br/>"))</div>
             }
         </div>
-        <div class="preview-inner">
-            <div class="preview-correct">Correct answer:</div>
-            <div class="preview-content">@Data?.ElementAt(0).Card?.Answers.FirstOrDefault(a => a.IsCorrect)?.Content</div>
-        </div>
+        @if (Data?.ElementAt(0).Card?.Answers.Any(a => a.IsCorrect) == true)
+        {
+            <div class="preview-inner">
+                <div class="preview-correct">Correct answer:</div>
+                <div class="preview-content">@Data?.ElementAt(0).Card?.Answers.FirstOrDefault(a => a.IsCorrect)?.Content</div>
+            </div>
+        }
         @if (Data?.ElementAt(0).Card?.ResponseType == null || Data?.ElementAt(0).Card?.ResponseType == DataLayer.Customization.CardType.FlashCard)
         {
             <div class="preview-footer">
@@ -96,9 +98,6 @@ else
 
 
 @code {
-    [Parameter] public int CurrentIndex { get; set; }
-    [Parameter] public int TotalCards { get; set; }
-    [Parameter] public EventCallback<bool> OnAnswered { get; set; }
 
     private bool isFlipped = false;
     private string flashClass = "";
@@ -121,6 +120,6 @@ else
     private async Task Next(bool wasCorrect)
     {
         isFlipped = false;
-        await OnAnswered.InvokeAsync(wasCorrect);
+        await ValueChanged.InvokeAsync(wasCorrect);
     }
 }
