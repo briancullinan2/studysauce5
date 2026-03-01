@@ -5,7 +5,7 @@
     position: relative;
     width: 1.25rem;
     height: 1.25rem;
-    margin-right: 0.75rem;
+    margin-right: 0.5rem;
     top: 2px;
     background-size: cover;
 }
@@ -26,7 +26,6 @@
     /* The "Subtle" part: slow duration (15s+) */
     animation: waveMovement 18s ease infinite;
     overflow: hidden;
-    position: fixed;
     top: 0;
     left: 0;
 }
@@ -121,6 +120,10 @@
 }
 
 @media (min-width: 640px) {
+    .sidebar {
+        position: fixed;
+    }
+
     .navbar-toggler {
         display: none;
     }

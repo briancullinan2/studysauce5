@@ -102,3 +102,16 @@
 .preview-wrong {
     background: red;
 }
+
+@media (max-width: 640px) {
+
+    main
+    {
+        padding-bottom: 30px;
+    }
+
+    .flash-card {
+        /*max-height: calc(100vh - 9.2rem);*/
+        max-height: none;
+    }
+}

@@ -25,7 +25,7 @@
     color: white;
 }
 
-.top-row > h2 {
+header.top-row > h2 {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -40,22 +40,22 @@
     transition: color ease-in-out 0.6s;
 }
 
-.top-row > h2 ~ .contextual-menu {
+header.top-row > h2 ~ .contextual-menu {
     display: flex;
     align-items: flex-end;
 }
 
 
-.top-row a, .top-row .btn-link {
+header.top-row a, .top-row .btn-link {
     white-space: nowrap;
     text-decoration: none;
 }
 
-.top-row a:hover, .top-row .btn-link:hover {
+header.top-row a:hover, .top-row .btn-link:hover {
     text-decoration: underline;
 }
 
-.top-row a:first-child {
+header.top-row a:first-child {
     overflow: hidden;
     text-overflow: ellipsis;
 }

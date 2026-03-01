@@ -59,9 +59,12 @@
 }
 
 @media (max-width: 640px) {
+    .page.study-mode .canvas-container {
+        left: 0;
+    }
 
     .page.study-mode .sidebar {
-        width: auto;
+        width: 100%;
     }
 
     .page.study-mode .bi-chevron-down,

@@ -77,6 +77,10 @@ h4.header-active ~ *:not(h4) ~ .h4.inactive ~ *:not(h4) {
     text-decoration: none;
 }
 
+.navbar-brand:hover {
+    text-decoration: none;
+}
+
 input.large-present {
     height: 0;
     width: 0;
