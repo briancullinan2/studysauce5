@@ -1,0 +1,103 @@
+﻿.page {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;
+    min-height: 100%;
+    transition: padding-left ease-in-out 0.6s;
+}
+
+.canvas-container {
+    z-index: -1;
+    background: #0a0514;
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    top: 0;
+    left: 125px;
+    transition: left ease-in-out 0.6s;
+}
+
+.canvas-container canvas {
+    height: 100%;
+    width: 100%;
+}
+
+
+main {
+    flex: 1;
+    max-width: 100%;
+    min-width: 200px;
+    padding: 30px;
+}
+
+
+.top-row {
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
+    max-width: 100%;
+}
+
+
+
+@media (max-width: 640px) {
+    .top-row {
+        /* justify-content: space-between; */
+    }
+
+    .top-row a, .top-row .btn-link {
+        margin-left: 0.5rem;
+    }
+
+    .page .canvas-container,
+    .page.study-mode .canvas-container {
+        left: 0;
+    }
+
+    .sidebar {
+        position: static;
+        width:100%;
+        z-index:100;
+    }
+
+}
+
+
+@media (min-width: 640px) {
+    .page {
+        padding-left: 250px;
+    }
+
+    .page.study-mode {
+        padding-left: 80px;
+    }
+
+    .sidebar {
+        width: 250px;
+        height: 100vh;
+        position: fixed;
+        left: 0;
+        top: 0;
+        z-index: 100;
+    }
+
+    .top-row {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    .top-row.auth a:first-child {
+        flex: 1;
+        text-align: right;
+        width: 0;
+    }
+
+    .page > .top-row {
+        padding-left: 2rem !important;
+        padding-right: 1.5rem !important;
+    }
+}
+

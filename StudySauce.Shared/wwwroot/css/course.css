@@ -1,0 +1,104 @@
+﻿
+.card-container {
+    perspective: 1000px;
+    transition: background-color 0.3s ease;
+}
+
+.card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+}
+
+.card-stage {
+    position: relative;
+}
+
+.course-container {
+    margin: auto;
+    max-width: 800px;
+    position: relative;
+}
+
+.card-viewer {
+    position: relative;
+}
+
+.flash-card {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 20px 40px rgba(255,255,255,0.8), 0 10px 20px rgba(0,0,0,1.0);
+    /*transition: all 0.5s ease-in-out;*/
+    max-height: 400px;
+    max-height: calc(100vh - 5.7rem);
+    overflow: auto;
+}
+
+/* Flash Animations */
+.flash-green {
+    background-color: rgba(76, 175, 80, 0.5) !important;
+    transition: none;
+}
+
+.flash-red {
+    background-color: rgba(244, 67, 54, 0.5) !important;
+    transition: none;
+}
+
+.meme-container {
+    flex-basis: 100%;
+}
+
+.reward {
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.reward > * {
+    flex-basis: 50%;
+}
+
+.Answers-form-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.pulse-animation {
+    animation: pulse 2s infinite;
+    display: inline-block;
+    width: 100px;
+    height: 100px;
+    /* Replace with actual squirrel asset or icon font */
+    background: url('/images/badges/squirrel-icon.png') no-repeat center;
+    background-size: contain;
+}
+
+.btn-more {
+    background: #f59e0b;
+    color: white;
+    padding: 12px 48px;
+    border-radius: 50px;
+    font-weight: bold;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    box-shadow: 0 4px 14px 0 rgba(245, 158, 11, 0.39);
+}
+
+.btn-more:hover {
+    transform: translateY(-2px);
+    background: #d97706;
+    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.23);
+}
+
+.preview-wrong,
+.preview-right {
+    padding: 12px;
+    background: lightgreen;
+}
+
+.preview-wrong {
+    background: red;
+}

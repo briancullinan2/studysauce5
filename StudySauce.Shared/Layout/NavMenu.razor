@@ -12,31 +12,28 @@
 <input type="checkbox" title="Navigation menu" class="navbar-toggler" />
 
 <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="nav flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
+    <div class="nav-item px-3">
+        <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+            <span class="bi bi-house-door-fill" aria-hidden="true"></span> Home
+        </NavLink>
+    </div>
 
-        @* <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
+    @* <div class="nav-item px-3">
+        <NavLink class="nav-link" href="counter">
+            <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
+        </NavLink>
+    </div>
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div> *@
+    <div class="nav-item px-3">
+        <NavLink class="nav-link" href="weather">
+            <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
+        </NavLink>
+    </div> *@
 
-        @foreach (var item in GetVisibleItems())
-        {
-            @RenderNavItem(item)
-        }
-
-    </nav>
+    @foreach (var item in GetVisibleItems())
+    {
+        @RenderNavItem(item)
+    }
 </div>
 
 @code {
@@ -115,6 +112,7 @@
     public static IEnumerable<INavMenuItem> MenuStructure = 
     [
         new NavMenuItem<Pages.Landing.Packs>() { Title = "Packs", Icon = "bi-card-list" },
+        new NavMenuItem<Pages.Landing.Courses>() { Title = "Courses", Icon = "bi-mortarboard" },
         new NavMenuItem<Pages.Landing.Store>() { Title = "Store", Icon = "bi-cart" },
         new NavMenuItem<Pages.Landing.Results>() { Title = "Results", Icon = "bi-clipboard-data" },
         new NavMenuItem<Pages.Landing.Account>() { Title = "Account settings", Icon = "bi-person-gear" },

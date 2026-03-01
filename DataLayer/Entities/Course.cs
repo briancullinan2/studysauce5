@@ -49,5 +49,13 @@ namespace DataLayer.Entities
 
         [ForeignKey(nameof(CreatorId))]
         public virtual User? Creator { get; set; }
+
+        [Category("Structure")]
+        [Display(Name = "Parent Course", Description = "The bigger course this course belongs to")]
+        public int? CourseId { get; set; }
+
+        [ForeignKey(nameof(CourseId))]
+        public virtual Course? Parent { get; set; }
+
     }
 }

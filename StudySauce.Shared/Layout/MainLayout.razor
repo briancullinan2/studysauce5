@@ -25,34 +25,34 @@
         <input type="hidden" name="state_@item.Key" value="@item.Value" />
     }
 
+    @if (ShowHeader != false)
+    {
+        <header class="top-row px-4">
+            @if (HeaderTitle != null)
+            {
+                <h2>@HeaderTitle</h2>            
+            }
+            @* This is where the contextual menu will appear *@
+            @if (HeaderMenu != null)
+            {
+                <div class="contextual-menu">
+                    @HeaderMenu
+                </div>
+            }
+            @if (HeaderMenu == null && HeaderTitle == null)
+            {
+                <span>&nbsp;</span>
+            }
+            <NavLink class="header-link" href="@(NavigationExtensions.GetUri<Pages.Landing.About>())" Match="NavLinkMatch.All">
+                <i class="bi bi-info-circle" aria-hidden="true"></i>
+                <span class="header-text">About</span>
+            </NavLink>
+
+        </header>
+    }
     <main>
-        @if (ShowHeader != false)
-        {
-            <header class="top-row px-4">
-                @if (HeaderTitle != null)
-                {
-                    <h2>@HeaderTitle</h2>            
-                }
-                @* This is where the contextual menu will appear *@
-                @if (HeaderMenu != null)
-                {
-                    <div class="contextual-menu">
-                        @HeaderMenu
-                    </div>
-                }
-                @if (HeaderMenu == null && HeaderTitle == null)
-                {
-                    <span>&nbsp;</span>
-                }
-                <NavLink class="header-link" href="@(NavigationExtensions.GetUri<Pages.Landing.About>())" Match="NavLinkMatch.All">
-                    <i class="bi bi-info-circle" aria-hidden="true"></i>
-                    <span class="header-text">About</span>
-                </NavLink>
 
-            </header>
-        }
-
-        <article class="content px-4">
+        <article class="content @(ShowHeader != false ? "course-container flash-card animate-in" : "")">
             @* We pass the Layout instance to the Body so pages can set the HeaderMenu *@
             @Body
         </article>
