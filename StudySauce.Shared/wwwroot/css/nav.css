@@ -11,6 +11,10 @@
     background-size: cover;
 }
 
+a .bi {
+    cursor: pointer;
+}
+
 .page .nav-children {
     transition: max-height ease-in-out 0.6s;
     max-height: 1000px;

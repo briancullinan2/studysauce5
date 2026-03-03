@@ -4,53 +4,59 @@
 @code
 {
 
-    [Parameter] public IEnumerable<DataLayer.Entities.Role>? Data { get; set; }
+    [Parameter] public IEnumerable<ControlRole>? Data { get; set; }
     [Parameter] public PropertyMetadata? Model { get; set; }
     [Parameter] public EventCallback<object> ValueChanged { get; set; }
-    public DataLayer.Customization.ControlMode Mode
+    public IEnumerable<PropertyMetadata>? RoleLayout { get; set; }
+
+    protected override void OnInitialized()
     {
-        get
-        {
-            return Model?.DeclaringType == typeof(Controls.PackControl.EditPack) ? DataLayer.Customization.ControlMode.Edit : DataLayer.Customization.ControlMode.View;
-        }
+        RoleLayout = DataLayer.EntityMetadata.Role.Categories["Editable"]?.ToList();
     }
 
-    public string GetBackgroundColor(string role)
+    public string GetBackgroundColor(string? role)
     {
         if (Data == null) return "blue";
-        var index = Data.Select(r => r.Name).ToList().IndexOf(role);
+        var index = Data.Select(r => r.Role?.Name).ToList().IndexOf(role);
         var (r, g, b) = Utilities.RgbToHslTools.HslToRgb((360 / (Data.Count() + 1)) * index, 0.5, 0.5);
         return $"background-color:#{(int)r:X2}{(int)g:X2}{(int)b:X2};";
     }
-}
 
-
-
-@if (Mode == DataLayer.Customization.ControlMode.Edit)
-{
-
-}
-else
-{
-    <heading class="flex-row">
-        <label></label>
-        <label>Role Name</label>
-        <label>Description</label>
-        <label># of Groups</label>
-        <label># of Users</label>
-        <label>Actions</label>
-    </heading>
-    @foreach (var role in Data ?? [])
+    public class ControlRole
     {
-        <div class="flex-row">
-            <span>
-                <span style="@GetBackgroundColor(role.Name)" class="bi bi-lock"></span>
-            </span>
-            <span>@role.Name</span>
-            <span>@role.Description</span>
-            <span>@role.Groups.Count()</span>
-            <span>@role.Users.Count()</span>
-            <span><a href=""><span class="bi bi-pencil"></span></a></span>
-        </div>
+        public DataLayer.Entities.Role? Role { get; set; }
+        public DataLayer.Customization.ControlMode? Mode { get; set; }
     }
+
+}
+
+
+
+@foreach (var role in Data ?? [])
+{
+    <div class="flex-row @(role.Mode == DataLayer.Customization.ControlMode.Edit ? "edit" : "view")">
+        <span>
+            <span style="@GetBackgroundColor(role.Role?.Name)" class="bi bi-lock"></span>
+        </span>
+        @if (role.Mode == DataLayer.Customization.ControlMode.Edit)
+        {
+            <MetadataControl TModel="DataLayer.Entities.Role" Model="@RoleLayout" Data="@([role.Role])"></MetadataControl>
+        } else
+        {
+            <span>@role.Role?.Name</span>
+            <span>@role.Role?.Description</span>
+        }
+        <span>@role.Role?.Groups.Count()</span>
+        <span>@role.Role?.Users.Count()</span>
+        <span>
+            @if (role.Mode != DataLayer.Customization.ControlMode.Edit)
+            {
+                @* href="@(NavigationExtensions.GetUri<Pages.Admin.Roles>(r => new() { Id = Data!.ToList().IndexOf(role), ControlMode = DataLayer.Customization.ControlMode.Edit }))"*@
+                <a @onclick="() => { role.Mode = DataLayer.Customization.ControlMode.Edit; StateHasChanged(); }"><span class="bi bi-pencil"></span></a>
+            } else
+            {
+                <a class="cta" @onclick="() => {}">Save</a>
+            }
+        </span>
+    </div>
 }

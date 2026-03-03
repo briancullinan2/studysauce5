@@ -24,14 +24,6 @@
 }
 else
 {
-    <heading class="flex-row">
-        <label></label>
-        <label>Pack Name</label>
-        <label>Category</label>
-        <label>Card Count</label>
-        <label>Last Studied</label>
-        <label>Actions</label>
-    </heading>
     @foreach (var pack in Data ?? [])
     {
         <div class="flex-row">
@@ -40,7 +32,7 @@ else
             <span>@pack.Pack?.Tags</span>
             <span>@pack.Pack?.Cards.Count()</span>
             <span>@*@pack.Pack?.UserPacks.Where(up => up.User == )*@ Never studied</span>
-            <span><a href=""><span class="bi bi-pencil"></span></a></span>
+            <span><a href="@(NavigationExtensions.GetUri<Pages.Landing.EditPack>(p => new () {}))"><span class="bi bi-pencil"></span></a></span>
         </div>
     }
 }

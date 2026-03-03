@@ -214,10 +214,46 @@ heading.flex-row > * {
     text-align: center;
 }
 
-.flex-row > *:last-of-type {
+.Currentroles-form-field .flex-row .Role-form-container 
+{
+    flex-basis: 60%;
+    display: flex;
+    flex-grow: 0;
+    padding: 0;
+}
+
+.roles-container heading > *:nth-child(2),
+.roles-container heading > *:nth-child(3) {
+    flex-basis: 30%;
+}
+
+.roles-container heading > *:nth-child(4),
+.roles-container heading > *:nth-child(5) {
+    flex-basis: 100px;
+}
+
+.Currentroles-form-field .flex-row.view > *:nth-child(2),
+.Currentroles-form-field .flex-row.view > *:nth-child(3) {
+    flex-basis: 30%;
+    flex-grow: 0;
+}
+
+.Currentroles-form-field .flex-row.edit > *:nth-child(3),
+.Currentroles-form-field .flex-row > *:nth-child(4),
+.Currentroles-form-field .flex-row > *:nth-child(5) {
+    flex-basis: 100px;
+    flex-grow: 0;
+    text-align: center;
+}
+
+.Role-form-container > .form-field {
+    padding: 0 10px;
+}
+
+.flex-row > *:last-child {
     text-align: right;
     max-width: 48px;
-    white-space:nowrap;
+    white-space: nowrap;
 }
 
 .Recent-form-field .flex-row > * {
@@ -225,9 +261,8 @@ heading.flex-row > * {
 }
 
 
-.user-add
-{
-    display:flex;
+.user-add {
+    display: flex;
     flex-wrap: wrap;
 }
 
@@ -237,8 +272,7 @@ heading.flex-row > * {
     padding: 10px;
 }
 
-.user-add .highlighted-link
-{
+.user-add .highlighted-link {
     flex-basis: 100%;
 }
 
@@ -246,9 +280,8 @@ heading.flex-row > * {
     flex-basis: 100%;
 }
 
-.user-add .form-field
-{
-    display:flex;
+.user-add .form-field {
+    display: flex;
     flex-direction: column;
 }
 
@@ -268,12 +301,11 @@ heading.flex-row > * {
     display: flex;
     flex-direction: column;
     text-decoration: none;
-    cursor:pointer;
+    cursor: pointer;
 }
 
-.user-avatar > a:first-child:hover
-{
-    text-decoration:underline;
+.user-avatar > a:first-child:hover {
+    text-decoration: underline;
 }
 
 
