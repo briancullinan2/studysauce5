@@ -23,6 +23,22 @@ button.deemphasize
     cursor: pointer;
 }
 
+a.cta,
+button.cta {
+    padding: 8px;
+    background: darkorange;
+    color: white;
+    text-shadow: 0px 1px 5px black;
+    margin-left:auto;
+    cursor:pointer;
+    border-radius: 5px;
+    border:2px solid lightgrey;
+}
+
+button.cta:hover {
+    text-decoration: underline;
+}
+
 button.deemphasize:hover {
     text-decoration: underline;
 }
@@ -30,6 +46,14 @@ button.deemphasize:hover {
 
 
 /* accordion */
+.accordion-item h4 {
+    display:flex;
+    justify-content: space-between;
+    color: #212529; /* --bs-accordion-color */
+    background-color: #fff; /* --bs-accordion-bg */
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125); /* --bs-accordion-border-width / --bs-accordion-border-color */
+}
+
 h4.inactive ~ *:not(h4) {
     display: none;
 }
@@ -125,6 +149,7 @@ input.large-present {
     padding: 10px;
     background:#DDDDDD;
     border-left: 4px solid darkorange;
+    margin: 10px 10px 20px 10px;
 }
 
 
@@ -144,4 +169,117 @@ input.large-present + label[for]:hover {
 input.large-present:checked + label[for] {
     border-width: 10px;
     border-color: lightgreen;
+}
+
+.flex-row
+{
+    display:flex;
+    vertical-align: middle;
+    align-items: center;
+}
+
+.flex-row > * {
+    flex-basis: 20%;
+    padding: 0 10px;
+}
+
+.flex-row img {
+    padding: 0;
+    max-height: 48px;
+    max-width: 48px;
+}
+
+heading.flex-row
+{
+    font-weight:bold;
+}
+
+heading.flex-row > * {
+    padding: 0 10px;
+}
+
+.flex-row > *:first-child {
+    max-width: 48px;
+}
+
+.Recent-form-field .flex-row > *:nth-child(4) {
+    text-align:center;
+}
+
+.Recent-form-field .flex-row > *:nth-child(5) {
+    text-align: right;
+}
+
+.Currentusers-form-field .flex-row > *:nth-child(4) {
+    text-align: center;
+}
+
+.flex-row > *:last-of-type {
+    text-align: right;
+    max-width: 48px;
+    white-space:nowrap;
+}
+
+.Recent-form-field .flex-row > * {
+    vertical-align: middle;
+}
+
+
+.user-avatar
+{
+    border: 3px solid lightgrey;
+    padding: 15px;
+    display:flex;
+    flex-direction:column;
+    text-align:center;
+    margin: 10px;
+    justify-content:space-between;
+}
+
+
+.user-avatar > a:first-child {
+    color: darkgrey;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    cursor:pointer;
+}
+
+.user-avatar > a:first-child:hover
+{
+    text-decoration:underline;
+}
+
+
+.user-avatar img {
+    border-radius: 50%;
+    margin: auto;
+}
+
+
+.page.Users .flex-row span:first-child .bi,
+.user-avatar > a:first-child .bi {
+    border-radius: 50%;
+    margin: auto;
+    font-size: 32px;
+    height: 54px;
+    width: 54px;
+    background: blue;
+    color: white;
+    padding: 10px;
+}
+
+.page.Users .flex-row span:first-child .bi {
+    font-size: 24px;
+    height: 44px;
+    width: 44px;
+}
+
+.user-list {
+    display: flex;
+}
+
+.user-list > *
+{
+    flex-basis: 25%;
 }

@@ -36,6 +36,7 @@ namespace DataLayer.Entities
 
         [ForeignKey("FileId")]
         public virtual File? Logo { get; set; }
+        public virtual string? LogoHosted { get; set; }
 
         // Self-Referencing Hierarchy (Parent/Subgroups)
         [Column("parent")]
@@ -51,12 +52,14 @@ namespace DataLayer.Entities
         //public virtual ICollection<Invite> Invites { get; set; } = new List<Invite>();
 
         // One-To-Many: Packs owned by this group
+        [InverseProperty("Group")]
         public virtual ICollection<Pack> Packs { get; set; } = new List<Pack>();
 
         // Many-To-Many: Packs associated with groups
         //public virtual ICollection<Pack> GroupPacks { get; set; } = new List<Pack>();
 
         // Many-To-Many: Users in groups
+        [InverseProperty("Groups")]
         public virtual ICollection<User> Users { get; set; } = new List<User>();
 
         public Group()

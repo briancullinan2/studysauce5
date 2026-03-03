@@ -48,10 +48,17 @@ namespace StudySauce.Shared.Utilities.Extensions
 
             foreach (var value in Enum.GetValues<TEnum>())
             {
-                var attribute = typeof(TEnum).GetField(value.ToString())?.GetCustomAttribute<DescriptionAttribute>();
-                if (attribute != null && string.Equals(val.ToString(), Enum.GetName(value)) || string.Equals(val.ToString(), attribute.Description, StringComparison.InvariantCultureIgnoreCase))
+                if (string.Equals(val.ToString(), Enum.GetName(value), StringComparison.InvariantCultureIgnoreCase))
                 {
-                    return (TEnum?)Enum.ToObject(typeof(Enum), value);
+                    return (TEnum?)Enum.ToObject(typeof(TEnum), value);
+                }
+                var attribute = typeof(TEnum).GetField(value.ToString())?.GetCustomAttribute<DescriptionAttribute>();
+                if (attribute != null)
+                {
+                    if (string.Equals(val.ToString(), attribute.Description, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        return (TEnum?)Enum.ToObject(typeof(TEnum), value);
+                    }
                 }
             }
 

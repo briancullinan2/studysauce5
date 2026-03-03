@@ -1,13 +1,30 @@
 @page "/status"
+@using StudySauce.Shared.Services
+@inject IMenuService MenuService
 
-<h2>Recent Errors</h2>
+<SyncedTitle Title="System Status"></SyncedTitle>
+<div class="flash-card">
 
-Shows a list of any recent application generated errors.
 
-<h2>Integration Status</h2>
+    <h2>Recent Errors</h2>
 
-Shows status related to connecting to other platforms.
+    Shows a list of any recent application generated errors.
 
-<h2>Connectivity Status</h2>
+    <h2>Integration Status</h2>
 
-Shows status for application network access like download and backups.
+    Shows status related to connecting to other platforms.
+
+    <h2>Connectivity Status</h2>
+
+    Shows status for application network access like download and backups.
+</div>
+
+@code {
+
+    protected override void OnInitialized()
+    {
+        // Define the contextual menu for THIS page
+        MenuService?.SetMenu(@<StudySauce.Shared.Pages.Shared.Users />);
+    }
+
+}

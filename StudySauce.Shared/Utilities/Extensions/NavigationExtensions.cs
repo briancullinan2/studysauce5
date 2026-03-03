@@ -80,8 +80,13 @@ namespace StudySauce.Shared.Utilities.Extensions
         //}
 
 
-        public static void NavigateTo<TComponent>(this NavigationManager Nav, Expression<Func<TComponent, TComponent>> initializer) where TComponent : IComponent
+        public static void NavigateTo<TComponent>(this NavigationManager Nav, Expression<Func<TComponent, TComponent>>? initializer = null) where TComponent : IComponent, new()
         {
+            if (initializer == null)
+            {
+                Nav.NavigateTo(GetUri((TComponent c) => new TComponent() { }));
+                return;
+            }
             Nav.NavigateTo(GetUri(initializer));
         }
 

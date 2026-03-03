@@ -61,6 +61,7 @@ namespace StudySauce.WinUI
             webBuilder.Services.AddSingleton<ITitleService, TitleTrackerService>();
             webBuilder.Services.AddSingleton<IMenuService, MenuService>();
             webBuilder.Services.AddSingleton<IStudyService, StudyService>();
+            webBuilder.Services.AddSingleton<ILoginService, LoginService>();
             webBuilder.Services.AddSingleton<ICourseService, CourseService>();
             webBuilder.Services.AddSingleton<IJsonService, JsonService>();
 

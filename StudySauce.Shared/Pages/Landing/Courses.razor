@@ -1,1 +1,20 @@
 @page "/courses"
+
+@using StudySauce.Shared.Services
+@inject IMenuService MenuService
+
+<SyncedTitle Title="Courses"></SyncedTitle>
+
+<div class="flash-card">
+
+</div>
+
+@code {
+
+    protected override void OnInitialized()
+    {
+        // Define the contextual menu for THIS page
+        MenuService?.SetMenu(@<StudySauce.Shared.Pages.Shared.Packs />);
+    }
+
+}

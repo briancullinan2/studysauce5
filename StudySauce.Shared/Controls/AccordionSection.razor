@@ -1,7 +1,7 @@
 @using System.Text.RegularExpressions
 @using System.Globalization
 @* AccordionSection.razor *@
-<div class="accordion-item mb-3">
+<div class="accordion-item">
     <h4 name="@Title.ToSafe()" @onclick="Toggle" style="cursor: pointer;" class="@(IsExpanded ? "header-active" : "inactive") d-flex justify-content-between align-items-center border-bottom pb-2">
         <span>@Title</span>
         <i class="bi @(IsExpanded ? "bi-chevron-up" : "bi-chevron-down") text-muted"></i>

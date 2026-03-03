@@ -34,6 +34,13 @@ namespace DataLayer.Entities
 
         [ForeignKey(nameof(UserId))]
         public virtual User? User { get; set; }
+        // Logo Relationship
+        [Column("file_id")]
+        public int? FileId { get; set; }
+
+        [ForeignKey("FileId")]
+        public virtual File? Logo { get; set; }
+        public virtual string? LogoHosted { get; set; }
 
         [Required]
         [Category("Content")]
@@ -90,13 +97,16 @@ namespace DataLayer.Entities
         public DateTime? Modified { get; set; }
 
         // Mapped to Doctrine's simple_array or array types
-        [NotMapped]
-        public List<string> Tags { get; set; } = new();
+        public string Tag { get; set; } = "";
+        public string Tags { get; set; } = "";
+        public string Category { get; set; } = "";
+        public string Subject { get; set; } = "";
+
 
         // Navigation Collections (Doctrine ManyToMany/OneToMany)
-        //public virtual ICollection<Group> Groups { get; set; } = new HashSet<Group>();
+        public virtual ICollection<Group> Groups { get; set; } = new HashSet<Group>();
         //public virtual ICollection<Coupon> Coupons { get; set; } = new HashSet<Coupon>();
-        //public virtual ICollection<UserPack> UserPacks { get; set; } = new HashSet<UserPack>();
+        public virtual ICollection<UserPack> UserPacks { get; set; } = new HashSet<UserPack>();
         [Category("Content")]
         [Display(Name = "Cards", Description = "Set of card content to display to users")]
         public virtual ICollection<Card> Cards { get; set; } = new HashSet<Card>();

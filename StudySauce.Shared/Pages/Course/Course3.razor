@@ -5,10 +5,14 @@
     public static IEnumerable<DataLayer.Entities.Pack> Generate()
     {
         var newItem = CourseMenu.GetCourse(typeof(Course3));
+        var cards = newItem?.Children.SelectMany(ci => Course1.GetCourseCards(ci.Lesson) ?? []).ToList();
 
         return [new DataLayer.Entities.Pack() {
+            LogoHosted = "/_content/StudySauce.Shared/studysauce-icon-76x76.png",
             Title = newItem?.Title ?? "Course 3",
-            Description = "Pack topics:\n* " + string.Join("\n* ", newItem?.Children.Select(ci => ci.Title) ?? [])
+            Category = "Studying",
+            Description = "Pack topics:\n* " + string.Join("\n* ", newItem?.Children.Select(ci => ci.Title) ?? []),
+            Cards = cards ?? []
         }];
     }
 

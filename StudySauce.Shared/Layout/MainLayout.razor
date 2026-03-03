@@ -7,12 +7,13 @@
 @inject IJSRuntime JS
 @inject IMenuService MenuService
 @inject IStudyService StudyService
+@inject ILoginService LoginService
 @inject ITitleService TitleService
 @inject IServiceProvider ServiceProvider
 @inject IJsonService JsonService
 @inject NavigationManager Nav
 
-<div class="@(Study == true ? "study-mode" : "") @PageClass page">
+<div class="@(Login == true ? "login-mode" : Study == true ? "study-mode" : "") @PageClass page">
     <div class="canvas-container">
         <canvas id="lichtenbergCanvas"></canvas>
     </div>
@@ -43,10 +44,20 @@
             {
                 <span>&nbsp;</span>
             }
+
             <NavLink class="header-link" href="@(NavigationExtensions.GetUri<Pages.Landing.About>())" Match="NavLinkMatch.All">
                 <i class="bi bi-info-circle" aria-hidden="true"></i>
                 <span class="header-text">About</span>
             </NavLink>
+
+            @if(CurrentUser != null)
+            {
+                <NavLink class="header-link" href="@(NavigationExtensions.GetUri<Pages.Admin.Users>())" Match="NavLinkMatch.All">
+                    <i class="bi bi-person-circle" aria-hidden="true"></i>
+                    <span class="header-text">Profile</span>
+                </NavLink>
+
+            }
 
         </header>
     }
@@ -73,6 +84,8 @@
     public RenderFragment? HeaderMenu { get; private set; }
     public string? HeaderTitle { get; private set; }
     //public object? Tag { get; set; } // for comparing states for implementers
+    public bool? Login { get; set; }
+    public DataLayer.Entities.User? CurrentUser { get; set; }
     public bool? Study { get; set; }
     public string? PageClass { get; set; }
     public bool? ShowHeader { get; set; }
@@ -118,6 +131,8 @@
         MenuService.OnMenuChanged += SetHeaderMenu;
         MenuService.OnHeaderChanged += SetHeader;
         StudyService.OnStudyChanged += SetStudyMode;
+        LoginService.OnLoginChanged += SetLoginMode;
+        LoginService.OnUserChanged += SetUser;
         JsonService.OnStateChanged += SetState;
         SetPageClass();
     }
@@ -142,6 +157,26 @@
             this.StateHasChanged();
         }
     }
+
+    public void SetLoginMode(bool login)
+    {
+        if (Login != login)
+        {
+            Login = login;
+            this.StateHasChanged();
+        }
+    }
+
+
+    public void SetUser(DataLayer.Entities.User? user)
+    {
+        if (CurrentUser != user)
+        {
+            CurrentUser = user;
+            this.StateHasChanged();
+        }
+    }
+
 
     private void SetHeader(bool? show)
     {
@@ -195,6 +230,8 @@
         TitleService.OnTitleChanged -= SetTitle;
         MenuService.OnMenuChanged -= SetHeaderMenu;
         StudyService.OnStudyChanged -= SetStudyMode;
+        LoginService.OnLoginChanged -= SetLoginMode;
+        LoginService.OnUserChanged -= SetUser;
         MenuService.OnHeaderChanged -= SetHeader;
         JsonService.OnStateChanged -= SetState;
     }

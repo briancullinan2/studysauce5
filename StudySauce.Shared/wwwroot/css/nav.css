@@ -6,7 +6,8 @@
     width: 1.25rem;
     height: 1.25rem;
     margin-right: 0.5rem;
-    top: 2px;
+    margin-left: 0;
+    top: 0;
     background-size: cover;
 }
 
@@ -14,6 +15,11 @@
     transition: max-height ease-in-out 0.6s;
     max-height: 1000px;
     overflow: hidden;
+}
+
+.highlighted-link {
+    display: flex;
+    justify-content: space-between;
 }
 
 .sidebar {

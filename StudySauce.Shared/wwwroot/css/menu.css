@@ -11,7 +11,6 @@
     overflow: hidden;
     text-overflow: ellipsis;
     flex-grow: 1;
-    text-align: right;
     display: flex;
     justify-content: flex-end;
     max-width: 1000px;
@@ -65,12 +64,13 @@ header.top-row a:first-child {
     display: flex;
     align-items: center;
     gap: 1px;
-    padding: 0px 2px;
+    padding: 4px;
     border-radius: 6px;
     color: #6c757d;
     text-decoration: none;
     transition: all 0.2s ease-in-out;
-    border: 1px solid transparent;
+    border: 2px solid transparent;
+    margin-left: 8px;
 }
 
 /* The "Highlight" state for the current page */

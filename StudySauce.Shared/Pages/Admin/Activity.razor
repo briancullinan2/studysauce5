@@ -1,5 +1,22 @@
 @page "/activity"
+@using StudySauce.Shared.Services
+@inject IMenuService MenuService
 
-<h2>Usage Activity</h2>
+<SyncedTitle Title="Usage Activity"></SyncedTitle>
+<div class="flash-card">
 
 See a list of program interactions on a timeline.
+
+</div>
+
+
+
+@code {
+
+    protected override void OnInitialized()
+    {
+        // Define the contextual menu for THIS page
+        MenuService?.SetMenu(@<StudySauce.Shared.Pages.Shared.Users />);
+    }
+
+}

@@ -1,12 +1,59 @@
 @page "/packs"
+@using StudySauce.Shared.Controls
+@using StudySauce.Shared.Services
+@using System.ComponentModel
+@inject IMenuService MenuService
 
-@* do advertising for packs needing study *@
+<SyncedTitle Title="Study Packs"></SyncedTitle>
 
-<h2>Recent Packs</h2>
+<div class="flash-card">
+
+    @* do advertising for packs needing study *@
+    <h2>Recent Packs</h2>
+    <MetadataControl TModel="Controls.PackControl.ViewPack" Model="@RecentLayout" Data="Recent"></MetadataControl>
 
 
-<h2>Packs Needing Study</h2>
+    <h2>Packs Needing Study</h2>
 
 
-<h2>Packs You Might Like</h2>
+    <h2>Packs You Might Like</h2>
 
+</div>
+
+@code {
+    public static EntityMetadata Metadata => new EntityMetadata(typeof(Pages.Landing.Packs));
+
+    [Category("Recent")]
+    public List<Controls.PackControl.ViewPack> Recent { get; set; } = new();
+    public List<Controls.PackControl.ViewPack> Study { get; set; } = new();
+    public List<Controls.PackControl.ViewPack> Store { get; set; } = new();
+
+    public IEnumerable<PropertyMetadata>? RecentLayout { get; set; }
+
+    protected override void OnInitialized()
+    {
+        // Define the contextual menu for THIS page
+        MenuService?.SetMenu(@<StudySauce.Shared.Pages.Shared.Packs />);
+        RecentLayout = Pages.Landing.Packs.Metadata.Categories["Recent"]?.ToList();
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        foreach (var course in (Type[])([typeof(Pages.Course.Course1), typeof(Pages.Course.Course2), typeof(Pages.Course.Course3)]))
+        {
+            var packs = GetCoursePack(course);
+            Recent.AddRange(packs ?? []);
+        }
+        StateHasChanged();
+    }
+
+    protected static IEnumerable<Controls.PackControl.ViewPack>? GetCoursePack(Type? lesson)
+    {
+        var generator = lesson?.GetMethod("Generate", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+        IEnumerable<DataLayer.Entities.Pack>? packs = generator?.Invoke(null, []) as IEnumerable<DataLayer.Entities.Pack>;
+        return packs?.Select(p => new Controls.PackControl.ViewPack() { Pack = p }).ToList();
+    }
+
+}

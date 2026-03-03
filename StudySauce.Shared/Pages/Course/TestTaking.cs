@@ -12,12 +12,12 @@ namespace StudySauce.Shared.Pages.Course
                 new Card
                 {
                     Content = "Leading up to the test, it is a super good idea to cram.",
-                    ResponseType = CardType.Multiple,
+                    ResponseType = CardType.TrueFalse,
                     ResponseContent = "SAY NO TO CRAMMING!!!",
                     Answers = new List<Answer>
                     {
-                        new Answer { Content = "True", Value = "1" },
-                        new Answer { Content = "False", Value = "0" }
+                        new Answer { Content = "True", Value = "True" },
+                        new Answer { Content = "False", Value = "False" }
                     },
                 },
 

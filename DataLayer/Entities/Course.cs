@@ -10,6 +10,13 @@ namespace DataLayer.Entities
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; protected set; }
+        // Logo Relationship
+        [Column("file_id")]
+        public int? FileId { get; set; }
+
+        [ForeignKey("FileId")]
+        public virtual File? Logo { get; set; }
+        public virtual string? LogoHosted { get; set; }
 
         [Required]
         [MaxLength(200)]
@@ -19,8 +26,8 @@ namespace DataLayer.Entities
 
         [Category("Content")]
         [DataType(DataType.MultilineText)]
-        [Display(Name = "Summary", Description = "A brief overview of what the course covers")]
-        public string Summary { get; set; } = string.Empty;
+        [Display(Name = "Description", Description = "A brief overview of what the course covers")]
+        public string Description { get; set; } = string.Empty;
 
         [Category("Content")]
         [Display(Name = "Category", Description = "Industry or subject area (e.g., Real Estate, Medical, Law)")]

@@ -56,6 +56,7 @@ namespace StudySauce
             builder.Services.AddSingleton<ITitleService, TitleService>();
             builder.Services.AddSingleton<IMenuService, MenuService>();
             builder.Services.AddSingleton<IStudyService, StudyService>();
+            builder.Services.AddSingleton<ILoginService, LoginService>();
             builder.Services.AddSingleton<ICourseService, CourseService>();
             builder.Services.AddSingleton<IJsonService, JsonService>();
             _keepAliveConnection = new KeepAlive("Data Source=:memory:");
