@@ -1,0 +1,56 @@
+@using System.ComponentModel.DataAnnotations
+@using System.ComponentModel
+@using System.Text.Json.Serialization
+@code
+{
+
+    [Parameter] public IEnumerable<DataLayer.Entities.Role>? Data { get; set; }
+    [Parameter] public PropertyMetadata? Model { get; set; }
+    [Parameter] public EventCallback<object> ValueChanged { get; set; }
+    public DataLayer.Customization.ControlMode Mode
+    {
+        get
+        {
+            return Model?.DeclaringType == typeof(Controls.PackControl.EditPack) ? DataLayer.Customization.ControlMode.Edit : DataLayer.Customization.ControlMode.View;
+        }
+    }
+
+    public string GetBackgroundColor(string role)
+    {
+        if (Data == null) return "blue";
+        var index = Data.Select(r => r.Name).ToList().IndexOf(role);
+        var (r, g, b) = Utilities.RgbToHslTools.HslToRgb((360 / (Data.Count() + 1)) * index, 0.5, 0.5);
+        return $"background-color:#{(int)r:X2}{(int)g:X2}{(int)b:X2};";
+    }
+}
+
+
+
+@if (Mode == DataLayer.Customization.ControlMode.Edit)
+{
+
+}
+else
+{
+    <heading class="flex-row">
+        <label></label>
+        <label>Role Name</label>
+        <label>Description</label>
+        <label># of Groups</label>
+        <label># of Users</label>
+        <label>Actions</label>
+    </heading>
+    @foreach (var role in Data ?? [])
+    {
+        <div class="flex-row">
+            <span>
+                <span style="@GetBackgroundColor(role.Name)" class="bi bi-lock"></span>
+            </span>
+            <span>@role.Name</span>
+            <span>@role.Description</span>
+            <span>@role.Groups.Count()</span>
+            <span>@role.Users.Count()</span>
+            <span><a href=""><span class="bi bi-pencil"></span></a></span>
+        </div>
+    }
+}

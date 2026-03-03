@@ -13,19 +13,38 @@
 
 <SyncedTitle Title="User Management"></SyncedTitle>
 
-<div class="flash-card @GetDisplayClass(DataLayer.Customization.ControlMode.List)">
+<div class="user-list flash-card @GetDisplayClass(DataLayer.Customization.ControlMode.List)">
     <h2>Manage Users</h2>
-    <MetadataControl TModel="DataLayer.Entities.User" Model="@UserLayout" Data="CurrentUsers"></MetadataControl>
+    <MetadataControl TModel="DataLayer.Entities.User" Model="@UserLayout" Data="@CurrentUsers"></MetadataControl>
 
 
     <h2>User Controls</h2>
-    <a href="@(NavigationExtensions.GetUri<Pages.Admin.Users>(u => new () {ControlMode = DataLayer.Customization.ControlMode.Add}))"><i class="bi bi-person-plus" aria-hidden="true"></i> Add User</a>
-
-    <h2>Recent Activity</h2>
+    <div class="link-list">
+        <a href="@(NavigationExtensions.GetUri<Pages.Admin.Users>(u => new() { ControlMode = DataLayer.Customization.ControlMode.Add }))"><i class="bi bi-person-plus" aria-hidden="true"></i> Add User</a>
+        <a href="@(NavigationExtensions.GetUri<Pages.Admin.Activity>())"><i class="bi bi-activity" aria-hidden="true"></i> User Activity</a>
+        <a href="@(NavigationExtensions.GetUri<Pages.Admin.Roles>())"><i class="bi bi-person-badge" aria-hidden="true"></i> Manage Roles</a>
+        <a href="@(NavigationExtensions.GetUri<Pages.Admin.Permissions>())"><i class="bi bi-lock" aria-hidden="true"></i> Manage Permissions</a>
+    </div>
 </div>
 
-<div class="flash-card @GetDisplayClass(DataLayer.Customization.ControlMode.Add)">
+<div class="user-add flash-card @GetDisplayClass(DataLayer.Customization.ControlMode.Add)">
     <h2>New User</h2>
+    <div>
+        <fieldset>
+            <legend>Login Info</legend>
+            <MetadataControl TModel="DataLayer.Entities.User" Model="@LoginLayout" Data="[new DataLayer.Entities.User()]"></MetadataControl>
+        </fieldset>
+    </div>
+    <div>
+        <fieldset>
+            <legend>General Info</legend>
+            <MetadataControl TModel="DataLayer.Entities.User" Model="@GeneralLayout" Data="[new DataLayer.Entities.User()]"></MetadataControl>
+        </fieldset>
+    </div>
+    <div class="highlighted-link">
+        <button class="deemphasize back" @onclick="(() => NavigationExtensions.NavigateTo<Pages.Admin.Users>(Nav, u => new() { ControlMode = DataLayer.Customization.ControlMode.List }))"><span class="bi bi-chevron-left"></span> Back</button>
+        <button class="cta" @onclick="() => CreateUser()">Save</button>
+    </div>
 
 </div>
 
@@ -38,6 +57,7 @@
     public IEnumerable<DataLayer.Entities.User>? CurrentUsers { get; set; }
     public IEnumerable<PropertyMetadata>? UserLayout { get; set; }
     public IEnumerable<PropertyMetadata>? GeneralLayout { get; set; }
+    public IEnumerable<PropertyMetadata>? LoginLayout { get; set; }
     public DataLayer.Customization.ControlMode? ControlMode { get; set; }
     public DataLayer.Customization.ControlMode? PreviousMode { get; set; }
     [Parameter] public int? Id { get; set; }
@@ -55,8 +75,14 @@
         MenuService?.SetMenu(@<StudySauce.Shared.Pages.Shared.Users />);
         UserLayout = Pages.Admin.Users.Metadata.Categories["Display"]?.ToList();
         GeneralLayout = DataLayer.EntityMetadata.User.Groups["General Info"]?.ToList();
+        LoginLayout = DataLayer.EntityMetadata.User.Groups["Login Info"]?.ToList();
         Nav.LocationChanged += OnLocationChanged;
 
+    }
+
+    protected void CreateUser()
+    {
+        
     }
 
     protected void OnLocationChanged(object? sender, LocationChangedEventArgs args)

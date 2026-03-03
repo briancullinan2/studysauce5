@@ -1,9 +1,10 @@
-@page "/groups"
-@page "/groups/add"
-@page "/groups/list"
-@page "/groups/{Id:int}"
-@page "/groups/{Id:int}/view"
-@page "/groups/{Id:int}/edit"
+@page "/roles"
+@page "/roles/add"
+@page "/roles/list"
+@page "/roles/{Id:int}"
+@page "/roles/{Id:int}/view"
+@page "/roles/{Id:int}/edit"
+
 
 @using StudySauce.Shared.Controls
 @using StudySauce.Shared.Services
@@ -11,39 +12,35 @@
 @inject IMenuService MenuService
 @inject NavigationManager Nav
 
-<SyncedTitle Title="Group Management"></SyncedTitle>
+<SyncedTitle Title="Roles Management"></SyncedTitle>
 <div class="flash-card  @GetDisplayClass(DataLayer.Customization.ControlMode.List)">
 
-    <h2>Manage Groups</h2>
-    <MetadataControl TModel="DataLayer.Entities.Group" Model="@GroupLayout" Data="@CurrentGroups"></MetadataControl>
+    <h2>Manage Roles</h2>
+    <MetadataControl TModel="DataLayer.Entities.Role" Model="@RolesLayout" Data="@CurrentRoles"></MetadataControl>
 
-    <h2>Group Controls</h2>
+    <h2>Roles Controls</h2>
     <div class="link-list">
-        <a href="@(NavigationExtensions.GetUri<Pages.Admin.Groups>(u => new() { ControlMode = DataLayer.Customization.ControlMode.Add }))"><i class="bi bi-person-plus" aria-hidden="true"></i> Add Group</a>
-        <a href="@(NavigationExtensions.GetUri<Pages.Admin.Activity>())"><i class="bi bi-activity" aria-hidden="true"></i> Group Activity</a>
-        <a href="@(NavigationExtensions.GetUri<Pages.Admin.Roles>())"><i class="bi bi-person-badge" aria-hidden="true"></i> Manage Roles</a>
+        <a href="@(NavigationExtensions.GetUri<Pages.Admin.Roles>(u => new() { ControlMode = DataLayer.Customization.ControlMode.Add }))"><i class="bi bi-person-plus" aria-hidden="true"></i> Add Role</a>
+        <a href="@(NavigationExtensions.GetUri<Pages.Admin.Activity>())"><i class="bi bi-activity" aria-hidden="true"></i> Role Activity</a>
         <a href="@(NavigationExtensions.GetUri<Pages.Admin.Permissions>())"><i class="bi bi-lock" aria-hidden="true"></i> Manage Permissions</a>
     </div>
 </div>
 
-
-
-
 @code {
 
-    public static EntityMetadata Metadata => new EntityMetadata(typeof(Pages.Admin.Groups));
+    public static EntityMetadata Metadata => new EntityMetadata(typeof(Pages.Admin.Roles));
     [Category("Display")]
-    public IEnumerable<DataLayer.Entities.Group>? CurrentGroups { get; set; }
+    public IEnumerable<DataLayer.Entities.Role>? CurrentRoles { get; set; }
     public DataLayer.Customization.ControlMode? ControlMode { get; set; }
     public DataLayer.Customization.ControlMode? PreviousMode { get; set; }
-    public IEnumerable<PropertyMetadata>? GroupLayout { get; set; }
+    public IEnumerable<PropertyMetadata>? RolesLayout { get; set; }
     [Parameter] public int? Id { get; set; }
 
     protected override void OnInitialized()
     {
         // Define the contextual menu for THIS page
         MenuService?.SetMenu(@<StudySauce.Shared.Pages.Shared.Users />);
-        GroupLayout = Pages.Admin.Groups.Metadata.Categories["Display"]?.ToList();
+        RolesLayout = Pages.Admin.Roles.Metadata.Categories["Display"]?.ToList();
         Nav.LocationChanged += OnLocationChanged;
     }
 
@@ -86,7 +83,7 @@
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
-        CurrentGroups = DataLayer.Generators.Groups.Generate();
+        CurrentRoles = DataLayer.Generators.Roles.Generate().ToList();
         SetControlMode();
         StateHasChanged();
     }

@@ -61,7 +61,8 @@ namespace DataLayer.Entities
         // Many-To-Many: Users in groups
         [InverseProperty("Groups")]
         public virtual ICollection<User> Users { get; set; } = new List<User>();
-
+        [InverseProperty("Groups")]
+        public virtual ICollection<Role> Roles { get; set; } = new List<Role>();
         public Group()
         {
             Created = DateTime.UtcNow;

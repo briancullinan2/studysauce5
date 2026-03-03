@@ -101,6 +101,9 @@ namespace DataLayer.Entities
         public virtual ICollection<Response> Responses { get; set; } = new HashSet<Response>();
         [InverseProperty("Users")]
         public virtual ICollection<Group> Groups { get; set; } = new List<Group>();
+        [InverseProperty("Users")]
+        public virtual ICollection<Role> Roles { get; set; } = new List<Role>();
+
 
         // --- Complex Properties Handling ---
 

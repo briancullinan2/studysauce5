@@ -6,6 +6,7 @@
        class="my-custom-input-style" />
 
 @code {
+    [Parameter] public IEnumerable<object?>? Data { get; set; }
     [Parameter] public PropertyMetadata? Model { get; set; }
     [Parameter] public EventCallback<object> ValueChanged { get; set; }
 

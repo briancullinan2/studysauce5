@@ -10,5 +10,10 @@ namespace DataLayer.Entities
         public string Name { get; set; }
         public string Description { get; set; }
         public int Priority { get; set; }
+
+        [InverseProperty("Roles")]
+        public ICollection<DataLayer.Entities.User> Users { get; set; } = new HashSet<DataLayer.Entities.User>();
+        [InverseProperty("Roles")]
+        public ICollection<DataLayer.Entities.Group> Groups { get; set; } = new HashSet<DataLayer.Entities.Group>();
     }
 }

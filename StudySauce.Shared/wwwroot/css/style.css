@@ -27,8 +27,8 @@ a.cta,
 button.cta {
     padding: 8px;
     background: darkorange;
-    color: white;
-    text-shadow: 0px 1px 5px black;
+    color: black;
+    text-shadow: 0px 1px 5px white;
     margin-left:auto;
     cursor:pointer;
     border-radius: 5px;
@@ -225,15 +225,41 @@ heading.flex-row > * {
 }
 
 
-.user-avatar
+.user-add
 {
+    display:flex;
+    flex-wrap: wrap;
+}
+
+.user-add > * {
+    flex-basis: 50%;
+    margin: 0;
+    padding: 10px;
+}
+
+.user-add .highlighted-link
+{
+    flex-basis: 100%;
+}
+
+.user-add > h2 {
+    flex-basis: 100%;
+}
+
+.user-add .form-field
+{
+    display:flex;
+    flex-direction: column;
+}
+
+.user-avatar {
     border: 3px solid lightgrey;
     padding: 15px;
-    display:flex;
-    flex-direction:column;
-    text-align:center;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
     margin: 10px;
-    justify-content:space-between;
+    justify-content: space-between;
 }
 
 
@@ -257,7 +283,7 @@ heading.flex-row > * {
 }
 
 
-.page.Users .flex-row span:first-child .bi,
+.flex-row span:first-child .bi,
 .user-avatar > a:first-child .bi {
     border-radius: 50%;
     margin: auto;
@@ -269,17 +295,8 @@ heading.flex-row > * {
     padding: 10px;
 }
 
-.page.Users .flex-row span:first-child .bi {
+.flex-row span:first-child .bi {
     font-size: 24px;
     height: 44px;
     width: 44px;
-}
-
-.user-list {
-    display: flex;
-}
-
-.user-list > *
-{
-    flex-basis: 25%;
 }
