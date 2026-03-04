@@ -32,7 +32,7 @@
             <input value="@card.Card?.ResponseContent" type="text" maxlength="4096" class="my-custom-input-style">
         </div>
         <div>
-            <select>
+            <select value="@(card.Card?.ResponseType.ToString() ?? "")">
                 @foreach(var value in Enum.GetValues(typeof(DataLayer.Customization.CardType)))
                 {
                     <option value="@value.ToString()">@value.ToString()</option>
@@ -44,18 +44,30 @@
             {
                 @for(var i = 0; i < 4; i++)
                 {
-                    <input value="@card.Card?.Answers.ElementAt(i).Value" />
+                    <span>
+                        <input type="text" value="@(card.Card?.Answers.Count() > i ? card.Card?.Answers.ElementAt(i).Content : "")" />
+                    </span>
                 }
             } else if (card.Card?.ResponseType == DataLayer.Customization.CardType.TrueFalse)
             {
-                <input value="@(card.Card?.Answers.ElementAt(0).Value ?? "True")" />
-                <input value="@(card.Card?.Answers.ElementAt(1).Value ?? "False")" />
-            } else if (card.Card?.ResponseType == DataLayer.Customization.CardType.Short
+                <span>
+                    <input type="text" value="@(card.Card?.Answers.Count() >= 1 ? card.Card?.Answers.ElementAt(0).Content ?? "True" : "True")" />
+                </span>
+                <span>
+                    <input type="text" value="@(card.Card?.Answers.Count() >= 2 ? card.Card?.Answers.ElementAt(1).Content ?? "False" : "False")" />
+                </span>
+            }
+            else if (card.Card?.ResponseType == DataLayer.Customization.CardType.Short
                 || card.Card?.ResponseType == DataLayer.Customization.CardType.Match)
             {
-                <select><option value="Match">Exact Match</option><option value="Short">Contains</option></select>
-                <input value="@(card.Card?.Answers.ElementAt(0).Value ?? "")" />
-            } else
+                <span>
+                    <select><option value="Match">Exact Match</option><option value="Short">Contains</option></select>
+                </span>
+                <span>
+                    <input type="text" value="@(card.Card?.Answers.ElementAt(0).Value ?? "")" />
+                </span>
+            }
+            else
             {
                 <span>Set the response type to specify answers.</span>
             }

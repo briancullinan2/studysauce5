@@ -44,6 +44,8 @@ button.deemphasize:hover {
 }
 
 
+select,
+textarea,
 input[type="text"]
 {
     padding: 4px;
@@ -53,9 +55,13 @@ input[type="text"]
     width: 100%;
 }
 
+select:focus,
+select:active,
+textarea:focus,
+textarea:active,
 input[type="text"]:focus,
 input[type="text"]:active {
-    border-color:darkorange;
+    border-color: darkorange;
 }
 
 /* accordion */
@@ -193,7 +199,7 @@ input.large-present:checked + label[for] {
 
 .flex-row > * {
     flex-basis: 20%;
-    padding: 0 10px;
+    padding: 0 5px;
 }
 
 .flex-row img {
@@ -208,7 +214,7 @@ heading.flex-row
 }
 
 heading.flex-row > * {
-    padding: 0 10px;
+    padding: 0 5px;
 }
 
 .flex-row > *:first-child {
@@ -237,13 +243,20 @@ heading.flex-row > * {
 
 .cards-edit heading > *:nth-child(4)
 {
-    flex-basis: 60%;
+    flex-basis: 40%;
     flex-grow: 0;
 }
 
 .cards-edit .flex-row > *:nth-child(5)
 {
-    flex-basis:60%;
+    flex-basis:40%;
+    display:flex;
+    flex-direction: column;
+}
+
+.cards-edit .flex-row > *:nth-child(5) > *
+{
+    padding: 5px;
 }
 
 .cards-edit .flex-row > *:nth-child(3),
@@ -276,7 +289,7 @@ heading.flex-row > * {
 }
 
 .Role-form-container > .form-field {
-    padding: 0 10px;
+    padding: 0 5px;
 }
 
 .flex-row > *:last-child {
