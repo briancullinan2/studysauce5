@@ -6,7 +6,7 @@
     public class EditControl
     {
         public DataLayer.Entities.Card? Card { get; set; }
-        public DataLayer.Customization.ControlMode? Mode { get; set; }
+        public DataLayer.Customization.ControlMode? Mode { get; set; } = DataLayer.Customization.ControlMode.View;
     }
 
     [Parameter] public List<EditControl>? Data { get; set; }
@@ -24,65 +24,70 @@
 @foreach (var card in Data ?? [])
 {
     <div class="flex-row Card-form-container auto-form-container">
-        <span>@(Data?.IndexOf(card) + 1)</span>
-        <div class="form-field Content-form-field" b-apmja2q7gc="">
-            <input value="@card.Card?.Content" type="text" maxlength="4096" class="my-custom-input-style">
-        </div>
-        <div class="form-field Responsecontent-form-field" b-apmja2q7gc="">
-            <input value="@card.Card?.ResponseContent" type="text" maxlength="4096" class="my-custom-input-style">
-        </div>
-        <div>
-            <select value="@(card.Card?.ResponseType.ToString() ?? "")">
-                @foreach(var value in Enum.GetValues(typeof(DataLayer.Customization.CardType)))
+        @if (card.Mode == DataLayer.Customization.ControlMode.Edit)
+        {
+            <span>@(Data?.IndexOf(card) + 1)</span>
+            <div class="form-field Content-form-field" b-apmja2q7gc="">
+                <input value="@card.Card?.Content" type="text" maxlength="4096" class="my-custom-input-style">
+            </div>
+            <div class="form-field Responsecontent-form-field" b-apmja2q7gc="">
+                <input value="@card.Card?.ResponseContent" type="text" maxlength="4096" class="my-custom-input-style">
+            </div>
+            <div>
+                <select value="@(card.Card?.ResponseType.ToString() ?? "")">
+                    @foreach (var value in Enum.GetValues(typeof(DataLayer.Customization.CardType)))
+                    {
+                        <option value="@value.ToString()">@value.ToString()</option>
+                    }
+                </select>
+            </div>
+            <span>
+                @if (card.Card?.ResponseType == DataLayer.Customization.CardType.Multiple)
                 {
-                    <option value="@value.ToString()">@value.ToString()</option>
+                    @for (var i = 0; i < 4; i++)
+                    {
+                        <span>
+                            <input type="text" value="@(card.Card?.Answers.Count() > i ? card.Card?.Answers.ElementAt(i).Content : "")" />
+                        </span>
+                    }
                 }
-            </select>
-        </div>
-        <span>
-            @if(card.Card?.ResponseType == DataLayer.Customization.CardType.Multiple)
-            {
-                @for(var i = 0; i < 4; i++)
+                else if (card.Card?.ResponseType == DataLayer.Customization.CardType.TrueFalse)
                 {
                     <span>
-                        <input type="text" value="@(card.Card?.Answers.Count() > i ? card.Card?.Answers.ElementAt(i).Content : "")" />
+                        <input type="text" value="@(card.Card?.Answers.Count() >= 1 ? card.Card?.Answers.ElementAt(0).Content ?? "True" : "True")" />
+                    </span>
+                    <span>
+                        <input type="text" value="@(card.Card?.Answers.Count() >= 2 ? card.Card?.Answers.ElementAt(1).Content ?? "False" : "False")" />
                     </span>
                 }
-            } else if (card.Card?.ResponseType == DataLayer.Customization.CardType.TrueFalse)
-            {
-                <span>
-                    <input type="text" value="@(card.Card?.Answers.Count() >= 1 ? card.Card?.Answers.ElementAt(0).Content ?? "True" : "True")" />
-                </span>
-                <span>
-                    <input type="text" value="@(card.Card?.Answers.Count() >= 2 ? card.Card?.Answers.ElementAt(1).Content ?? "False" : "False")" />
-                </span>
-            }
-            else if (card.Card?.ResponseType == DataLayer.Customization.CardType.Short
-                || card.Card?.ResponseType == DataLayer.Customization.CardType.Match)
-            {
-                <span>
-                    <select><option value="Match">Exact Match</option><option value="Short">Contains</option></select>
-                </span>
-                <span>
-                    <input type="text" value="@(card.Card?.Answers.ElementAt(0).Value ?? "")" />
-                </span>
-            }
-            else
-            {
-                <span>Set the response type to specify answers.</span>
-            }
-        </span>
-        <span>
-            @if (card.Mode != DataLayer.Customization.ControlMode.Edit)
-            {
-                @* href="@(NavigationExtensions.GetUri<Pages.Admin.Roles>(r => new() { Id = Data!.ToList().IndexOf(role), ControlMode = DataLayer.Customization.ControlMode.Edit }))"*@
-                <a @onclick="() => { card.Mode = DataLayer.Customization.ControlMode.Edit; StateHasChanged(); }"><span class="bi bi-pencil"></span></a>
-            }
-            else
-            {
+                else if (card.Card?.ResponseType == DataLayer.Customization.CardType.Short
+                    || card.Card?.ResponseType == DataLayer.Customization.CardType.Match)
+                {
+                    <span>
+                        <select><option value="Match">Exact Match</option><option value="Short">Contains</option></select>
+                    </span>
+                    <span>
+                        <input type="text" value="@(card.Card?.Answers.ElementAt(0).Value ?? "")" />
+                    </span>
+                }
+                else
+                {
+                    <span>Set the response type to specify answers.</span>
+                }
+            </span>
+            <span>
                 <a class="cta" @onclick="() => { }">Save</a>
-            }
-        </span>
-
+            </span>
+        } else
+        {
+            <span>@(Data?.IndexOf(card) + 1)</span>
+            <span>@card.Card?.Content</span>
+            <span>@card.Card?.ResponseContent</span>
+            <span>@card.Card?.ResponseType.ToString()</span>
+            <span>@card.Card?.Answers.FirstOrDefault(a => a.IsCorrect)?.Content</span>
+            <span>
+                <a @onclick="() => { card.Mode = DataLayer.Customization.ControlMode.Edit; StateHasChanged(); }"><span class="bi bi-pencil"></span></a>
+            </span>
+        }
     </div>
 }

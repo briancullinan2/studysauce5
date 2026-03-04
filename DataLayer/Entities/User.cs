@@ -44,6 +44,7 @@ namespace DataLayer.Entities
         [MaxLength(256)]
         [NotMapped]
         [Category("User Info")]
+        [DataType(DataType.Password)]
         [Display(GroupName = "Login Info", Order = 2, Name = "Confirm Password", Description = "Confirm a new password")]
         public string? Confirm { get; set; }
 

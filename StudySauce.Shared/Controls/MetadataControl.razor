@@ -51,6 +51,12 @@
             { typeof(IEnumerable<EditCardControl.EditControl>), typeof(EditCardControl) },
             //{ typeof(DateTime), typeof(DateControl) },
             //{ typeof(int), typeof(NumberControl) }
+            { typeof(DataLayer.Customization.PackStatus), typeof(EnumSelect) },
+            { typeof(int), typeof(StringControl) },
+            { typeof(double), typeof(StringControl) },
+            { typeof(decimal), typeof(StringControl) },
+            { typeof(float), typeof(StringControl) },
+            { typeof(DateTime), typeof(StringControl) },
             { typeof(string), typeof(StringControl) },
             { typeof(object), typeof(TypeControl) },
         };
@@ -59,7 +65,8 @@
     {
         foreach(var kvp in TypeToControl)
         {
-            if(kvp.Key.IsAssignableFrom(modelPropertyType))
+            if(kvp.Key.IsAssignableFrom(modelPropertyType)
+                || kvp.Key.IsAssignableFrom(Nullable.GetUnderlyingType(modelPropertyType)))
             {
                 return kvp.Value;
             }

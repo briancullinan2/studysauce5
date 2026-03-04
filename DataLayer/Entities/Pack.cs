@@ -56,12 +56,14 @@ namespace DataLayer.Entities
         [Range(0, 999999.99)]
         [Column(TypeName = "decimal(18, 2)")]
         [Category("Economics")]
+        [DataType(DataType.Currency)]
         [Display(Name = "Price", GroupName = "Pack Status", Description = "Set the purchase price for this pack")]
         public decimal Price { get; set; } = 0;
 
         [Required]
         [Range(0, 999999)]
         [Category("Economics")]
+        [DataType(DataType.Currency)]
         [Display(Name = "Tokens", GroupName = "Pack Status", Description = "Set the purchase tokens for this pack")]
         public int Tokens { get; set; } = 0;
 

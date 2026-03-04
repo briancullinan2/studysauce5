@@ -1,0 +1,23 @@
+@using System.ComponentModel
+@using System.Reflection
+<label>@Model?.DisplayName</label>
+
+@if (Model != null)
+{
+    <select value="@(Data!=null && Data.Count() > 0 ? Model.GetValue(Data.ElementAt(0)!) : "")">
+        @foreach (var value in Enum.GetValues(Model.PropertyType))
+        {
+            var attribute = Model.PropertyType.GetField(value.ToString()!)?.GetCustomAttribute<DescriptionAttribute>();
+            <option value="@value.ToString()">@(attribute != null ? attribute.Description : value.ToString())</option>
+        }
+    </select>
+}
+
+
+@code {
+
+    [Parameter] public IEnumerable<object?>? Data { get; set; }
+    [Parameter] public PropertyMetadata? Model { get; set; }
+    [Parameter] public EventCallback<object> ValueChanged { get; set; }
+
+}

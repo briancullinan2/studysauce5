@@ -26,6 +26,7 @@ namespace DataLayer
         public string? GroupName { get; private set; }
         public int? Order { get; private set; }
         public string? Category { get; private set; }
+        public DataType? DataType { get; private set; }
 
         public PropertyMetadata(PropertyInfo info)
         {
@@ -38,6 +39,7 @@ namespace DataLayer
             GroupName = _info.GetCustomAttribute<DisplayAttribute>()?.GetGroupName();
             Category = _info.GetCustomAttribute<CategoryAttribute>()?.Category;
             Order = _info.GetCustomAttribute<DisplayAttribute>()?.GetOrder();
+            DataType = _info.GetCustomAttribute<DataTypeAttribute>()?.DataType;
         }
 
         // You can even wrap the actual Get/Set calls
