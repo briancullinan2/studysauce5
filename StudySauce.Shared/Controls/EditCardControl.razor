@@ -31,7 +31,35 @@
         <div class="form-field Responsecontent-form-field" b-apmja2q7gc="">
             <input value="@card.Card?.ResponseContent" type="text" maxlength="4096" class="my-custom-input-style">
         </div>
-        <span></span>
+        <div>
+            <select>
+                @foreach(var value in Enum.GetValues(typeof(DataLayer.Customization.CardType)))
+                {
+                    <option value="@value.ToString()">@value.ToString()</option>
+                }
+            </select>
+        </div>
+        <span>
+            @if(card.Card?.ResponseType == DataLayer.Customization.CardType.Multiple)
+            {
+                @for(var i = 0; i < 4; i++)
+                {
+                    <input value="@card.Card?.Answers.ElementAt(i).Value" />
+                }
+            } else if (card.Card?.ResponseType == DataLayer.Customization.CardType.TrueFalse)
+            {
+                <input value="@(card.Card?.Answers.ElementAt(0).Value ?? "True")" />
+                <input value="@(card.Card?.Answers.ElementAt(1).Value ?? "False")" />
+            } else if (card.Card?.ResponseType == DataLayer.Customization.CardType.Short
+                || card.Card?.ResponseType == DataLayer.Customization.CardType.Match)
+            {
+                <select><option value="Match">Exact Match</option><option value="Short">Contains</option></select>
+                <input value="@(card.Card?.Answers.ElementAt(0).Value ?? "")" />
+            } else
+            {
+                <span>Set the response type to specify answers.</span>
+            }
+        </span>
         <span>
             @if (card.Mode != DataLayer.Customization.ControlMode.Edit)
             {
