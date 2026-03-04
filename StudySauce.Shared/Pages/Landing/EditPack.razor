@@ -42,10 +42,18 @@
 </div>
 
 
-<div class="pack-edit flash-card @GetDisplayClass(DataLayer.Customization.ControlMode.Add)">
+<div class="cards-edit flash-card @GetDisplayClass(DataLayer.Customization.ControlMode.Add)">
     <h2>Editing @CurrentPack?.Title</h2>
 
+    <heading class="flex-row">
+        <label></label>
+        <label>Prompt</label>
+        <label>Response</label>
+        <label>Answers</label>
+        <label>Actions</label>
+    </heading>
 
+    <MetadataControl TModel="Controls.EditCardControl.EditControl" Model="@CardsLayout" Data="EditCards.ToList()"></MetadataControl>
 </div>
 
 
@@ -57,10 +65,13 @@
     public DataLayer.Entities.Pack? CurrentPack { get; set; }
     [Category("Cards")]
     public IEnumerable<DataLayer.Entities.Card>? CurrentCards { get => CurrentPack?.Cards; }
+    [Category("Edit")]
+    public IEnumerable<Controls.EditCardControl.EditControl>? EditCards { get => CurrentCards?.Select(c => new EditCardControl.EditControl() { Card = c }); }
 
     public PropertyMetadata? TitleLayout { get; set; }
     public IEnumerable<PropertyMetadata>? GeneralLayout { get; set; }
     public IEnumerable<PropertyMetadata>? StatusLayout { get; set; }
+    public IEnumerable<PropertyMetadata>? CardsLayout { get; set; }
 
     public DataLayer.Customization.ControlMode? ControlMode { get; set; } = DataLayer.Customization.ControlMode.Edit;
     public DataLayer.Customization.ControlMode? PreviousMode { get; set; }
@@ -78,6 +89,7 @@
         TitleLayout = DataLayer.EntityMetadata.Pack.Groups["Title"]?.FirstOrDefault();
         GeneralLayout = DataLayer.EntityMetadata.Pack.Groups["Pack Info"];
         StatusLayout = DataLayer.EntityMetadata.Pack.Groups["Pack Status"];
+        CardsLayout = Pages.Landing.EditPack.Metadata.Categories["Edit"];
         Nav.LocationChanged += OnLocationChanged;
 
     }

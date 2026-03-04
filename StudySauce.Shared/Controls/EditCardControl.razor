@@ -3,20 +3,46 @@
 @using System.Text.Json.Serialization
 @code
 {
-    
-    [Parameter] public IEnumerable<DataLayer.Entities.Card>? Data { get; set; }
+    public class EditControl
+    {
+        public DataLayer.Entities.Card? Card { get; set; }
+        public DataLayer.Customization.ControlMode? Mode { get; set; }
+    }
+
+    [Parameter] public List<EditControl>? Data { get; set; }
     [Parameter] public PropertyMetadata? Model { get; set; }
     [Parameter] public EventCallback<object> ValueChanged { get; set; }
     private IEnumerable<PropertyMetadata>? CardLayout;
 
     protected override void OnInitialized()
     {
-        CardLayout = DataLayer.EntityMetadata.Card.Groups["Display"]?.ToList();
+        CardLayout = DataLayer.EntityMetadata.Card.Categories["Content"]?.ToList();
     }
 
 }
 
 @foreach (var card in Data ?? [])
 {
-    <MetadataControl TModel="DataLayer.Entities.Card" Model="@CardLayout" Data="[card]"></MetadataControl>
+    <div class="flex-row Card-form-container auto-form-container">
+        <span>@(Data?.IndexOf(card) + 1)</span>
+        <div class="form-field Content-form-field" b-apmja2q7gc="">
+            <input value="@card.Card?.Content" type="text" maxlength="4096" class="my-custom-input-style">
+        </div>
+        <div class="form-field Responsecontent-form-field" b-apmja2q7gc="">
+            <input value="@card.Card?.ResponseContent" type="text" maxlength="4096" class="my-custom-input-style">
+        </div>
+        <span></span>
+        <span>
+            @if (card.Mode != DataLayer.Customization.ControlMode.Edit)
+            {
+                @* href="@(NavigationExtensions.GetUri<Pages.Admin.Roles>(r => new() { Id = Data!.ToList().IndexOf(role), ControlMode = DataLayer.Customization.ControlMode.Edit }))"*@
+                <a @onclick="() => { card.Mode = DataLayer.Customization.ControlMode.Edit; StateHasChanged(); }"><span class="bi bi-pencil"></span></a>
+            }
+            else
+            {
+                <a class="cta" @onclick="() => { }">Save</a>
+            }
+        </span>
+
+    </div>
 }

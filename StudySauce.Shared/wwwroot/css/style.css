@@ -49,6 +49,8 @@ input[type="text"]
     padding: 4px;
     border: 2px solid lightgrey;
     border-radius: 5px;
+    min-width: auto;
+    width: 100%;
 }
 
 input[type="text"]:focus,
@@ -233,6 +235,22 @@ heading.flex-row > * {
     padding: 0;
 }
 
+.cards-edit heading > *:nth-child(4)
+{
+    flex-basis: 60%;
+    flex-grow: 0;
+}
+
+.cards-edit .flex-row > *:nth-child(4)
+{
+    flex-basis:60%;
+}
+
+.cards-edit .flex-row > *:nth-child(3),
+.cards-edit .flex-row > *:nth-child(2) {
+    flex-grow: 0;
+}
+
 .roles-container heading > *:nth-child(2),
 .roles-container heading > *:nth-child(3) {
     flex-basis: 30%;
@@ -300,6 +318,10 @@ heading.flex-row > * {
 .user-add .form-field {
     display: flex;
     flex-direction: column;
+}
+
+.user-list {
+    display:flex;
 }
 
 .user-avatar {

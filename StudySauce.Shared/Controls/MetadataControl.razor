@@ -42,12 +42,13 @@
             // order matters, put more specific types first, then general system types last
             { typeof(DataLayer.Entities.Card), typeof(CardControl) },
             { typeof(IEnumerable<DataLayer.Entities.Card>), typeof(CardControl) },
-            { typeof(IEnumerable<Controls.ResultsCardControl.ResultCard>), typeof(ResultsCardControl) },
+            { typeof(IEnumerable<ResultsCardControl.ResultCard>), typeof(ResultsCardControl) },
             { typeof(IEnumerable<DataLayer.Entities.Answer>), typeof(AnswersControl) },
             { typeof(IEnumerable<DataLayer.Entities.Pack>), typeof(PacksControl) },
             { typeof(IEnumerable<DataLayer.Entities.User>), typeof(UsersControl) },
             { typeof(IEnumerable<DataLayer.Entities.Group>), typeof(GroupsControl) },
             { typeof(IEnumerable<RolesControl.ControlRole>), typeof(RolesControl) },
+            { typeof(IEnumerable<EditCardControl.EditControl>), typeof(EditCardControl) },
             //{ typeof(DateTime), typeof(DateControl) },
             //{ typeof(int), typeof(NumberControl) }
             { typeof(string), typeof(StringControl) },

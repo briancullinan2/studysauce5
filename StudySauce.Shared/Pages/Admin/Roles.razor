@@ -116,7 +116,7 @@
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
-        CurrentRoles = DataLayer.Generators.Roles.Generate().Select(r => new Controls.RolesControl.ControlRole() { Role = r }).ToList();
+        CurrentRoles = DataLayer.Generators.Roles.Generate().Select((r, i) => new Controls.RolesControl.ControlRole() { Index = i, Role = r }).ToList();
         SetControlMode();
         StateHasChanged();
     }

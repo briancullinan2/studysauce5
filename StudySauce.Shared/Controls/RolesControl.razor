@@ -14,11 +14,9 @@
         RoleLayout = DataLayer.EntityMetadata.Role.Categories["Editable"]?.ToList();
     }
 
-    public string GetBackgroundColor(string? role)
+    public string GetBackgroundColor(int? index)
     {
-        if (Data == null) return "blue";
-        var index = Data.Select(r => r.Role?.Name).ToList().IndexOf(role);
-        var (r, g, b) = Utilities.RgbToHslTools.HslToRgb((360 / (Data.Count() + 1)) * index, 0.5, 0.5);
+        var (r, g, b) = Utilities.RgbToHslTools.HslToRgb((360 / ((Data?.Count() ?? 0) + 1)) * (index ?? 0), 0.5, 0.5);
         return $"background-color:#{(int)r:X2}{(int)g:X2}{(int)b:X2};";
     }
 
@@ -26,6 +24,7 @@
     {
         public DataLayer.Entities.Role? Role { get; set; }
         public DataLayer.Customization.ControlMode? Mode { get; set; }
+        public int? Index { get; set; }
     }
 
 }
@@ -36,7 +35,7 @@
 {
     <div class="flex-row @(role.Mode == DataLayer.Customization.ControlMode.Edit ? "edit" : "view")">
         <span>
-            <span style="@GetBackgroundColor(role.Role?.Name)" class="bi bi-lock"></span>
+            <span style="@GetBackgroundColor(role.Index)" class="bi bi-lock"></span>
         </span>
         @if (role.Mode == DataLayer.Customization.ControlMode.Edit)
         {
