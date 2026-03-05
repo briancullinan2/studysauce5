@@ -1,5 +1,7 @@
-﻿using DataLayer.Utilities.Extensions;
+﻿using DataLayer.Entities;
+using DataLayer.Utilities.Extensions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using StudySauce.Shared.Services;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -13,6 +15,7 @@ namespace StudySauce.Services
     {
         public event Action<DataLayer.Entities.File?>? OnFileUploaded;
         public event Action<bool>? OnFileDragging;
+        private static IServiceProvider? _services;
 
         public async Task UploadFile(string localPath)
         {
@@ -33,6 +36,23 @@ namespace StudySauce.Services
             // TODO: store in database and return File entity?
             fileStream.Close();
             localStream.Close();
+
+            var persistentStore = _services.GetRequiredService<IDbContextFactory<DataLayer.PersistentStorage>>();
+            using var fileContext = persistentStore.CreateDbContext();
+            try
+            {
+                ProxyEntity<DataLayer.Entities.File> file = DataLayer.Entities.Entity.Wrap(new DataLayer.Entities.File()
+                {
+                    Filename = savePath,
+                    Source = "Upload" // TODO: fill in from nav or parameter or something
+                }, _services);
+                file.Save();
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
         }
 
         //[HttpPost("upload")]
@@ -49,9 +69,11 @@ namespace StudySauce.Services
                         using var stream = file.OpenReadStream();
 
                         // Example: Save to disk in Arizona-based storage
-                        var savePath = Path.Combine(AppContext.BaseDirectory, "Uploads", Path.GetFileName(file.FileName).ToSafe());
-                        using var fileStream = System.IO.File.Create(savePath);
-                        await stream.CopyToAsync(fileStream);
+                        using (var scope = _services?.CreateScope())
+                        {
+                            var manager = scope?.ServiceProvider.GetRequiredService<IFileManager>();
+                            await manager.UploadFile(stream, file.FileName);
+                        }
 
                         // Now you can log the file entry into your TranslationContext 
                         // using the 'file.FileName' or 'file.Length'
@@ -108,7 +130,6 @@ namespace StudySauce.Services
 #if WINDOWS
         private static User32.WndProcDelegate? _wndProc; // Keep static to prevent GC
         private static nint _oldWndProc;
-        private static IServiceProvider? _services;
         private static bool _isFileDragging;
 
         internal static void InitializeWndProc(Microsoft.Maui.Handlers.IWindowHandler h, IServiceProvider? services)

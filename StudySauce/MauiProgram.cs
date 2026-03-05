@@ -62,10 +62,11 @@ namespace StudySauce
             builder.Services.AddSingleton<IFileManager, FileManager>();
             _keepAliveConnection = new KeepAlive("Data Source=:memory:");
             _keepAliveConnection.Open(); // The DB is born
-            builder.Services.AddDbContext<DataLayer.TranslationContext>((serviceProvider, options) =>
-            {
-                options.UseSqlite(_keepAliveConnection);
-            });
+            builder.Services.AddDbContextFactory<DataLayer.EphemeralStorage>(options =>
+                options.UseSqlite(_keepAliveConnection));
+
+            builder.Services.AddDbContextFactory<DataLayer.PersistentStorage>(options =>
+                options.UseSqlite("Data Source=" + Path.Combine(AppContext.BaseDirectory, "StudySauce.sqlite.db")));
 
             //builder.Services.AddSingleton<DbContext>(new DataLayer.TranslationContext(c => c == null ? "Data Source=:memory:" : c.UseSqlite()));
             builder.Services.AddMauiBlazorWebView();
@@ -93,11 +94,20 @@ namespace StudySauce
             // 2. Now you can create a scope from the built app
             using (var scope = mauiApp.Services.CreateScope())
             {
-                var db = scope.ServiceProvider.GetRequiredService<DataLayer.TranslationContext>();
-                var conn = db.Database.GetDbConnection();
+                var ephemeralStore = scope.ServiceProvider.GetRequiredService<IDbContextFactory<DataLayer.EphemeralStorage>>();
+                using var memoryContext = ephemeralStore.CreateDbContext();
+                var conn = memoryContext.Database.GetDbConnection();
                 if (conn.State != System.Data.ConnectionState.Open) conn.Open();
-                db.Database.EnsureCreated();
-                _pack = db.Packs.FirstOrDefault(p => p.Title == "something");
+                memoryContext.Database.EnsureCreated();
+                //_pack = memoryContext.Packs.FirstOrDefault(p => p.Title == "something");
+
+                var persistentStore = scope.ServiceProvider.GetRequiredService<IDbContextFactory<DataLayer.PersistentStorage>>();
+                using var persistentContext = persistentStore.CreateDbContext();
+                var conn2 = persistentContext.Database.GetDbConnection();
+                if (conn2.State != System.Data.ConnectionState.Open) conn.Open();
+                persistentContext.Database.EnsureCreated();
+                // TODO: add version setting and upgrades
+                persistentContext.SaveChanges();
             }
 
 

@@ -42,7 +42,7 @@ namespace StudySauce.WinUI
         public static void Main(string[] args)
         {
             // 1. Start your Web Server in a background thread
-            WebServer.StartWebServer(args);
+            _ = WebServer.StartWebServer(args);
             TitleService._setTitle = SetTitle;
 
             // 2. Start the WinUI/MAUI Application

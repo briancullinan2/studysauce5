@@ -51,11 +51,15 @@ namespace StudySauce.Services
             webBuilder.Services.AddSingleton<ILocalServer, LocalServer>();
             _keepAlive = new KeepAlive("Data Source=:memory:");
             _keepAlive.Open();
-            webBuilder.Services.AddDbContext<DataLayer.TranslationContext>((serviceProvider, options) =>
-            {
-                options.UseSqlite(_keepAlive);
-            });
+            //webBuilder.Services.AddDbContext<DataLayer.TranslationContext>((serviceProvider, options) =>
+            //{
+            //    options.UseSqlite(_keepAlive);
+            //});
+            webBuilder.Services.AddDbContextFactory<DataLayer.EphemeralStorage>(options =>
+                options.UseSqlite(_keepAlive));
 
+            webBuilder.Services.AddDbContextFactory<DataLayer.PersistentStorage>(options =>
+                options.UseSqlite("Data Source=" + Path.Combine(AppContext.BaseDirectory, "StudySauce.sqlite.db")));
 
             webBuilder.Environment.WebRootPath = Path.Combine(AppContext.BaseDirectory, "wwwroot");
             webBuilder.WebHost.ConfigureKestrel(options =>
@@ -71,11 +75,19 @@ namespace StudySauce.Services
             var webApp = webBuilder.Build();
             using (var scope = webApp.Services.CreateScope())
             {
-                var db = scope.ServiceProvider.GetRequiredService<DataLayer.TranslationContext>();
-                var conn = db.Database.GetDbConnection();
+                var ephemeralStore = scope.ServiceProvider.GetRequiredService<IDbContextFactory<DataLayer.EphemeralStorage>>();
+                using var memoryContext = ephemeralStore.CreateDbContext();
+                var conn = memoryContext.Database.GetDbConnection();
                 if (conn.State != System.Data.ConnectionState.Open) conn.Open();
-                db.Database.EnsureCreated();
-                var _pack = db.Packs.FirstOrDefault(p => p.Title == "something");
+                memoryContext.Database.EnsureCreated();
+
+                var persistentStore = scope.ServiceProvider.GetRequiredService<IDbContextFactory<DataLayer.PersistentStorage>>();
+                using var persistentContext = persistentStore.CreateDbContext();
+                var conn2 = persistentContext.Database.GetDbConnection();
+                if (conn2.State != System.Data.ConnectionState.Open) conn.Open();
+                persistentContext.Database.EnsureCreated();
+                persistentContext.SaveChanges();
+
             }
 
             var localServer = (LocalServer)webApp.Services.GetRequiredService<ILocalServer>();

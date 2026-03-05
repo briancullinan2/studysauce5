@@ -21,7 +21,7 @@ namespace DataLayer
 
         // Add other entities here...
 
-        public TranslationContext(DbContextOptions<TranslationContext> ctx) : base(ctx)
+        public TranslationContext(DbContextOptions ctx) : base(ctx)
         {
         }
 
@@ -113,6 +113,22 @@ namespace DataLayer
         public static EntityMetadata<Entities.Message> Message => new EntityMetadata<Entities.Message>();
         public static EntityMetadata<Entities.File> File => new EntityMetadata<Entities.File>();
         public static EntityMetadata<Entities.Group> Group => new EntityMetadata<Entities.Group>();
+
+    }
+
+    public class PersistentStorage : TranslationContext
+    {
+        public PersistentStorage(DbContextOptions<PersistentStorage> ctx) : base(ctx)
+        {
+        }
+
+    }
+
+    public class EphemeralStorage : TranslationContext
+    {
+        public EphemeralStorage(DbContextOptions<EphemeralStorage> ctx) : base(ctx)
+        {
+        }
 
     }
 }

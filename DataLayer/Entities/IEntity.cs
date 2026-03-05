@@ -9,64 +9,81 @@ using System.Runtime.CompilerServices;
 namespace DataLayer.Entities
 {
 
-    public interface IEntity : INotifyPropertyChanged
+    public interface IEntity
     {
-        abstract new public event PropertyChangedEventHandler? PropertyChanged;
         //abstract internal static IEntity Create(IEntity target);
         //abstract internal static IEntity Wrap(IEntity target);
     }
 
-    public interface IEntity<T> : INotifyPropertyChanged, IEntity where T : IEntity
+    public interface IEntity<T> : IEntity where T : IEntity
     {
-        abstract new public event PropertyChangedEventHandler? PropertyChanged;
-        abstract internal static T Create(T target, IServiceProvider service);
-        internal IServiceProvider _service { get; }
-        abstract internal static T Wrap(T target, IServiceProvider service);
     }
 
-    abstract public class Entity : DispatchProxy
+    abstract public class Entity : DispatchProxy, INotifyPropertyChanged
     {
         protected abstract override object? Invoke(MethodInfo? targetMethod, object?[]? args);
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        public static ProxyEntity<T> Wrap<T>(IEntity<T> target, IServiceProvider service) where T : IEntity
+        {
+            return Wrap((IEntity)target, service) as ProxyEntity<T>;
+        }
 
         public static IEntity Wrap(IEntity target, IServiceProvider service)
         {
-            object generic = typeof(Entity<>).MakeGenericType(target.GetType());
-            object proxy = System.Reflection.DispatchProxy.Create(generic.GetType(), target.GetType());
+            // 1. Create the specific interface type: IEntity<MyEntity>
+            Type interfaceType = typeof(IEntity<>).MakeGenericType(target.GetType());
 
-            var prop = proxy.GetType().GetField(nameof(Entity<>._target));
-            prop.SetValue(proxy, target);
-            var prop2 = proxy.GetType().GetField(nameof(Entity<>._service));
-            prop2.SetValue(proxy, service);
+            // 2. Create the specific proxy implementation type (assuming your class is EntityProxy<T>)
+            // DispatchProxy requires a class that inherits from DispatchProxy
+            Type proxyType = typeof(ProxyEntity<>).MakeGenericType(target.GetType());
+
+            // 3. Since DispatchProxy.Create<T, TProxy> is generic, invoke it via reflection
+            var createMethod = typeof(DispatchProxy)
+                .GetMethod(nameof(DispatchProxy.Create), 2, [])
+                .MakeGenericMethod(interfaceType, proxyType);
+
+            object proxy = createMethod.Invoke(null, null);
+
+            // 4. Set your fields (make sure they are public or use GetField with BindingFlags)
+            var targetField = proxy.GetType().GetField("_target", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            targetField?.SetValue(proxy, target);
+
+            var serviceField = proxy.GetType().GetField("_service", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            serviceField?.SetValue(proxy, service);
 
             return proxy as IEntity;
         }
 
     }
 
-    public class Entity<T> : Entity, IEntity<T>, INotifyPropertyChanged where T : IEntity
+    public class Entity<T> : IEntity<T> where T : IEntity
+    {
+
+    }
+
+    public class ProxyEntity<T> : Entity, IEntity<T>, INotifyPropertyChanged where T : IEntity
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        protected Entity() : base()
+        public ProxyEntity() : base()
         {
             // observables don't like this because of invoke recursion bla bla bla, damn gemini is chatty
             // _target = this;
         }
 
-        internal T _target = default!;
-        internal IServiceProvider _service = default!;
-
-        IServiceProvider IEntity<T>._service => this._service;
+        public T _target = default!;
+        public IServiceProvider _service = default!;
 
         // 1. You create a static helper to wrap the real object
         public static T Create(T target, IServiceProvider service)
         {
             // This calls the internal EF/WPF magic to create the proxy
-            object proxy = DispatchProxy.Create<T, Entity<T>>();
+            object proxy = DispatchProxy.Create<T, ProxyEntity<T>>();
 
             // This sets the _target field so Invoke can use it later
-            ((Entity<T>)proxy)._target = target;
-            ((Entity<T>)proxy)._service = service;
+            ((ProxyEntity<T>)proxy)._target = target;
+            ((ProxyEntity<T>)proxy)._service = service;
 
             return (T)proxy;
         }
@@ -106,10 +123,10 @@ namespace DataLayer.Entities
         }
 
 
-        static T IEntity<T>.Wrap(T target, IServiceProvider service)
-        {
-            return (T)Wrap((IEntity)target, service);
-        }
+        //static T IEntity<T>.Wrap(T target, IServiceProvider service)
+        //{
+        //    return (T)Wrap((IEntity)target, service);
+        //}
 
         protected void SetValue<T>(ref T field, T value, [CallerMemberName] string propertyName = "")
         {

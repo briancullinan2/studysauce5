@@ -1,9 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataLayer.Entities
 {
     [Table("file")]
+    [Index(nameof(Source), Name = "IX_File_Source")]
     public class File : Entity<File>
     {
         [Key]
@@ -36,6 +38,8 @@ namespace DataLayer.Entities
 
         [ForeignKey("UserId")]
         public virtual User? User { get; set; }
+
+        public virtual string? Source { get; set; }
 
         // Relationship: One File to One Response (Mapped by 'file' in Response entity)
         //public virtual Entities.Response? Response { get; set; }

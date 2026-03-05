@@ -44,7 +44,7 @@ namespace DataLayer.Entities
 
         [ForeignKey("ParentId")]
         public virtual Group? Parent { get; set; }
-
+        [InverseProperty("Parent")]
         public virtual ICollection<Group> Subgroups { get; set; } = new List<Group>();
 
         // Navigation Collections

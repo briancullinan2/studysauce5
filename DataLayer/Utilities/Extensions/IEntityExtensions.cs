@@ -11,7 +11,7 @@ namespace DataLayer.Utilities.Extensions
         /// Rehydrates the entity by discarding local changes and fetching 
         /// the latest data from the database.
         /// </summary>
-        public static void Refetch<T>(this IEntity<T> entity) where T : IEntity
+        public static void Refetch<T>(this ProxyEntity<T> entity) where T : IEntity
         {
             if (entity == null) throw new ArgumentNullException(nameof(entity));
 
@@ -29,12 +29,13 @@ namespace DataLayer.Utilities.Extensions
             entry.Reload();
         }
 
-        public static void Save<T>(this T ent, bool? recurse = false) where T : class, IEntity<T>
+        public static void Save<T>(this ProxyEntity<T> ent, bool? recurse = false) where T : class, IEntity<T>
         {
             // Start the Transaction
             using var scope = ent._service.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<TranslationContext>();
-            using (var transaction = context.Database.BeginTransaction())
+            var persistentStore = scope.ServiceProvider.GetRequiredService<IDbContextFactory<DataLayer.PersistentStorage>>();
+            using var persistentContext = persistentStore.CreateDbContext();
+            using (var transaction = persistentContext.Database.BeginTransaction())
             {
                 try
                 {
@@ -43,10 +44,10 @@ namespace DataLayer.Utilities.Extensions
                     //    throw new Exception("Invalid Facility Link");
 
                     // 2. Add the primary entity
-                    context.Set<T>().Add(ent);
+                    persistentContext.Set<T>().Add(ent._target);
 
                     // 3. Commit the changes
-                    context.SaveChanges();
+                    persistentContext.SaveChanges();
 
                     // 4. Finalize the transaction
                     transaction.Commit();
@@ -91,10 +92,10 @@ namespace DataLayer.Utilities.Extensions
         }
 
 
-        public static T Wrap<T>(this T target) where T : class, IEntity<T>
-        {
-            return T.Wrap(target, target._service);
-        }
+        //public static T Wrap<T>(this T target) where T : class, IEntity<T>
+        //{
+        //    return T.Wrap(target, target._service);
+        //}
 
 
         /*

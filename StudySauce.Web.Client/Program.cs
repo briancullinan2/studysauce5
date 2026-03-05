@@ -1,4 +1,3 @@
-using DataLayer;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -22,7 +21,13 @@ builder.Services.AddScoped<HttpClient>(sp => new HttpClient
     BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
 });
 builder.Services.AddSingleton<IFileManager, FileManager>();
-builder.Services.AddDbContext<TranslationContext>((sp, options) =>
+/*builder.Services.AddDbContext<TranslationContext>((sp, options) =>
+{
+    options.UseInMemoryDatabase("RemoteShell");
+
+    options.ReplaceService<IQueryCompiler, RemoteQuery>();
+});*/
+builder.Services.AddDbContextFactory<DataLayer.EphemeralStorage>(options =>
 {
     options.UseInMemoryDatabase("RemoteShell");
 
