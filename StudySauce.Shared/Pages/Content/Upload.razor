@@ -1,6 +1,10 @@
 @page "/upload"
+@implements IDisposable
 @using StudySauce.Shared.Services
 @inject IFileManager File
+@inject IMenuService MenuService
+
+<SyncedTitle Title="Import Packs"></SyncedTitle>
 
 <div class="flash-card animate-in @(isDragOver ? "dropping" : "")"
      @ondragover:preventdefault="true"
@@ -9,8 +13,8 @@
      @ondragleave="HandleDragLeave"
      @ondrop="HandleDrop">
     <div class="drop-shader"><span class="bi bi-cloud-upload"></span><br /><span>Drop Anki Files</span></div>
-    <h2>Import Packs</h2>
 
+    <h2>Upload Anki</h2>
     Upload pack content from Anki or spreadsheet.<br />
     @if (!OperatingSystem.IsWindows())
     {
@@ -38,8 +42,22 @@
 {
     bool isDragOver = false;
 
-    void HandleDragOver() => isDragOver = true;
-    void HandleDragLeave() => isDragOver = false;
+    void HandleDragOver() => File.SetDragging(true);
+    void HandleDragLeave() => File.SetDragging(false);
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        MenuService?.SetMenu(@<StudySauce.Shared.Pages.Shared.Packs />);
+        File.OnFileDragging += OnDragging;
+    }
+
+
+    protected void OnDragging(bool dragging)
+    {
+        isDragOver = dragging;
+        StateHasChanged();
+    }
 
     protected async Task HandleFileSelection(InputFileChangeEventArgs e)
     {
@@ -47,6 +65,7 @@
         // Process the dropped files
         foreach (var file in e.GetMultipleFiles())
         {
+            _ = File.UploadFile(file.OpenReadStream(), file.Name);
             // Access file properties like file.Name, file.Size, etc.
             // You can read the file stream here:
             // using var stream = file.OpenReadStream();
@@ -59,18 +78,24 @@
 
     protected async Task HandleDrop(DragEventArgs e)
     {
-        isDragOver = false;
+        _ = File.SetDragging(false);
         // In Blazor Hybrid, e.DataTransfer.Files is usually populated
         if (e.DataTransfer.Files != null)
         {
             foreach (var file in e.DataTransfer.Files)
             {
-                Console.WriteLine($"Dropped: {file}");
+                _ = File.UploadFile(file);
             }
         }
-        
+
         StateHasChanged();
 
     }
 
+
+
+    public void Dispose()
+    {
+        File.OnFileDragging -= OnDragging;
+    }
 }

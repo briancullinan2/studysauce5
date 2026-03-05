@@ -7,6 +7,7 @@ namespace StudySauce.Platforms.Windows
     {
         public const uint WM_COPYGLOBALDATA = 0x0049;
         public const uint WM_DROPFILES = 0x0233;
+        public const uint WM_COPYDATA = 0x004a;
         public const uint MSGFLT_ALLOW = 1;
 
         [LibraryImport("user32.dll")]
@@ -48,6 +49,7 @@ namespace StudySauce.Platforms.Windows
             CHANGEFILTERSTRUCT cfs = new CHANGEFILTERSTRUCT { cbSize = (uint)Marshal.SizeOf(typeof(CHANGEFILTERSTRUCT)) };
             ChangeWindowMessageFilterEx(hwnd, WM_DROPFILES, MSGFLT_ALLOW, ref cfs);
             ChangeWindowMessageFilterEx(hwnd, WM_COPYGLOBALDATA, MSGFLT_ALLOW, ref cfs);
+            ChangeWindowMessageFilterEx(hwnd, WM_COPYDATA, MSGFLT_ALLOW, ref cfs);
         }
 
     }

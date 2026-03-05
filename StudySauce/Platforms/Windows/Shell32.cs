@@ -6,6 +6,9 @@ namespace StudySauce.Platforms.Windows
     internal static partial class Shell32
     {
         public const int WM_DROPFILES = 0x0233; // wtf? AI slop? MSGFLT_ALLOW
+        public const uint WM_SETCURSOR = 0x0020;
+        public const uint WM_MOUSEMOVE = 0x0200;
+        public const uint WM_CAPTURECHANGED = 0x00D4;
 
         [LibraryImport("shell32.dll")]
         public static partial void DragAcceptFiles(IntPtr hwnd, int fAccept);

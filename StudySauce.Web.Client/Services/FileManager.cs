@@ -8,6 +8,8 @@ namespace StudySauce.Web.Client.Services
         private readonly HttpClient _httpClient;
         internal int currentProgress = 0;
         public event Action<DataLayer.Entities.File?>? OnFileUploaded;
+        public event Action<bool>? OnFileDragging;
+
         internal static IServiceProvider? _service;
 
         public FileManager()
@@ -18,6 +20,11 @@ namespace StudySauce.Web.Client.Services
         public async Task UploadFile(string localPath)
         {
             using var fileStream = System.IO.File.OpenRead(localPath);
+            await UploadFile(fileStream, localPath);
+        }
+
+        public async Task UploadFile(Stream fileStream, string localPath)
+        {
             var content = new MultipartFormDataContent();
 
             var streamContent = new ProgressableStreamContent(fileStream, 4096, (sent) =>
@@ -37,6 +44,11 @@ namespace StudySauce.Web.Client.Services
         public async Task OpenFileDialog()
         {
 
+        }
+
+        public async Task SetDragging(bool dragging)
+        {
+            OnFileDragging?.Invoke(dragging);
         }
     }
 

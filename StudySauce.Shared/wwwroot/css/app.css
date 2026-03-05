@@ -4,6 +4,8 @@ html, body {
     margin: 0;
     max-width: 100%;
     /* TODO: look up cross platform system backups font-family: Verdana, Geneva, Tahoma, sans-serif; */
+    drag-drop-zone: none; /* Non-standard, but some engines respect it */
+    -webkit-user-drag: none;
 }
 
 h1, h2, h3, h4, h5 {
@@ -17,20 +19,6 @@ h1, h2, h3, h4, h5 {
 
 a, .btn-link {
     color: #006bb7;
-}
-
-.btn-primary {
-    color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
-    border-style:solid;
-    line-height: 1.5rem;
-    margin: 2px;
-    cursor:pointer;
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 .content {

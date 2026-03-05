@@ -29,6 +29,16 @@
         // Hard override for Emscripten
         if (!window.Module) window.Module = {};
         window.Module.env = { '__assert_fail': function() {} };
+
+        window.addEventListener('dragenter', (e) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'copy'; // Turns the Red Circle into a Plus
+        });
+
+        window.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'copy'; // Keeps it a Plus
+        });
     </script>
 
     <ImportMap />

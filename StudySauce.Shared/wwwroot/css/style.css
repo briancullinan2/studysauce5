@@ -45,9 +45,10 @@ button.deemphasize
 }
 
 
+.btn-primary,
 a.cta,
 button.cta {
-    padding: 8px;
+    padding: 4px;
     background: darkorange;
     color: black;
     text-shadow: 0px 1px 5px white;
@@ -58,9 +59,12 @@ button.cta {
     line-height: 1.5rem;
 }
 
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus,
 button.cta:hover {
     text-decoration: underline;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
+
 
 button.deemphasize:hover {
     text-decoration: underline;
