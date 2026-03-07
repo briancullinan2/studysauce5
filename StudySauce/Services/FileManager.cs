@@ -58,9 +58,17 @@ namespace StudySauce.Services
 
         public async Task<Tuple<IEnumerable<DataLayer.Entities.File>, IEnumerable<DataLayer.Entities.Card>>> InspectFile(string ankiPackage)
         {
-            var files = AnkiParser.Parser.ListFiles(ankiPackage);
-            var cards = AnkiParser.Parser.ParseCards(ankiPackage);
-            return new Tuple<IEnumerable<DataLayer.Entities.File>, IEnumerable<DataLayer.Entities.Card>>(files, cards);
+            try
+            {
+                var files = AnkiParser.Parser.ListFiles(ankiPackage);
+                var cards = AnkiParser.Parser.ParseCards(ankiPackage);
+                return new Tuple<IEnumerable<DataLayer.Entities.File>, IEnumerable<DataLayer.Entities.Card>>(files, cards);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return new Tuple<IEnumerable<DataLayer.Entities.File>, IEnumerable<Card>>([], []);
+            }
         }
 
 

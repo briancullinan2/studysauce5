@@ -12,7 +12,7 @@ namespace AnkiParser.Entities
 
         [Column("nid")]
         public long NoteId { get; set; } // Foreign Key to Note
-        [ForeignKey("nid")]
+        [ForeignKey(nameof(NoteId))]
         public Note? Note { get; set; }
 
         [Column("did")]

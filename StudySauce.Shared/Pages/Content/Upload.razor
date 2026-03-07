@@ -7,7 +7,7 @@
 @using System.ComponentModel
 @inject IFileManager File
 @inject IMenuService MenuService
-
+@inject IServiceProvider Services
 
 <SyncedTitle Title="Import Packs"></SyncedTitle>
 
@@ -82,7 +82,7 @@
     public IEnumerable<DataLayer.Entities.File>? Uploads { get; set; }
     public IEnumerable<DataLayer.Entities.File>? Inside { get; set; }
     [Category("Content")]
-    public IEnumerable<Controls.EditCardControl.EditControl>? CurrentCards { get; set; }
+    public List<Controls.EditCardControl.EditControl>? CurrentCards { get; set; }
     public IEnumerable<PropertyMetadata>? FilesLayout { get; set; }
     public IEnumerable<PropertyMetadata>? CardsLayout { get; set; }
 
@@ -106,12 +106,19 @@
         if (ankiResults == null) return;
 
         Inside = ankiResults.Item1;
-        CurrentCards = ankiResults.Item2.Select(c => new EditCardControl.EditControl() { Card = c });
+        CurrentCards = ankiResults.Item2.Select(c => new EditCardControl.EditControl() { Card = c }).ToList();
     }
 
 
-    [Inject] 
-    public IDbContextFactory<DataLayer.PersistentStorage>? PersistentFactory { get; set; }
+    public IDbContextFactory<DataLayer.PersistentStorage>? PersistentFactory { get {
+            try {
+                return Services.GetService(typeof(IDbContextFactory<DataLayer.PersistentStorage>)) as IDbContextFactory<DataLayer.PersistentStorage>;
+            } catch (Exception ex)
+            {
+                return null;
+            }
+        }
+    }
 
     [Inject] 
     public IDbContextFactory<DataLayer.EphemeralStorage>? MemoryFactory { get; set; }
@@ -119,6 +126,7 @@
     protected override async Task OnInitializedAsync()
     {
         _ = base.OnInitializedAsync();
+
         if(PersistentFactory == null || MemoryFactory == null)
         {
             await PopulateUploads();

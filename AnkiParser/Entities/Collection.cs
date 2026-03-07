@@ -23,7 +23,7 @@ namespace AnkiParser.Entities
         [Column("ver")]
         public int Version { get; set; }
 
-        [Column("dsq")]
+        [Column("dty")]
         public long DirtySyncSequence { get; set; }
 
         [Column("usn")]

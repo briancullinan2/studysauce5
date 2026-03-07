@@ -50,7 +50,7 @@ namespace AnkiParser
             return [];
         }
 
-        public static IEnumerable<DataLayer.Entities.Card> ParseCards(Stream anki2Database)
+        public static List<DataLayer.Entities.Card> ParseCards(Stream anki2Database)
         {
             var tempPath = Path.GetTempFileName();
             using (var fs = File.OpenWrite(tempPath)) { anki2Database.CopyTo(fs); fs.Close(); }
@@ -69,7 +69,10 @@ namespace AnkiParser
             // 1. Get the Note Models (Col.models JSON) 
             // Anki stores deck configs and note models in the 'col' table 'models' column
             var collection = context.Collections.First();
-            var models = JsonSerializer.Deserialize<Dictionary<long, AnkiModel>>(collection.NoteTypes);
+            var models = JsonSerializer.Deserialize<Dictionary<long, AnkiModel>>(collection.NoteTypes, new JsonSerializerOptions()
+            {
+                PropertyNameCaseInsensitive = true
+            });
 
             var results = new List<DataLayer.Entities.Card>();
             var cards = context.Cards.Include(c => c.Note).ToList();
@@ -102,6 +105,7 @@ namespace AnkiParser
                 });
             }
             uploadConn.Close();
+            SqliteConnection.ClearPool(uploadConn);
             File.Delete(tempPath);
 
             return results;
