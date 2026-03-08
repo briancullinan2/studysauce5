@@ -16,7 +16,12 @@
     <div class="flex-row">
         <span><img src="@(pack.LogoHosted ?? pack.Logo?.Url)" /></span>
         <span><a href="">@pack.Title</a></span>
-        <span>@pack.Tags</span>
+        <span>@pack.Category
+            @if(!string.IsNullOrWhiteSpace(pack.Tags))
+            {
+                <span>(@pack.Tags)</span>
+            }
+        </span>
         <span>@pack.Cards.Count()</span>
         <span>@*@pack.UserPacks.Where(up => up.User == )*@ Never studied</span>
         <span>
@@ -24,7 +29,10 @@
             <a href="@(NavigationExtensions.GetUri<Pages.Landing.EditPack>(p => new () { ControlMode = DataLayer.Customization.ControlMode.Edit, Id = pack.Id}))">
             <span class="bi bi-pencil"></span>
             </a>
-
+            <a href="@(NavigationExtensions.GetUri<Pages.Landing.Packs>(p => new() { ControlMode = DataLayer.Customization.ControlMode.Add, Id = pack.Id }))">
+                <span class="bi bi-check-circle-fill"></span>
+            </a>
+            
         </span>
     </div>
 }

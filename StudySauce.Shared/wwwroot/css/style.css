@@ -293,7 +293,7 @@ heading.flex-row > * {
 }
 
 .flex-row > *:first-child {
-    max-width: 100px;
+    max-width: 80px;
 }
 
 .Recent-form-field .flex-row > *:nth-child(4) {

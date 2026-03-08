@@ -1,22 +1,142 @@
-@page "/activity"
 @using StudySauce.Shared.Services
+@using System
+@implements IDisposable
+@page "/activity"
 @inject IMenuService MenuService
+@inject IJSRuntime JS
 
 <SyncedTitle Title="Usage Activity"></SyncedTitle>
-<div class="flash-card">
 
-See a list of program interactions on a timeline.
+<div class="flash-card timeline-viewport" @onwheel="HandleZoom" @ref="timelineRef" @onscroll="HandleScroll">
+    <span class="instructions">See a list of program interactions on a timeline.</span>
+    <div class="now-indicator"></div> @* Fixed line in the middle *@
 
+    <div @ondragstart="() => Dragging = true" 
+         @ondragstart:preventDefault="true" 
+         @ondragstart:stopPropagation="true" 
+         @ondragend="() => Dragging = false" 
+         @onmousedown="() => Dragging = true" 
+         @onmouseup="() => Dragging = false"
+         @onmousemove="HandleMove"
+         class="timeline-grid track" style="width: @(TotalWidth)px;">
+        <div class="y-axis">
+            @for (int i = 0; i < 24; i++)
+            {
+                <div class="hour-label">@($"{i:D2}:00")</div>
+            }
+        </div>
+
+        <div class="content-area" style="transform: translateX(@(ViewportOffset % PixelsPerDay)px);">
+
+        @foreach (var day in GetVisibleDays())
+        {
+            <div class="day-column" style="width: @(PixelsPerDay)px;">
+                <div class="day-label">@day.ToShortDateString()</div>
+                <div class="day-header">@day.ToString("MMM dd")</div>
+                <div class="events-layer">
+                    @foreach (var ev in GetEventsForDay(day))
+                    {
+                        <div class="event-pill"
+                                @onclick="() => NavigateToEvent(ev)">
+                            @ev?.Path
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
+        </div>
+    </div>
 </div>
 
 
-
 @code {
+    // style="top: @GetYOffset(ev.Time); height: @GetDurationHeight(ev.Duration);"
+
+    private ElementReference timelineRef;
+    private double ViewportOffset = 0; // The "Scroll" position in pixels
+    private DateTime InitialNow = DateTime.Now;
+    private bool Dragging = false;
+    private ElementReference scrollContainer;
+    private double ZoomLevel = 1.0; // 1.0 = 1 day per 200px
+    private DateTime StartDate = DateTime.Now.AddDays(-30);
+    private int TotalWidth => (int)(60 * 200 * ZoomLevel); // 60 days of buffer
+    private double PixelsPerDay => ZoomLevel * 24;
 
     protected override void OnInitialized()
     {
         // Define the contextual menu for THIS page
         MenuService?.SetMenu(@<StudySauce.Shared.Pages.Shared.Users />);
+    }
+
+    protected async Task HandleMove(MouseEventArgs e)
+    {
+        if((e.Buttons & 1) > 0)
+        {
+            ViewportOffset += e.MovementX;
+        }
+    }
+    
+    private void NavigateToEvent(DataLayer.Entities.Visit visit)
+    {
+        
+    }
+
+    private void HandleScroll(EventArgs e)
+    {
+        // Use JS Interop here to report back the Left scroll position
+        // to calculate which dates to "Stream" or "Skip" via LINQ
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+    //    if (firstRender)
+    //    {
+    //        var dotNetHelper = DotNetObjectReference.Create(this);
+    //        await JS.InvokeVoidAsync("initTimeline", dotNetHelper, timelineRef);
+    //    }
+    }
+    
+    private void HandleZoom(WheelEventArgs e)
+    {
+        if (e.CtrlKey) // Only zoom if Ctrl is held, like Windows apps
+        {
+            ZoomLevel = Math.Clamp(ZoomLevel + (e.DeltaY < 0 ? 0.1 : -0.1), 0.5, 5.0);
+            StateHasChanged();
+        }
+    }
+
+
+    private IEnumerable<DataLayer.Entities.Visit> GetEventsForDay(DateTime day)
+    {
+        return [];
+    }
+
+    [JSInvokable]
+    public void OnViewportScroll(double deltaX)
+    {
+        ViewportOffset += deltaX;
+        StateHasChanged(); // Triggers the LINQ re-calc
+    }
+
+    private IEnumerable<DateTime> GetVisibleDays()
+    {
+        // Calculate the "Date at the Center"
+        // Offset 0 = InitialNow.
+        // Negative offset = moving right (seeing the past)
+        double daysOffset = -(ViewportOffset / PixelsPerDay);
+        DateTime centerDate = InitialNow.AddDays(daysOffset);
+
+        // LINQ: Take 3 days before and 3 days after center for buffer
+        return Enumerable.Range(-3, 7)
+            .Select(i => centerDate.Date.AddDays(i));
+    }
+
+    private double GetYPosition(DateTime time) => time.Hour * ZoomLevel + (time.Minute / 60.0 * ZoomLevel);
+
+    public void Dispose()
+    {
+        
     }
 
 }

@@ -18,6 +18,8 @@ namespace DataLayer
         public DbSet<DataLayer.Entities.Answer> Answers { get; set; }
         public DbSet<DataLayer.Entities.Group> Groups { get; set; }
         public DbSet<DataLayer.Entities.File> Files { get; set; }
+        public DbSet<DataLayer.Entities.Visit> Visits { get; set; }
+        public DbSet<DataLayer.Entities.Session> Sessions { get; set; }
 
         // Add other entities here...
 
@@ -72,6 +74,8 @@ namespace DataLayer
             modelBuilder.Entity<Entities.Answer>().ToTable(EntityMetadata.Answer.TableName);
             modelBuilder.Entity<Entities.Group>().ToTable(EntityMetadata.Group.TableName);
             modelBuilder.Entity<Entities.File>().ToTable(EntityMetadata.File.TableName);
+            modelBuilder.Entity<Entities.Visit>().ToTable(EntityMetadata.Visit.TableName);
+            modelBuilder.Entity<Entities.Session>().ToTable(EntityMetadata.Session.TableName);
 
             /*
             modelBuilder.Entity<User>()
@@ -113,6 +117,8 @@ namespace DataLayer
         public static EntityMetadata<Entities.Message> Message => new EntityMetadata<Entities.Message>();
         public static EntityMetadata<Entities.File> File => new EntityMetadata<Entities.File>();
         public static EntityMetadata<Entities.Group> Group => new EntityMetadata<Entities.Group>();
+        public static EntityMetadata<Entities.Visit> Visit => new EntityMetadata<Entities.Visit>();
+        public static EntityMetadata<Entities.Session> Session => new EntityMetadata<Entities.Session>();
 
     }
 

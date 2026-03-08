@@ -1,0 +1,38 @@
+﻿.timeline-container {
+    overflow-x: auto;
+    overflow-y: hidden;
+    height: 600px;
+    border: 1px solid #e1e1e1;
+    display: flex;
+}
+
+.timeline-grid {
+    display: flex;
+    position: relative;
+    background-image: linear-gradient(#f0f0f0 1px, transparent 1px); /* Horizontal hour lines */
+    background-size: 100% 25px; /* 25px per hour */
+}
+
+.day-column {
+    min-width: 150px;
+    flex: 1;
+    border-right: 1px solid #eee;
+    position: relative;
+}
+
+.event-pill {
+    position: absolute;
+    left: 4px;
+    right: 4px;
+    background: #0078d4; /* Windows Blue */
+    color: white;
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.event-pill:hover {
+    background: #005a9e;
+}

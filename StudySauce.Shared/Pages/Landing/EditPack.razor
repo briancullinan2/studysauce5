@@ -2,6 +2,7 @@
 @page "/pack/{Id:int}/edit"
 @page "/pack/{Id:int}/add"
 @page "/pack/{Id:int}/add/{Page:int}"
+@page "/pack/{Id:int}/add/{Page:int}/{Take:int}"
 @page "/pack/{Id:int}/cards"
 @page "/pack/{Id:int}/cards/{Page:int}"
 @using StudySauce.Shared.Controls
@@ -43,7 +44,7 @@
 </div>
 
 
-@for (var page = 0; page < Math.Ceiling((EditCards?.Count() ?? 1) / 10.0); page++)
+@for (var page = 0; page < Math.Ceiling((EditCards?.Count() ?? 1) / (double)Take); page++)
 {
     <div class="cards-edit flash-card @GetDisplayClass(DataLayer.Customization.ControlMode.Add, page)">
         <h2>
@@ -51,12 +52,12 @@
             {
                 <a href="@(NavigationExtensions.GetUri<Pages.Landing.EditPack>(u => new() { Id = Id, ControlMode = DataLayer.Customization.ControlMode.Edit }))" class="deemphasize"><span class="bi bi-chevron-left"></span> Back</a>
             } else {
-                <a href="@(NavigationExtensions.GetUri<Pages.Landing.EditPack>(u => new() { Id = Id, ControlMode = DataLayer.Customization.ControlMode.Add, Page = page - 1 }))" class="deemphasize"><span class="bi bi-chevron-left"></span> @((page - 1) * 10 + 1) to @Math.Min(EditCards?.Count() ?? 1, page * 10)</a>
+                <a href="@(NavigationExtensions.GetUri<Pages.Landing.EditPack>(u => new() { Id = Id, ControlMode = DataLayer.Customization.ControlMode.Add, Page = page - 1 }))" class="deemphasize"><span class="bi bi-chevron-left"></span> @((page - 1) * Take + 1) to @Math.Min(EditCards?.Count() ?? 1, page * Take)</a>
             }
-            <span>Editing cards @(page * 10 + 1) to @((page + 1) * 10)</span>
-            @if (page < Math.Ceiling((EditCards?.Count() ?? 1) / 10.0) - 1)
+            <span>Editing cards @(page * Take + 1) to @((page + 1) * Take)</span>
+            @if (page < Math.Ceiling((EditCards?.Count() ?? 1) / (double)Take) - 1)
             {
-                <a href="@(NavigationExtensions.GetUri<Pages.Landing.EditPack>(u => new() { Id = Id, ControlMode = DataLayer.Customization.ControlMode.Add, Page = page + 1 }))" class="deemphasize">@((page + 1) * 10 + 1) to @Math.Min(EditCards?.Count() ?? 1, (page + 2) * 10)<span class="bi bi-chevron-right"></span></a>
+                <a href="@(NavigationExtensions.GetUri<Pages.Landing.EditPack>(u => new() { Id = Id, ControlMode = DataLayer.Customization.ControlMode.Add, Page = page + 1 }))" class="deemphasize">@((page + 1) * Take + 1) to @Math.Min(EditCards?.Count() ?? 1, (page + 2) * Take)<span class="bi bi-chevron-right"></span></a>
             }
         </h2>
 
@@ -69,7 +70,7 @@
             <label>Actions</label>
         </heading>
 
-        <MetadataControl TModel="Controls.EditCardControl.EditControl" Model="@CardsLayout" Data="EditCards?.Skip(page * 10).Take(10).ToList()"></MetadataControl>
+        <MetadataControl TModel="Controls.EditCardControl.EditControl" Model="@CardsLayout" Data="EditCards?.Skip(page * Take).Take(Take).ToList()"></MetadataControl>
     
         <div class="link-list">
             @if (page == 0)
@@ -78,11 +79,11 @@
             }
             else
             {
-                <a href="@(NavigationExtensions.GetUri<Pages.Landing.EditPack>(u => new() { Id = Id, ControlMode = DataLayer.Customization.ControlMode.Add, Page = page - 1 }))"><span class="bi bi-chevron-left"></span> @((page - 1) * 10 + 1) to @Math.Min(EditCards?.Count() ?? 1, page * 10)</a>
+                <a href="@(NavigationExtensions.GetUri<Pages.Landing.EditPack>(u => new() { Id = Id, ControlMode = DataLayer.Customization.ControlMode.Add, Page = page - 1 }))"><span class="bi bi-chevron-left"></span> @((page - 1) * Take + 1) to @Math.Min(EditCards?.Count() ?? 1, page * Take)</a>
             }
-            @if(page < Math.Ceiling((EditCards?.Count() ?? 1) / 10.0) - 1)
+            @if(page < Math.Ceiling((EditCards?.Count() ?? 1) / (double)Take) - 1)
             {
-                <a href="@(NavigationExtensions.GetUri<Pages.Landing.EditPack>(u => new() { Id = Id, ControlMode = DataLayer.Customization.ControlMode.Add, Page = page + 1 }))">@((page + 1) * 10 + 1) to @Math.Min(EditCards?.Count() ?? 1, (page + 2) * 10)<span class="bi bi-chevron-right"></span></a>
+                <a href="@(NavigationExtensions.GetUri<Pages.Landing.EditPack>(u => new() { Id = Id, ControlMode = DataLayer.Customization.ControlMode.Add, Page = page + 1 }))">@((page + 1) * Take + 1) to @Math.Min(EditCards?.Count() ?? 1, (page + 2) * Take)<span class="bi bi-chevron-right"></span></a>
             }
         </div>
     </div>
@@ -107,6 +108,7 @@
     public DataLayer.Customization.ControlMode? ControlMode { get; set; } = DataLayer.Customization.ControlMode.Edit;
     public DataLayer.Customization.ControlMode? PreviousMode { get; set; }
     [Parameter] public int Page { get; set; } = 0;
+    [Parameter] public int Take { get; set; } = 10;
     public int? PreviousPage { get; set; }
 
     [Parameter] public int? Id { get; set; }

@@ -1,4 +1,5 @@
 @page "/packs"
+@page "/packs/{Id:int}/add"
 @using StudySauce.Shared.Controls
 @using StudySauce.Shared.Services
 @using System.ComponentModel
@@ -37,6 +38,9 @@
     public List<DataLayer.Entities.Pack> Store { get; set; } = new();
 
     public IEnumerable<PropertyMetadata>? RecentLayout { get; set; }
+    [Parameter]
+    public int? Id { get; set; } = null;
+    public DataLayer.Customization.ControlMode? ControlMode { get; set; } = DataLayer.Customization.ControlMode.List;
 
     protected override void OnInitialized()
     {
@@ -48,7 +52,7 @@
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
-
+        Recent.Clear();
         foreach (var course in (Type[])([typeof(Pages.Course.Course1), typeof(Pages.Course.Course2), typeof(Pages.Course.Course3)]))
         {
             var packs = GetCoursePack(course);

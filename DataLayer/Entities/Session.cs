@@ -1,0 +1,36 @@
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace DataLayer.Entities
+{
+    [Table("session")]
+    public class Session : Entity<Session>
+    {
+        [Key]
+        [Required]
+        [MaxLength(128)]
+        [Column("session_id")]
+        public string Id { get; set; } = string.Empty;
+
+        [Required]
+        [Column("session_value", TypeName = "text")]
+        public string Value { get; set; } = string.Empty;
+
+        [Column("session_time")]
+        public int Time { get; set; }
+
+        [Column("session_lifetime")]
+        public int Lifetime { get; set; }
+
+        /// <summary>
+        /// Maps to @ORM\OneToMany. 
+        /// Use ICollection for EF Core navigation properties.
+        /// </summary>
+        public virtual ICollection<Visit> Visits { get; set; }
+
+        public Session()
+        {
+            Visits = new HashSet<Visit>();
+        }
+    }
+}
