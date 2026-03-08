@@ -3,6 +3,15 @@ using System.Reflection;
 
 namespace DataLayer.Customization
 {
+    [Obfuscation(Exclude = true, ApplyToMembers = true)]
+    public enum GradeScale
+    {
+        Unset = 0,
+        AthroughF = 1,
+        AthroughFPlusMinus = 2
+    }
+
+
 
     [Obfuscation(Exclude = true, ApplyToMembers = true)]
     public enum StepMode { Intro = 0, Video = 1, Quiz = 2, Reward = 3, Investment = 4 }

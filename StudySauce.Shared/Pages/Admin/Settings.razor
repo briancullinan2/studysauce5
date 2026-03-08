@@ -1,1 +1,47 @@
 @page "/settings"
+@using StudySauce.Shared.Services
+@inject IMenuService MenuService
+
+
+<SyncedTitle Title="Application Settings"></SyncedTitle>
+
+<div class="flash-card animate-in">
+    <h2>Display Settings</h2>
+    <div>
+        <span>Show animated background from packs</span>
+        <input type="checkbox" />
+    </div>
+    <div>
+        <span>Match dark/light mode to OS</span>
+        <input type="checkbox" />
+    </div>
+    <div>
+        <span>Dark mode</span>
+        <input type="checkbox" />
+    </div>
+    <div>
+        <span>High contrast theme</span>
+        <input type="checkbox" />
+    </div>
+    <div>
+        <span>Start when computer starts</span>
+        <input type="checkbox" />
+    </div>
+
+    <h2>Parental Controls</h2>
+    <div>
+        <span>Allow child accounts to subscribe to new content</span>
+        <input type="checkbox" />
+    </div>
+
+
+</div>
+
+@code
+{
+
+    protected override void OnInitialized()
+    {
+        MenuService?.SetMenu(@<StudySauce.Shared.Pages.Shared.Settings />);
+    }
+}

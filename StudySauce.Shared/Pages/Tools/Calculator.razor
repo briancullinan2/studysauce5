@@ -1,1 +1,112 @@
 @page "/calculator"
+
+
+<SyncedTitle Title="Grade Calculator"></SyncedTitle>
+
+<div class="flash-card calculator-panel animate-in">
+
+    <div class="gpa-summary">
+        <div class="stat">
+            <strong>@(ProjectedGPA?.ToString("0.00") ?? "•")</strong>
+            <span>Projected GPA</span>
+        </div>
+        <div class="stat">
+            <strong>@(CumulativeGPA?.ToString("0.00") ?? "•")</strong>
+            <span>Cumulative GPA</span>
+        </div>
+    </div>
+
+    @foreach (var term in Schedules)
+    {
+        <div class="term-row @(SelectedTerm == term ? "selected" : "")" @onclick="() => SelectedTerm = term">
+            <header>
+                <select @bind="term.Term">
+                    @* Generate term options here *@
+                </select>
+                <span class="gpa">GPA: @CalculateTermGPA(term).ToString("0.00")</span>
+            </header>
+
+            @if (SelectedTerm == term)
+            {
+                <div class="class-list">
+                    @foreach (var course in term.Courses)
+                    {
+                        <div class="class-row">
+                            <input @bind="course.Name" placeholder="Class Name" />
+                            <input @bind="course.CreditHours" type="number" placeholder="Hours" />
+
+                            <div class="grade-details">
+                                @foreach (var grade in course.Grades)
+                                {
+                                    <div class="grade-row">
+                                        <input @bind="grade.Assignment" placeholder="Assignment" />
+                                        <input @bind="@grade.Percent" type="number" placeholder="%" />
+                                        <input @bind="@grade.Score" type="number" placeholder="Score" />
+                                        <span class="letter">@GetLetter(grade.Score)</span>
+                                    </div>
+                                }
+                                <button class="btn-add" @onclick="() => course.Grades.Add(new DataLayer.Entities.Grade())">+ Grade</button>
+                            </div>
+                        </div>
+                    }
+                    <button class="btn-add" @onclick="() => term.Courses.Add(new DataLayer.Entities.Subject())">+ Class</button>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    private List<DataLayer.Entities.Schedule> Schedules = new();
+    private DataLayer.Entities.Schedule? SelectedTerm;
+    private List<ScaleEntry> GradeScale = new(); // Populated from DB/Presets
+    private double? ProjectedGPA { get; set; }
+    private double? CumulativeGPA { get; set; }
+
+    // Real-time calculation logic (The "Microsofty" way)
+    private double CalculateTermGPA(DataLayer.Entities.Schedule term)
+    {
+        double totalPoints = 0;
+        double totalHours = 0;
+
+        foreach (var course in term.Courses)
+        {
+            var courseScore = course.Grades
+                .Where(g => g.Percent.HasValue && g.Score.HasValue)
+                .Sum(g => (g.Score.Value * (g.Percent.Value / 100.0)));
+
+            var gradePoint = GradeScale
+                .FirstOrDefault(s => courseScore >= s.Min && courseScore <= s.Max)?.Point ?? 0;
+
+            totalPoints += (gradePoint * course.CreditHours ?? 0.0);
+            totalHours += course.CreditHours ?? 0.0;
+        }
+
+        return totalHours > 0 ? totalPoints / totalHours : 0;
+    }
+
+    private string GetLetter(double? score) =>
+        GradeScale.FirstOrDefault(s => score >= s.Min && score <= s.Max)?.Letter ?? "•";
+
+    public class ScaleEntry
+    {
+        public string Letter { get; set; } = "";
+        public int Max { get; set; }
+        public int Min { get; set; }
+        public double Point { get; set; }
+    }
+    
+    public double CalculateNeededScore(double targetGrade, double currentScore, double percentComplete)
+    {
+        if (percentComplete >= 100) return 0;
+        return (targetGrade * 100 - currentScore * percentComplete) / (100 - percentComplete);
+    }
+
+
+    public class GradeModel
+    {
+        public string Assignment { get; set; } = "";
+        public double? Percent { get; set; }
+        public double? Score { get; set; }
+    }
+}

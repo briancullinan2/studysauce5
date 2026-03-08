@@ -20,6 +20,10 @@ namespace DataLayer
         public DbSet<DataLayer.Entities.File> Files { get; set; }
         public DbSet<DataLayer.Entities.Visit> Visits { get; set; }
         public DbSet<DataLayer.Entities.Session> Sessions { get; set; }
+        public DbSet<DataLayer.Entities.Schedule> Schedules { get; set; }
+        public DbSet<DataLayer.Entities.Subject> Subjects { get; set; }
+        public DbSet<DataLayer.Entities.Grade> Grades { get; set; }
+
 
         // Add other entities here...
 
@@ -53,6 +57,7 @@ namespace DataLayer
             configurationBuilder.Properties<Customization.PackMode>().HaveConversion<int>();
             configurationBuilder.Properties<Customization.PackStatus>().HaveConversion<int>();
             configurationBuilder.Properties<Customization.CardType>().HaveConversion<int>();
+            configurationBuilder.Properties<Customization.GradeScale>().HaveConversion<int>();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -76,6 +81,9 @@ namespace DataLayer
             modelBuilder.Entity<Entities.File>().ToTable(EntityMetadata.File.TableName);
             modelBuilder.Entity<Entities.Visit>().ToTable(EntityMetadata.Visit.TableName);
             modelBuilder.Entity<Entities.Session>().ToTable(EntityMetadata.Session.TableName);
+            modelBuilder.Entity<Entities.Subject>().ToTable(EntityMetadata.Subject.TableName);
+            modelBuilder.Entity<Entities.Schedule>().ToTable(EntityMetadata.Schedule.TableName);
+            modelBuilder.Entity<Entities.Grade>().ToTable(EntityMetadata.Grade.TableName);
 
             /*
             modelBuilder.Entity<User>()
@@ -119,6 +127,9 @@ namespace DataLayer
         public static EntityMetadata<Entities.Group> Group => new EntityMetadata<Entities.Group>();
         public static EntityMetadata<Entities.Visit> Visit => new EntityMetadata<Entities.Visit>();
         public static EntityMetadata<Entities.Session> Session => new EntityMetadata<Entities.Session>();
+        public static EntityMetadata<Entities.Subject> Subject => new EntityMetadata<Entities.Subject>();
+        public static EntityMetadata<Entities.Schedule> Schedule => new EntityMetadata<Entities.Schedule>();
+        public static EntityMetadata<Entities.Grade> Grade => new EntityMetadata<Entities.Grade>();
 
     }
 

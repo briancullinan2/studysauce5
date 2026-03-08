@@ -37,6 +37,26 @@
 
 
 
+<div class="group-add flash-card @GetDisplayClass(DataLayer.Customization.ControlMode.Add)">
+    <div>
+        <fieldset>
+            <legend>Group Info</legend>
+            <MetadataControl TModel="DataLayer.Entities.Group" Model="@InfoLayout" Data="[new DataLayer.Entities.Group()]"></MetadataControl>
+        </fieldset>
+    </div>
+    <div>
+        <fieldset>
+            <legend>Extended Info</legend>
+            <MetadataControl TModel="DataLayer.Entities.Group" Model="@ExtendedLayout" Data="[new DataLayer.Entities.Group()]"></MetadataControl>
+        </fieldset>
+    </div>
+    <div class="highlighted-link">
+        <button class="deemphasize back" @onclick="(() => NavigationExtensions.NavigateTo<Pages.Admin.Groups>(Nav, u => new() { ControlMode = DataLayer.Customization.ControlMode.List }))"><span class="bi bi-chevron-left"></span> Back</button>
+        <button class="cta" @onclick="() => CreateGroup()">Save</button>
+    </div>
+
+</div>
+
 
 @code {
 
@@ -46,13 +66,22 @@
     public DataLayer.Customization.ControlMode? ControlMode { get; set; }
     public DataLayer.Customization.ControlMode? PreviousMode { get; set; }
     public IEnumerable<PropertyMetadata>? GroupLayout { get; set; }
+    public IEnumerable<PropertyMetadata>? InfoLayout { get; set; }
+    public IEnumerable<PropertyMetadata>? ExtendedLayout { get; set; }
     [Parameter] public int? Id { get; set; }
+
+    protected void CreateGroup()
+    {
+
+    }
 
     protected override void OnInitialized()
     {
         // Define the contextual menu for THIS page
         MenuService?.SetMenu(@<StudySauce.Shared.Pages.Shared.Users />);
         GroupLayout = Pages.Admin.Groups.Metadata.Categories["Display"]?.ToList();
+        InfoLayout = DataLayer.EntityMetadata.Group.Groups["Group Info"]?.ToList();
+        ExtendedLayout = DataLayer.EntityMetadata.Group.Groups["Extended Info"]?.ToList();
         Nav.LocationChanged += OnLocationChanged;
     }
 

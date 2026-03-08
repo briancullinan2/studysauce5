@@ -2,20 +2,20 @@
 @page "/users"
 @page "/users/add"
 @page "/users/list"
-@page "/users/{Id:int}"
-@page "/users/{Id:int}/view"
-@page "/users/{Id:int}/edit"
+@page "/users/{Id}"
+@page "/users/{Id}/view"
+@page "/users/{Id}/edit"
+@page "/users/{Id}/group"
+@page "/users/{Id}/owner"
+@using Microsoft.EntityFrameworkCore
 @using StudySauce.Shared.Controls
 @using StudySauce.Shared.Services
 @using System.ComponentModel
 @inject IMenuService MenuService
+@inject ITitleService TitleService
 @inject NavigationManager Nav
 
-<SyncedTitle Title="User Management"></SyncedTitle>
-
 <div class="flash-card @GetDisplayClass(DataLayer.Customization.ControlMode.List)">
-    <h2>Manage Users</h2>
-
     <heading class="flex-row">
         <label></label>
         <label>User Name</label>
@@ -37,7 +37,6 @@
 </div>
 
 <div class="user-add flash-card @GetDisplayClass(DataLayer.Customization.ControlMode.Add)">
-    <h2>New User</h2>
     <div>
         <fieldset>
             <legend>Login Info</legend>
@@ -58,6 +57,38 @@
 </div>
 
 
+@if(CurrentUser != null)
+{
+    <div class="user-edit flash-card @GetDisplayClass(DataLayer.Customization.ControlMode.Edit)">
+        <div>
+            <fieldset>
+                <legend>Login Info</legend>
+                <MetadataControl TModel="DataLayer.Entities.User" Model="@LoginLayout" Data="[CurrentUser]"></MetadataControl>
+            </fieldset>
+        </div>
+        <div>
+            <fieldset>
+                <legend>General Info</legend>
+                <MetadataControl TModel="DataLayer.Entities.User" Model="@GeneralLayout" Data="[CurrentUser]"></MetadataControl>
+            </fieldset>
+        </div>
+        <div class="highlighted-link">
+            <button class="deemphasize back" @onclick="(() => NavigationExtensions.NavigateTo<Pages.Admin.Users>(Nav, u => new() { ControlMode = DataLayer.Customization.ControlMode.List }))"><span class="bi bi-chevron-left"></span> Back</button>
+            <a href="">User Membership</a>
+            <a href="">User Packs</a>
+            <button class="cta" @onclick="() => UpdateUser()">Save</button>
+        </div>
+    </div>
+
+    <div class="user-edit flash-card @GetDisplayClass(DataLayer.Customization.ControlMode.Group)">
+
+    </div>
+
+
+    <div class="user-edit flash-card @GetDisplayClass(DataLayer.Customization.ControlMode.Owner)">
+    </div>
+}
+
 
 @code {
     public static EntityMetadata Metadata => new EntityMetadata(typeof(Pages.Admin.Users));
@@ -69,7 +100,8 @@
     public IEnumerable<PropertyMetadata>? LoginLayout { get; set; }
     public DataLayer.Customization.ControlMode? ControlMode { get; set; }
     public DataLayer.Customization.ControlMode? PreviousMode { get; set; }
-    [Parameter] public int? Id { get; set; }
+    [Parameter] public string? Id { get; set; }
+    public DataLayer.Entities.User? CurrentUser { get; set; }
 
     protected string? GetDisplayClass(DataLayer.Customization.ControlMode mode)
     {
@@ -94,6 +126,11 @@
         
     }
 
+    protected void UpdateUser()
+    {
+
+    }
+
     protected void OnLocationChanged(object? sender, LocationChangedEventArgs args)
     {
         SetControlMode();
@@ -114,12 +151,52 @@
         {
             newStep = segments.Last().TryParse<DataLayer.Customization.ControlMode>() ?? DataLayer.Customization.ControlMode.List;
         }
+
+
         if (newStep != ControlMode)
         {
             PreviousMode = ControlMode;
             ControlMode = newStep;
             StateHasChanged();
         }
+        if(Id != null)
+        {
+            if(CurrentUser == null || CurrentUser.Guid != Id)
+            {
+                _ = SetCurrentUser();
+            }
+        }
+
+        if(ControlMode == DataLayer.Customization.ControlMode.List)
+        {
+            TitleService?.UpdateTitle("Manage Users");
+        }
+        else if (ControlMode == DataLayer.Customization.ControlMode.Add)
+        {
+            TitleService?.UpdateTitle("New User");
+        }
+        else if (ControlMode == DataLayer.Customization.ControlMode.Edit)
+        {
+            TitleService?.UpdateTitle("Edit User");
+
+        }
+    }
+
+
+    [Inject]
+    public IDbContextFactory<DataLayer.EphemeralStorage>? MemoryFactory { get; set; }
+
+
+    protected async Task SetCurrentUser()
+    {
+        if(MemoryFactory == null)
+        {
+            return;
+        }
+        using var Context = MemoryFactory.CreateDbContext();
+        CurrentUser = await Context.Users.Where(u => u.Guid == Id).FirstOrDefaultAsync();
+        TitleService?.UpdateTitle("Edit User - " + CurrentUser?.Username);
+        StateHasChanged();
     }
 
     protected override void OnParametersSet()

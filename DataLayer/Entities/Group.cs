@@ -13,16 +13,19 @@ namespace DataLayer.Entities
 
         [Column("name")]
         [StringLength(180)]
+        [Display(GroupName = "Group Info")]
         public string Name { get; set; } = string.Empty;
 
         [Column("description")]
         [StringLength(256)]
+        [Display(GroupName = "Group Info")]
         public string Description { get; set; } = string.Empty;
 
         [Column("created")]
         public DateTime Created { get; set; } = DateTime.UtcNow;
 
         [Column("deleted")]
+        [Display(GroupName = "Extended Info")]
         public bool Deleted { get; set; } = false;
 
         // FOSUserBundle usually stores roles as a serialized array
@@ -35,7 +38,9 @@ namespace DataLayer.Entities
         public int? FileId { get; set; }
 
         [ForeignKey("FileId")]
+        [Display(GroupName = "Group Info")]
         public virtual File? Logo { get; set; }
+        [Display(GroupName = "Group Info")]
         public virtual string? LogoHosted { get; set; }
 
         // Self-Referencing Hierarchy (Parent/Subgroups)
@@ -43,6 +48,7 @@ namespace DataLayer.Entities
         public int? ParentId { get; set; }
 
         [ForeignKey("ParentId")]
+        [Display(GroupName = "Extended Info")]
         public virtual Group? Parent { get; set; }
         [InverseProperty("Parent")]
         public virtual ICollection<Group> Subgroups { get; set; } = new List<Group>();
