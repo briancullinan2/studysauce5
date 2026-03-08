@@ -63,6 +63,8 @@
     protected override void OnInitialized()
     {
         MenuService?.SetMenu(@<StudySauce.Shared.Pages.Shared.Settings />);
+        GeneralLayout = DataLayer.EntityMetadata.User.Groups["General Info"]?.ToList();
+        LoginLayout = DataLayer.EntityMetadata.User.Groups["Login Info"]?.ToList();
     }
 
     protected void SetControlMode()

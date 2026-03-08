@@ -1,9 +1,22 @@
 @page "/permissions"
+@using StudySauce.Shared.Services
+@inject IMenuService MenuService
 
 
-<SyncedTitle Title="User Permission"></SyncedTitle>
+<SyncedTitle Title="User Permissions"></SyncedTitle>
 
 <div class="flash-card animate-in">
 </div>
 
 
+@code
+{
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        MenuService?.SetMenu(@<StudySauce.Shared.Pages.Shared.Settings />);
+
+    }
+
+
+}

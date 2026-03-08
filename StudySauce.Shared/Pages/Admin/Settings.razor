@@ -35,6 +35,17 @@
     </div>
 
 
+    <h2>Telemetry</h2>
+    <div>
+        <span>Enable non-specific usage statistics sharing with content creators</span>
+        <input type="checkbox" />
+    </div>
+    <div>
+        <span>Enable non-specific usage statistics sharing with hosts</span>
+        <input type="checkbox" />
+    </div>
+
+
 </div>
 
 @code
@@ -42,6 +53,7 @@
 
     protected override void OnInitialized()
     {
+        base.OnInitialized();
         MenuService?.SetMenu(@<StudySauce.Shared.Pages.Shared.Settings />);
     }
 }

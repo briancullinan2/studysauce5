@@ -1,3 +1,112 @@
 @page "/goals"
 
-<h2>Study Goals</h2>
+<SyncedTitle Title="Goals"></SyncedTitle>
+
+<div class="panel-pane" id="goals">
+    <div class="pane-content">
+        <h2>Set study goals for self-motivation</h2>
+
+        <div class="science-section">
+            <div class="split-description big-arrow">
+                <h3>The Science of Setting Goals</h3>
+                <img width="48" height="48" src="images/science.png" alt="Science" />
+                <p>According to the Incentive Theory of motivation...</p>
+            </div>
+            @* ... Application description ... *@
+        </div>
+
+        <EditForm Model="UserGoals" OnValidSubmit="HandleSave">
+            <header class="goal-header">
+                <label>&nbsp;</label>
+                <label>Goal</label>
+                <label>Reward</label>
+            </header>
+
+            @foreach (var goal in UserGoals)
+            {
+                <div class="goal-row @(IsEditing(goal) ? "edit" : "read-only")">
+                    <div class="type"><strong>@GetFriendlyTypeName(goal.Type)</strong></div>
+                    
+                    <div class="goal-input">
+                        <label class="select">
+                            <span>Goal</span>
+                            <InputSelect @bind-Value="goal.Description">
+                                <option value="_none">None</option>
+                                @foreach (var opt in GetOptionsForType(goal.Type))
+                                {
+                                    <option value="@opt">@opt</option>
+                                }
+                            </InputSelect>
+                            @GetSuffixForType(goal.Type)
+                        </label>
+                    </div>
+
+                    <div class="reward-input">
+                        <label class="input">
+                            <span>Reward</span>
+                            <InputTextArea @bind-Value="goal.Reward" placeholder="Ex. $25 gift card" />
+                        </label>
+                    </div>
+
+                    <div class="actions">
+                        @if (!IsEditing(goal))
+                        {
+                            <button type="button" class="btn-edit" @onclick="() => ToggleEdit(goal)">✎</button>
+                        }
+                    </div>
+                </div>
+            }
+
+            <div class="form-actions">
+                <button type="submit" class="more">Save</button>
+            </div>
+        </EditForm>
+
+        <div id="achievements">
+            @*<ClaimsList Claims="UserClaims" />*@
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<DataLayer.Entities.Goal> UserGoals = new();
+    private List<DataLayer.Entities.Goal> EditState = new();
+    //private List<Claim> UserClaims = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Fetch existing goals (Behavior, Milestone, Outcome)
+        //UserGoals = await GoalService.GetGoalsForUserAsync();
+        //UserClaims = await GoalService.GetClaimsForUserAsync();
+    }
+
+    private void ToggleEdit(Goal goal) => EditState.Add(goal);
+    private bool IsEditing(Goal goal) => EditState.Contains(goal) || string.IsNullOrEmpty(goal.Description);
+
+    private async Task HandleSave()
+    {
+        //await GoalService.UpdateGoalsAsync(UserGoals);
+        EditState.Clear();
+    }
+
+    private string GetFriendlyTypeName(string type) => type switch {
+        "behavior" => "Study Hours",
+        "milestone" => "Study Milestone",
+        "outcome" => "Study Outcome",
+        _ => "Goal"
+    };
+
+    private string GetSuffixForType(string type) => type switch {
+        "behavior" => "hours per week",
+        "milestone" => "grade on exam",
+        "outcome" => "target GPA",
+        _ => ""
+    };
+
+    private List<string> GetOptionsForType(string type) => type switch {
+        "behavior" => new() { "10", "20", "30", "40", "50" },
+        "milestone" => new() { "A+", "A", "A-", "B+", "B" },
+        "outcome" => new() { "4.0", "3.75", "3.5", "3.25", "3.0" },
+        _ => new()
+    };
+}

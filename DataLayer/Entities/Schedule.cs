@@ -13,7 +13,7 @@ namespace DataLayer.Entities
         public int Id { get; set; }
 
         [Column("user_id")]
-        public int UserId { get; set; }
+        public string UserId { get; set; }
 
         [ForeignKey(nameof(UserId))]
         public virtual User User { get; set; } = null!;
