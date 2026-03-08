@@ -48,10 +48,26 @@ button.deemphasize
 h2 a
 {
     text-decoration: none;
+    white-space: nowrap;
 }
 h2 a:hover {
     text-decoration: underline;
 }
+
+.cards-edit h2 {
+    display: flex;
+    justify-content: space-between;
+    white-space: nowrap;
+}
+.cards-edit h2 span:nth-child(2) 
+{
+    flex-basis:100%;
+    padding: 0 20px;
+    flex-shrink: 1;
+    overflow:hidden;
+    text-overflow: ellipsis;
+}
+
 
 .btn-primary,
 a.cta,
