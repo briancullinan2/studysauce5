@@ -5,25 +5,46 @@
 {
     public class EditControl
     {
+        public static EntityMetadata Metadata = new EntityMetadata(typeof(EditControl));
+        [Category("Display")]
         public DataLayer.Entities.Card? Card { get; set; }
+
         public DataLayer.Customization.ControlMode? Mode { get; set; } = DataLayer.Customization.ControlMode.View;
+        public bool IsCollapsed { get; set; } = true;
     }
+
+    public static EntityMetadata Metadata = new EntityMetadata(typeof(Controls.EditCardControl));
+    [Category("Results")]
+    public IEnumerable<Controls.ResultsCardControl.ResultCard>? Results { get; set; }
 
     [Parameter] public List<EditControl>? Data { get; set; }
     [Parameter] public PropertyMetadata? Model { get; set; }
     [Parameter] public EventCallback<object> ValueChanged { get; set; }
     private IEnumerable<PropertyMetadata>? CardLayout;
+    private IEnumerable<PropertyMetadata>? PreviewLayout;
+    private IEnumerable<PropertyMetadata>? ResultLayout;
 
     protected override void OnInitialized()
     {
         CardLayout = DataLayer.EntityMetadata.Card.Categories["Content"]?.ToList();
+        PreviewLayout = EditControl.Metadata.Categories["Display"]?.ToList();
+        ResultLayout = Controls.EditCardControl.Metadata.Categories["Results"]?.ToList();
     }
 
+    protected void ToggleCard(EditControl card)
+    {
+        if(card.Mode == DataLayer.Customization.ControlMode.Edit)
+        {
+            return;
+        }
+        card.IsCollapsed = !card.IsCollapsed;
+        StateHasChanged();
+    }
 }
 
 @foreach (var card in Data ?? [])
 {
-    <div class="flex-row Card-form-container auto-form-container">
+    <div @onclick="() => ToggleCard(card)" class="flex-row Card-form-container auto-form-container @(card.Mode.ToString())">
         @if (card.Mode == DataLayer.Customization.ControlMode.Edit)
         {
             <span>@(Data?.IndexOf(card) + 1)</span>
@@ -46,8 +67,10 @@
                 {
                     @for (var i = 0; i < 4; i++)
                     {
+                        var answer = card.Card?.Answers.Count() > i ? card.Card?.Answers.ElementAt(i) : null;
                         <span>
-                            <input type="text" value="@(card.Card?.Answers.Count() > i ? card.Card?.Answers.ElementAt(i).Content : "")" />
+                            <input type="text" value="@answer?.Content" />
+                            <input type="checkbox" name="@card.Card?.Content.ToSafe()_Correct" value="1" checked="@(answer?.IsCorrect ?? false)" />
                         </span>
                     }
                 }
@@ -80,13 +103,23 @@
             </span>
         } else
         {
-            <span>@(Data?.IndexOf(card) + 1)</span>
+            <span>
+                <span class="bi @(card.IsCollapsed ? "bi-chevron-right" : "bi-chevron-down")"></span>
+                @(Data?.IndexOf(card) + 1)
+            </span>
             <span>@card.Card?.Content</span>
             <span>@card.Card?.ResponseContent</span>
             <span>@card.Card?.ResponseType.ToString()</span>
             <span>@card.Card?.Answers.FirstOrDefault(a => a.IsCorrect)?.Content</span>
             <span>
                 <a @onclick="() => { card.Mode = DataLayer.Customization.ControlMode.Edit; StateHasChanged(); }"><span class="bi bi-pencil"></span></a>
+            </span>
+            <span class="preview">
+                @if (!card.IsCollapsed)
+                {
+                    <MetadataControl TModel="DataLayer.Entities.Card" Model="@PreviewLayout" Data="[card.Card]"></MetadataControl>
+                    <MetadataControl TModel="Controls.ResultsCardControl.ResultCard" Model="@ResultLayout" Data="[new Controls.ResultsCardControl.ResultCard() { Card = card.Card }]"></MetadataControl>
+                }
             </span>
         }
     </div>

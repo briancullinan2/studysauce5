@@ -57,7 +57,10 @@
             <div class="preview-inner">
                 <div class="preview-correct">Correct answer:</div>
                 @*Show the users answer and the correct answer if they are both available*@
-                <div class="preview-response correct">@result.Card?.Answers.FirstOrDefault(a => a.IsCorrect)?.Content</div>
+                @foreach (var answer in @result.Card?.Answers.Where(a => a.IsCorrect) ?? [])
+                {
+                    <div class="preview-response correct">@answer?.Content</div>
+                }
                 @if (result.Response != null && result.Response.Answer != null && !result.Response.Answer.IsCorrect)
                 {
                     <div class="preview-correct">Your response:</div>

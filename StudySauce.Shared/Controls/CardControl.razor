@@ -40,6 +40,11 @@
             {
                 <button class="preview-tap" @onclick="Flip">Click to see answer</button>
             }
+            else if (card.ResponseType == DataLayer.Customization.CardType.Short)
+            {
+                <input type="text" placeholder="Enter your best guess" />
+                <button class="preview-tap" @onclick="Flip">Submit</button>
+            }
             else if (card.ResponseType == DataLayer.Customization.CardType.TrueFalse) // True/False
             {
                 <button @onclick="@(() => HandleAnswer(null))" class="preview-false">False</button>

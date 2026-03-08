@@ -14,7 +14,7 @@
 @foreach (var pack in Data ?? [])
 {
     <div class="flex-row">
-        <img src="@(pack.LogoHosted ?? pack.Logo?.Url)" />
+        <span><img src="@(pack.LogoHosted ?? pack.Logo?.Url)" /></span>
         <span><a href="">@pack.Title</a></span>
         <span>@pack.Tags</span>
         <span>@pack.Cards.Count()</span>
