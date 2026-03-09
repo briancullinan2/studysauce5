@@ -1,13 +1,16 @@
 @using System.ComponentModel.DataAnnotations
 @using System.ComponentModel
 @using System.Text.Json.Serialization
+@using Microsoft.EntityFrameworkCore
+@using StudySauce.Shared.Services
 @code
 {
 
     [Parameter] public IEnumerable<DataLayer.Entities.Pack>? Data { get; set; }
     [Parameter] public PropertyMetadata? Model { get; set; }
     [Parameter] public EventCallback<object> ValueChanged { get; set; }
-
+    //[Inject] public IDbContextFactory<DataLayer.EphemeralStorage>? MemoryFactory { get; set; }
+    [Inject] public ILoginService? LoginService { get; set; }
 }
 
 
@@ -15,7 +18,16 @@
 {
     <div class="flex-row">
         <span><img src="@(pack.LogoHosted ?? pack.Logo?.Url)" /></span>
-        <span><a href="">@pack.Title</a></span>
+        <span>
+            @if (LoginService?.User?.UserPacks.FirstOrDefault(up => up.PackId == pack.Id) != null)
+            {
+                <a href="@(NavigationExtensions.GetUri<Pages.Landing.Pack>(p => new() { Id = pack.Id, Mode = DataLayer.Customization.PackMode.Card }))">@pack.Title</a>
+            }
+            else
+            {
+                <a href="@(NavigationExtensions.GetUri<Pages.Landing.Pack>(p => new() { Id = pack.Id, Mode = DataLayer.Customization.PackMode.Demo }))">@pack.Title</a>
+            }
+        </span>
         <span>@pack.Category
             @if(!string.IsNullOrWhiteSpace(pack.Tags))
             {
@@ -23,16 +35,17 @@
             }
         </span>
         <span>@pack.Cards.Count()</span>
-        <span>@*@pack.UserPacks.Where(up => up.User == )*@ Never studied</span>
+        <span>@(LoginService?.User?.UserPacks.FirstOrDefault(up => up.PackId == pack.Id)?.GetResponses(out var correct)?.LastOrDefault()?.Created.ToString("MMM dd") ?? "Never studied")</span>
         <span>
-
             <a href="@(NavigationExtensions.GetUri<Pages.Landing.EditPack>(p => new () { ControlMode = DataLayer.Customization.ControlMode.Edit, Id = pack.Id}))">
-            <span class="bi bi-pencil"></span>
+                <span class="bi bi-pencil"></span>
             </a>
-            <a href="@(NavigationExtensions.GetUri<Pages.Landing.Packs>(p => new() { ControlMode = DataLayer.Customization.ControlMode.Add, Id = pack.Id }))">
-                <span class="bi bi-check-circle-fill"></span>
-            </a>
-            
+            @if (LoginService?.User?.UserPacks.FirstOrDefault(up => up.PackId == pack.Id) == null)
+            {
+                <a href="@(NavigationExtensions.GetUri<Pages.Landing.Packs>(p => new() { ControlMode = DataLayer.Customization.ControlMode.Add, Id = pack.Id }))">
+                    <span class="bi bi-check-circle-fill"></span>
+                </a>
+            }           
         </span>
     </div>
 }

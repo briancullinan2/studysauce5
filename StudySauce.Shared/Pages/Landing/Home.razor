@@ -16,6 +16,22 @@
 
 <SyncedTitle Title="Home"></SyncedTitle>
 
+<a class="big-button" href="@(NavigationExtensions.GetUri<Pages.Landing.Pack>(p => new() {Mode = DataLayer.Customization.PackMode.Shuffle}))">
+    <span>
+        <img width="48" height="48" src="_content/StudySauce.Shared/logo_4_trans_2.png" alt="LOGO" />
+        <span>Shuffle</span>
+    </span>
+</a>
+
+<div class="study-now">
+    <h2>Start studying now</h2>
+    <h3>Login to track progress</h3>
+    <h4>Subscribe to packs to memorize content quickly.</h4>
+</div>
+
+<br />
+<br />
+
 @*Welcome to your new app running on <em>@factor</em> using <em>@platform</em>.*@
 
 @*<MetadataControl TModel="PropertyMetadata" Model="@CurrentCategory"></MetadataControl>*@

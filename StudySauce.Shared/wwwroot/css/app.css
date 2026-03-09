@@ -6,6 +6,13 @@ html, body {
     /* TODO: look up cross platform system backups font-family: Verdana, Geneva, Tahoma, sans-serif; */
     drag-drop-zone: none; /* Non-standard, but some engines respect it */
     -webkit-user-drag: none;
+    height: 100%;
+}
+
+#app
+{
+    height: 100%;
+    width: 100%;
 }
 
 h1, h2, h3, h4, h5 {
@@ -63,3 +70,87 @@ h1:focus {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
 }
+
+
+.study-now
+{
+    position:absolute;
+    top: 50%;
+    margin-top:-100px;
+    left: 50%;
+    color:white;
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius:20px;
+}
+
+
+.big-button {
+    display: flex;
+    vertical-align: middle;
+    white-space: nowrap;
+    width: auto;
+    position: absolute;
+    padding: 20px;
+    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+    transition: width ease-in-out 0.6s;
+    /* Your original colors + a repeat to make the transition seamless */
+    /* 12-Color Fluid Gradient */
+    background: linear-gradient(125deg, #052767 0%, /* 1. Deep Blue */
+    #3a0647 9%, /* 2. Deep Purple */
+    #800080 18%, /* 3. Violet */
+    #ff00cc 27%, /* 4. Vivid Magenta */
+    #ff0066 36%, /* 5. Hot Pink */
+    #ff3300 45%, /* 6. Orange Red */
+    #ffcc00 54%, /* 7. Gold */
+    #33ff00 63%, /* 8. Neon Green */
+    #00ffcc 72%, /* 9. Turquoise */
+    #0ea5e9 81%, /* 10. Sky Blue */
+    #7000ff 90%, /* 11. Electric Purple */
+    #052767 100% /* 12. Loop back to Deep Blue */
+    );
+    background-size: 600% 600%;
+    /* The "Subtle" part: slow duration (15s+) */
+    animation: waveMovement 18s ease infinite;
+    box-shadow: inset 3px 3px 15px rgba(0, 0, 0, 1.0);
+    transform: translateY(1px); /* Slight visual sink */
+    border-radius: 100%;
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    font-size: 24px;
+    text-align: center;
+    top: 50%;
+    margin-top: -100px;
+    left: 50%;
+    margin-left: -200px;
+    text-shadow: 1px 2px 5px rgba(0,0,0,1);
+}
+
+.big-button img
+{
+    margin:auto;
+}
+
+.big-button:active,
+.big-button:focus
+{
+    box-shadow: 3px 3px 15px rgba(255, 255, 255, 1.0);
+    text-shadow: -1px 0px 5px rgba(255,255,255,1);
+}
+
+.big-button > span {
+    display: flex;
+    flex-direction: column;
+    background: darkgrey;
+    padding: 20px;
+    border-radius: 100%;
+    box-shadow: inset 3px 3px 15px rgba(255, 255, 255, 1.0);
+}
+
+.big-button:active > span,
+.big-button:focus > span
+{
+    box-shadow: 3px 3px 15px rgba(0, 0, 0, 1.0);
+}
+

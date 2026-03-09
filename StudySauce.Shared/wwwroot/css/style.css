@@ -526,4 +526,5 @@ heading.flex-row > * {
     font-size: 24px;
     height: 44px;
     width: 44px;
+    display:flex;
 }

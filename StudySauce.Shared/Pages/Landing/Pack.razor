@@ -1,3 +1,4 @@
+@page "/shuffle"
 @page "/pack/{Id:int}"
 @page "/quiz/{Id:int}"
 @page "/card/{Id:int}"
@@ -9,6 +10,7 @@
 @using System.Reflection
 @using StudySauce.Shared.Utilities.Extensions
 @using DataLayer.Customization
+@using System.Text.Json.Serialization
 
 @if (Mode == null)
 {
@@ -16,20 +18,58 @@
     return;
 }
 
-<label>@Mode</label>
-@if (Id.HasValue)
+@for(var i = 0; i < CurrentQuiz?.Count() * 2; i+=2)
 {
-    <p>Viewing ID: @Id</p>
+    <div class="flash-card @(GetDisplayClass(i))">
+        <MetadataControl ValueChanged="@(EventCallback.Factory.Create<Tuple<PropertyMetadata, DataLayer.Entities.Card, object?>>(this, OnQuizAnswered))" TModel="DataLayer.Entities.Card" Model="@CardLayout" Data="[CurrentQuiz?.ElementAt(i)]"></MetadataControl>
+    </div>
+
+    <div class="flash-card @(GetDisplayClass(i + 1))">
+        <MetadataControl TModel="Controls.ResultsCardControl.ResultCard" Model="@ResultLayout" Data="CurrentQuiz?.Select(card => new Controls.ResultsCardControl.ResultCard() { Card = card, Response = Responses.FirstOrDefault(r => r.Card == card) }).ToList()"></MetadataControl>
+    </div>
 }
-else
+
+@*TODO: show results screen if retention is already resolved*@
+
+@* Progress Tracker *@
+@if (QuizStep != null && TotalCards != null)
 {
-    <p>Viewing your own profile.</p>
+    <ul class="tab-tracker">
+        @for (var i = Math.Max((int)QuizStep - 2, 0); i < Math.Min((int)TotalCards, (int)QuizStep + 3); i++)
+        {
+            <li class="@(i == QuizStep ? "text-amber-500 text-xl" : "text-slate-300")">
+                &bullet;
+                <span>@QuizStep</span>
+            </li>
+        }
+    </ul>
+    @*Add one for visual, CurrentIndex is zero based*@
+    <div class="preview-count">@(QuizStep + 1) of @TotalCards</div>
 }
+
 
 @code {
     [Parameter] public int? Id { get; set; }
+    [JsonPropertyName("quiz")]
+    [Category("Display")]
+    public IEnumerable<DataLayer.Entities.Card>? CurrentQuiz { get; set; }
 
     public PackMode? Mode { get; set; }
+    private List<DataLayer.Entities.Response> Responses = new();
+    private IEnumerable<PropertyMetadata>? CardLayout;
+    private IEnumerable<PropertyMetadata>? ResultLayout;
+    public int? PreviousStep { get; set; }
+    public int? QuizStep { get; set; }
+    public int? TotalCards { get => Enum.GetValues<StepMode>().Count() + CurrentQuiz?.Count(); }
+
+
+    protected string? GetDisplayClass(int? step)
+    {
+        if (QuizStep == step) return "animate-in";
+        if (PreviousStep == step) return "animate-out";
+        return "hidden";
+    }
+
 
     protected override void OnParametersSet()
     {
@@ -39,4 +79,25 @@ else
 
         Mode = firstSegment.TryParse<PackMode>();
     }
+
+
+    protected async Task OnQuizAnswered(Tuple<PropertyMetadata, DataLayer.Entities.Card, object?> valueChanged)
+    {
+        var answer = valueChanged.Item3 as DataLayer.Entities.Answer;
+        if (answer == null)
+        {
+            return;
+        }
+        var response = new DataLayer.Entities.Response()
+        {
+            Answer = answer,
+            Value = answer.Content,
+            IsCorrect = answer.IsCorrect,
+            Card = valueChanged.Item2
+        };
+        Responses.Add(response);
+        QuizStep++;
+        StateHasChanged();
+    }
+
 }

@@ -53,7 +53,9 @@ namespace DataLayer.Customization
         [Description("funnel")] // show a few cards then go to the next step
         Multi = 3,
         [Description("demo")] // show a few choice cards and go to store page
-        Demo = 4
+        Demo = 4,
+        [Description("shuffle")]
+        Shuffle = 5
     }
 
 
