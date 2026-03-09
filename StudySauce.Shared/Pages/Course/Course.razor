@@ -190,6 +190,7 @@
 
     protected override void OnInitialized()
     {
+        base.OnInitialized();
         CardLayout = Pages.Course.Course.Metadata.Categories["Display"]?.ToList();
         ResultLayout = Pages.Course.Course.Metadata.Categories["Results"]?.ToList();
 

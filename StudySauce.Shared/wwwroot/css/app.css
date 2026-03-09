@@ -71,17 +71,30 @@ h1:focus {
     text-align: start;
 }
 
+.study-row {
+    display: flex;
+    justify-content: space-between;
+}
 
-.study-now
-{
-    position:absolute;
+
+.study-now h2 a,
+.study-now h3 a,
+.study-now h4 a {
+    text-decoration: none;
+    color: white;
+}
+
+.study-now {
+    position: absolute;
     top: 50%;
-    margin-top:-100px;
+    margin-top: -100px;
     left: 50%;
-    color:white;
+    color: white;
     padding: 40px;
     background: rgba(255, 255, 255, 0.3);
-    border-radius:20px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
 }
 
 

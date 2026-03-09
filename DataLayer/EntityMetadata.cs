@@ -170,7 +170,7 @@ namespace DataLayer
 
     // TODO: syntax sugar to allow for EntityMetadata.User.MaxLength[x => x.Name]
     // LIMITED TO: where TReturn : struct because only primitives and enums are allowed inside attributes and that's what we're matching mostly
-    public class ModelAccessor<TModel, TReturn> where TModel : DataLayer.Entities.IEntity<TModel> where TReturn : struct
+    public class ModelAccessor<TModel, TReturn> where TModel : class, DataLayer.Entities.IEntity<TModel> where TReturn : struct
     {
         private readonly EntityMetadata<TModel> _model;
         // TODO: this is kind of single purpose
@@ -202,7 +202,7 @@ namespace DataLayer
         }
     }
 
-    public class EntityMetadata<T> : EntityMetadata where T : Entities.IEntity<T>
+    public class EntityMetadata<T> : EntityMetadata where T : class, Entities.IEntity<T>
     {
         new public ModelAccessor<T, int> MaxLength;
         public EntityMetadata() : base(typeof(T))

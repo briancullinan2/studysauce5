@@ -9,9 +9,11 @@ namespace DataLayer.Entities
     {
         // Composite Key Properties
         public string? UserId { get; set; }
+        [ForeignKey(nameof(UserId))]
         public virtual User? User { get; set; }
 
-        public int PackId { get; set; }
+        public int? PackId { get; set; }
+        [ForeignKey(nameof(PackId))]
         public virtual Pack? Pack { get; set; }
 
         // Columns

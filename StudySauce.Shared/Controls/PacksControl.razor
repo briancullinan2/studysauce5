@@ -40,12 +40,23 @@
             <a href="@(NavigationExtensions.GetUri<Pages.Landing.EditPack>(p => new () { ControlMode = DataLayer.Customization.ControlMode.Edit, Id = pack.Id}))">
                 <span class="bi bi-pencil"></span>
             </a>
-            @if (LoginService?.User?.UserPacks.FirstOrDefault(up => up.PackId == pack.Id) == null)
+            @if(LoginService?.User == null)
+            {
+                <a href="@(NavigationExtensions.GetUri<Pages.Landing.Login>())">
+                    <span class="bi bi-check-circle"></span>
+                </a>
+            }
+            else if (LoginService?.User?.UserPacks.FirstOrDefault(up => up.PackId == pack.Id) == null)
             {
                 <a href="@(NavigationExtensions.GetUri<Pages.Landing.Packs>(p => new() { ControlMode = DataLayer.Customization.ControlMode.Add, Id = pack.Id }))">
-                    <span class="bi bi-check-circle-fill"></span>
+                    <span class="bi bi-check-circle"></span>
                 </a>
-            }           
+            } else
+            {
+                <a href="@(NavigationExtensions.GetUri<Pages.Landing.Pack>(p => new() { Mode = DataLayer.Customization.PackMode.Card, Id = pack.Id }))">
+                    <span class="bi bi-info-circle"></span>
+                </a>
+            }
         </span>
     </div>
 }

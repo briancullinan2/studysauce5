@@ -1,6 +1,7 @@
 ﻿using DataLayer.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System.Collections;
 using System.Data;
 using System.Linq.Expressions;
 
@@ -12,29 +13,76 @@ namespace DataLayer.Utilities.Extensions
         /// Rehydrates the entity by discarding local changes and fetching 
         /// the latest data from the database.
         /// </summary>
-        public static void Refetch<T>(this ProxyEntity<T> entity) where T : IEntity
+        public static T Refetch<T>(this ProxyEntity<T> entity, bool? recurse = false) where T : class, IEntity<T>
         {
             if (entity == null) throw new ArgumentNullException(nameof(entity));
-
-            using var scope = entity._service.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<TranslationContext>();
-            var entry = context.Entry(entity);
+            if (entity._scope == null) entity._scope = entity._service?.CreateScope();
+            var persistentStore = entity._scope?.ServiceProvider.GetRequiredService(entity._context ?? typeof(IDbContextFactory<DataLayer.PersistentStorage>));
+            TranslationContext? persistentContext = (persistentStore as IDbContextFactory<DataLayer.PersistentStorage>)?.CreateDbContext();
+            if (persistentContext == null)
+            {
+                persistentContext = (persistentStore as IDbContextFactory<DataLayer.EphemeralStorage>)?.CreateDbContext();
+            }
+            if (persistentContext == null)
+            {
+                throw new InvalidOperationException("Cannot determine database context.");
+            }
+            var entry = persistentContext.Entry(entity._target);
 
             // If the entity isn't being tracked, we need to attach it first
             if (entry.State == EntityState.Detached)
             {
-                context.Attach(entity);
+                persistentContext.Attach(entity._target);
             }
 
             // This executes the SQL SELECT and updates the object's properties
             entry.Reload();
+
+            if (recurse == true)
+            {
+                LoadAllNavigations(persistentContext, entity._target);
+            }
+
+            return entity._target;
         }
 
-        public static void Save<T>(this ProxyEntity<T> ent, bool? recurse = false) where T : class, IEntity<T>
+
+        public static void LoadAllNavigations(DbContext context, object entity)
+        {
+            var entry = context.Entry(entity);
+
+            // 1. Get all Navigation properties defined in the EF Model for this type
+            var navigations = entry.Metadata.GetNavigations();
+
+            foreach (var navigation in navigations)
+            {
+                if (navigation.IsCollection)
+                {
+                    // It's a Collection (like ICollection<Lesson>)
+                    var collectionEntry = entry.Collection(navigation.Name);
+                    if (!collectionEntry.IsLoaded)
+                    {
+                        collectionEntry.Load();
+                    }
+                }
+                else
+                {
+                    // It's a Reference (like ParentLesson)
+                    var referenceEntry = entry.Reference(navigation.Name);
+                    if (!referenceEntry.IsLoaded)
+                    {
+                        referenceEntry.Load();
+                    }
+                }
+            }
+        }
+
+
+        public static T Save<T>(this ProxyEntity<T> ent, bool? recurse = false) where T : class, IEntity<T>
         {
             // Start the Transaction
-            using var scope = ent._service?.CreateScope();
-            var persistentStore = scope?.ServiceProvider.GetRequiredService(ent._context ?? typeof(IDbContextFactory<DataLayer.PersistentStorage>));
+            if (ent._scope == null) ent._scope = ent._service?.CreateScope();
+            var persistentStore = ent._scope?.ServiceProvider.GetRequiredService(ent._context ?? typeof(IDbContextFactory<DataLayer.PersistentStorage>));
             TranslationContext? persistentContext = (persistentStore as IDbContextFactory<DataLayer.PersistentStorage>)?.CreateDbContext();
             if (persistentContext == null)
             {
@@ -53,13 +101,22 @@ namespace DataLayer.Utilities.Extensions
                     //    throw new Exception("Invalid Facility Link");
 
                     // 2. Add the primary entity
-                    persistentContext.Set<T>().Add(ent._target);
+                    if (recurse == false)
+                    {
+                        ShallowSaveRecursive(persistentContext, ent._target, recurse == true);
+                    }
+                    else
+                    {
+                        persistentContext.Add(ent._target);
+                    }
 
                     // 3. Commit the changes
                     persistentContext.SaveChanges();
 
                     // 4. Finalize the transaction
                     transaction.Commit();
+
+                    return Refetch(ent, true);
                 }
                 catch (Exception ex)
                 {
@@ -68,10 +125,49 @@ namespace DataLayer.Utilities.Extensions
                     //Log.Error($"Transaction Aborted: {ex.Message}");
                     throw; // Rethrow so the parent catch can handle the fallback
                 }
+                finally
+                {
+                }
             }
         }
 
-        public static int Update<T>(this T entity, IDbConnection conn, string keyName = "Id") where T : IEntity<T>
+        public static void ShallowSaveRecursive<T>(DbContext persistentContext, T updatedEntity, bool recurse = false) where T : class, IEntity<T>
+        {
+
+            // 2. Find or Fetch the tracked version from the DB
+            var trackedEntity = persistentContext.Entry(updatedEntity);
+            if (trackedEntity == null)
+            {
+                // If it doesn't exist, we must Add it (Shallowly)
+                persistentContext.Add(updatedEntity);
+                return;
+            }
+
+            // 3. Update only the scalar values (Title, Icon, etc.)
+            trackedEntity.CurrentValues.SetValues(updatedEntity);
+
+            // 4. If recursing, find child collections
+            if (recurse)
+            {
+                var navigations = persistentContext.Entry(trackedEntity).Metadata.GetNavigations();
+                foreach (var nav in navigations.Where(n => n.IsCollection))
+                {
+                    // Get the list of children from the updated object
+                    var updatedChildren = updatedEntity.GetType().GetProperty(nav.Name)?.GetValue(updatedEntity) as IEnumerable;
+
+                    if (updatedChildren != null)
+                    {
+                        foreach (var child in updatedChildren)
+                        {
+                            // Use 'dynamic' or Reflection to call this method again for the child type
+                            ShallowSaveRecursive((dynamic)child, true);
+                        }
+                    }
+                }
+            }
+        }
+
+        public static int Update<T>(this T entity, IDbConnection conn, string keyName = "Id") where T : class, IEntity<T>
         {
             var type = typeof(T);
             var props = type.GetProperties();

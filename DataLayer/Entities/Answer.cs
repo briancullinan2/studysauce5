@@ -21,8 +21,8 @@ namespace DataLayer.Entities
         [Required]
         public string? Content { get; set; }
 
-        [Column("response", TypeName = "text")]
-        public string? ResponseText { get; set; }
+        //[Column("response", TypeName = "text")]
+        //public string? ResponseText { get; set; }
 
         [Column("value", TypeName = "text")]
         public string? Value { get; set; }

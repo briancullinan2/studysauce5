@@ -4,6 +4,7 @@
 @page "/card/{Id:int}"
 @page "/demo/{Id:int}"
 @inject NavigationManager Nav
+@inject ILoginService LoginService
 @using StudySauce.Shared.Services
 @using StudySauce.Shared.Controls
 @using System.ComponentModel
@@ -18,21 +19,23 @@
     return;
 }
 
-@for(var i = 0; i < CurrentQuiz?.Count() * 2; i+=2)
+@for(var i = 0; i < CurrentQuiz?.Count(); i++)
 {
-    <div class="flash-card @(GetDisplayClass(i))">
-        <MetadataControl ValueChanged="@(EventCallback.Factory.Create<Tuple<PropertyMetadata, DataLayer.Entities.Card, object?>>(this, OnQuizAnswered))" TModel="DataLayer.Entities.Card" Model="@CardLayout" Data="[CurrentQuiz?.ElementAt(i)]"></MetadataControl>
+    var card = CurrentQuiz?.ElementAt(i);
+
+    <div class="flash-card @(GetDisplayClass(i * 2))">
+        <MetadataControl ValueChanged="@(EventCallback.Factory.Create<Tuple<PropertyMetadata, DataLayer.Entities.Card, object?>>(this, OnQuizAnswered))" TModel="DataLayer.Entities.Card" Model="@CardLayout" Data="[card]"></MetadataControl>
     </div>
 
-    <div class="flash-card @(GetDisplayClass(i + 1))">
-        <MetadataControl TModel="Controls.ResultsCardControl.ResultCard" Model="@ResultLayout" Data="CurrentQuiz?.Select(card => new Controls.ResultsCardControl.ResultCard() { Card = card, Response = Responses.FirstOrDefault(r => r.Card == card) }).ToList()"></MetadataControl>
+    <div class="flash-card @(GetDisplayClass(i * 2 + 1))">
+        <MetadataControl TModel="Controls.ResultsCardControl.ResultCard" Model="@ResultLayout" Data="[new Controls.ResultsCardControl.ResultCard() { Card = card, Response = Responses.FirstOrDefault(r => r.Card == card) }]"></MetadataControl>
     </div>
 }
 
 @*TODO: show results screen if retention is already resolved*@
 
 @* Progress Tracker *@
-@if (QuizStep != null && TotalCards != null)
+@if (TotalCards != null)
 {
     <ul class="tab-tracker">
         @for (var i = Math.Max((int)QuizStep - 2, 0); i < Math.Min((int)TotalCards, (int)QuizStep + 3); i++)
@@ -53,15 +56,47 @@
     [JsonPropertyName("quiz")]
     [Category("Display")]
     public IEnumerable<DataLayer.Entities.Card>? CurrentQuiz { get; set; }
+    [JsonIgnore]
+    [Category("Results")]
+    public IEnumerable<Controls.ResultsCardControl.ResultCard>? Results { get; set; }
+
+    // TODO:
+    /*
+    public enum PackMode
+    {
+        [Description("pack")] // show only one card at a time and return to home
+        Card = 1,
+        [Description("quiz")] // show a few cards at a time and return to home
+        Quiz = 2,
+        [Description("funnel")] // show a few cards then go to the next step
+        Multi = 3,
+        [Description("demo")] // show a few choice cards and go to store page
+        Demo = 4,
+        [Description("shuffle")] // randomize the cards that are due with subscriptions
+        Shuffle = 5
+        }
+
+     */
+
+
 
     public PackMode? Mode { get; set; }
     private List<DataLayer.Entities.Response> Responses = new();
     private IEnumerable<PropertyMetadata>? CardLayout;
     private IEnumerable<PropertyMetadata>? ResultLayout;
     public int? PreviousStep { get; set; }
-    public int? QuizStep { get; set; }
-    public int? TotalCards { get => Enum.GetValues<StepMode>().Count() + CurrentQuiz?.Count(); }
+    public int QuizStep { get; set; } = 0;
+    public int? TotalCards { get => CurrentQuiz?.Count(); }
 
+
+    public static EntityMetadata Metadata => new EntityMetadata(typeof(Pages.Landing.Pack));
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        CardLayout = Pages.Landing.Pack.Metadata.Categories["Display"]?.ToList();
+        ResultLayout = Pages.Landing.Pack.Metadata.Categories["Results"]?.ToList();
+    }
 
     protected string? GetDisplayClass(int? step)
     {
@@ -78,8 +113,40 @@
         var firstSegment = relativePath.Split('/')[0];
 
         Mode = firstSegment.TryParse<PackMode>();
+
+        if (Mode == PackMode.Shuffle)
+        {
+            // TODO: if user hasn't logged in, shuffle 5 built in study sauce and then ask for sign up like demo sequence
+
+
+            CurrentQuiz = LoginService.User?.UserPacks.SelectMany(up =>
+            {
+                var due = up.GetRetention().Where(r => r.Value.IsDue).Select(r => r.Key);
+                return up.Pack?.Cards.Where(c => due.Contains(c.Id)) ?? [];
+            }).Shuffle();
+        }
+        else if (Id != null)
+        {
+            /*if (Id < 0 && Id >= -3)
+            {
+                Type[] packs = [typeof(Pages.Course.Course1), typeof(Pages.Course.Course2), typeof(Pages.Course.Course3)];
+                CurrentQuiz = GetCoursePack(packs.ElementAt(Math.Abs(Id ?? 0) - 1))?.FirstOrDefault()?.Cards;
+            }*/
+            // only show one id quiz
+            var up = LoginService.User?.UserPacks.FirstOrDefault(up => up.Pack?.Id == Id);
+            var due = up?.GetRetention().Where(r => r.Value.IsDue).Select(r => r.Key).ToList() ?? [];
+            CurrentQuiz = up?.Pack?.Cards.Where(c => due.Contains(c.Id) == true) ?? [];
+        }
     }
 
+    /*
+    protected static IEnumerable<DataLayer.Entities.Pack>? GetCoursePack(Type? lesson)
+    {
+        var generator = lesson?.GetMethod("Generate", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+        IEnumerable<DataLayer.Entities.Pack>? packs = generator?.Invoke(null, []) as IEnumerable<DataLayer.Entities.Pack>;
+        return packs?.ToList();
+    }
+    */
 
     protected async Task OnQuizAnswered(Tuple<PropertyMetadata, DataLayer.Entities.Card, object?> valueChanged)
     {
@@ -91,7 +158,7 @@
         var response = new DataLayer.Entities.Response()
         {
             Answer = answer,
-            Value = answer.Content,
+            Value = answer.Content ?? answer.Value ?? "",
             IsCorrect = answer.IsCorrect,
             Card = valueChanged.Item2
         };

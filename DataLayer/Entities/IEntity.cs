@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System.Collections;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -15,21 +16,21 @@ namespace DataLayer.Entities
         //abstract internal static IEntity Wrap(IEntity target);
     }
 
-    public interface IEntity<T> : IEntity where T : IEntity
+    public interface IEntity<T> : IEntity where T : class, IEntity<T>
     {
     }
 
     abstract public class Entity : DispatchProxy, INotifyPropertyChanged
     {
         protected abstract override object? Invoke(MethodInfo? targetMethod, object?[]? args);
-        public event PropertyChangedEventHandler? PropertyChanged;
+        public abstract event PropertyChangedEventHandler? PropertyChanged;
 
-        public static ProxyEntity<T> Wrap<T>(IEntity<T> target, IServiceProvider service, Type? context = null) where T : IEntity
+        public static ProxyEntity<T> Wrap<T>(IEntity<T> target, IServiceProvider service, Type? context = null) where T : class, IEntity<T>
         {
             return Wrap((IEntity)target, service, context) as ProxyEntity<T>;
         }
 
-        public static ProxyEntity<T> Wrap<T>(IEntity<T> target, IServiceProvider service) where T : IEntity
+        public static ProxyEntity<T> Wrap<T>(IEntity<T> target, IServiceProvider service) where T : class, IEntity<T>
         {
             return Wrap((IEntity)target, service) as ProxyEntity<T>;
         }
@@ -71,14 +72,22 @@ namespace DataLayer.Entities
 
     }
 
-    public class Entity<T> : IEntity<T> where T : IEntity
+    public class Entity<T> : IEntity<T> where T : class, IEntity<T>
     {
+        public ProxyEntity<T> Wrap(IServiceProvider? service = null, bool persist = true)
+        {
+            return Entity.Wrap(this, service, persist ? typeof(IDbContextFactory<DataLayer.PersistentStorage>) : typeof(IDbContextFactory<DataLayer.EphemeralStorage>));
+        }
 
+        public ProxyEntity<T> Wrap(IServiceProvider service, Type context)
+        {
+            return Entity.Wrap(this, service, context);
+        }
     }
 
-    public class ProxyEntity<T> : Entity, IEntity<T>, INotifyPropertyChanged where T : IEntity
+    public class ProxyEntity<T> : Entity, IDisposable, INotifyPropertyChanged where T : class, IEntity<T>
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
+        public override event PropertyChangedEventHandler? PropertyChanged;
 
         public ProxyEntity() : base()
         {
@@ -89,6 +98,33 @@ namespace DataLayer.Entities
         public T _target = default!;
         public IServiceProvider? _service = default!;
         public Type? _context = default!;
+        public IServiceScope? _scope = default;
+
+        public T Save(bool? recurse = false)
+        {
+            return Utilities.Extensions.IEntityExtensions.Save(this, recurse);
+        }
+
+        public T Attach(ProxyEntity<T> entity, bool? recurse = false)
+        {
+            return Utilities.Extensions.IEntityExtensions.Refetch(entity, recurse);
+        }
+
+        public T Attach<T>(Entity<T>? entity, bool? recurse = false) where T : class, IEntity<T>
+        {
+            if (entity == null)
+            {
+                return default!;
+            }
+            var proxy = entity.Wrap(_service, _context);
+            proxy._scope = this._scope;
+            return Utilities.Extensions.IEntityExtensions.Refetch(proxy, recurse);
+        }
+
+        public T Refetch(bool? recurse = false)
+        {
+            return Utilities.Extensions.IEntityExtensions.Refetch(this, recurse);
+        }
 
         // 1. You create a static helper to wrap the real object
         public static T Create(T target, IServiceProvider service)
@@ -205,5 +241,13 @@ namespace DataLayer.Entities
             return result;
         }
 
+        public void Dispose()
+        {
+            if (_scope != null)
+            {
+                _scope.Dispose();
+                _scope = null;
+            }
+        }
     }
 }

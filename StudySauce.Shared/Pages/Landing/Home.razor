@@ -7,6 +7,7 @@
 @using StudySauce.Shared.Services
 @inject IFormFactor FormFactor
 @inject IMenuService MenuService
+@inject ILoginService LoginService
 
 @if(!String.IsNullOrWhiteSpace(notFound))
 {
@@ -24,9 +25,29 @@
 </a>
 
 <div class="study-now">
-    <h2>Start studying now</h2>
-    <h3>Login to track progress</h3>
-    <h4>Subscribe to packs to memorize content quickly.</h4>
+    <h2><a href="@(NavigationExtensions.GetUri<Pages.Landing.Pack>(p => new() { Mode = DataLayer.Customization.PackMode.Shuffle }))">Start studying now</a></h2>
+    @if (LoginService.User == null)
+    {
+        <h3><a href="@(NavigationExtensions.GetUri<Pages.Landing.Login>())">Login to track progress</a></h3>
+    }
+    @if (LoginService.User == null || LoginService.User.UserPacks.Count(up => up.GetRetention().Any(r => r.Value.IsDue)) == 0)
+    {
+        <h4><a href="@(NavigationExtensions.GetUri<Pages.Landing.Packs>())">Subscribe to packs to memorize content quickly.</a></h4>
+    }
+    else
+    {
+        <heading class="study-row">
+            <label>Pack Title</label>
+            <label>Card Count</label>
+        </heading>
+        foreach (var up in LoginService.User.UserPacks.Where(up => up.GetRetention().Any(r => r.Value.IsDue)))
+        {
+            <div class="study-row">
+                <span>@up.Pack?.Title</span>
+                <span>@up.GetRetention().Count(r => r.Value.IsDue)</span>
+            </div>
+        }
+    }
 </div>
 
 <br />

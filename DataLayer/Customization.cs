@@ -54,7 +54,7 @@ namespace DataLayer.Customization
         Multi = 3,
         [Description("demo")] // show a few choice cards and go to store page
         Demo = 4,
-        [Description("shuffle")]
+        [Description("shuffle")] // randomize the cards that are due with subscriptions
         Shuffle = 5
     }
 
