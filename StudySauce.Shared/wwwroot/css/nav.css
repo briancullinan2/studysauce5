@@ -62,6 +62,21 @@ a .bi {
     margin-left: 0;
 }
 
+.highlighted-link > button.cta:first-child,
+.link-list > button.cta:first-child,
+.highlighted-link > a.cta:first-child,
+.link-list > a.cta:first-child {
+    margin-left: auto;
+}
+
+
+.highlighted-link > button.deemphasize:first-child,
+.link-list > button.deemphasize:first-child,
+.highlighted-link > a.deemphasize:first-child,
+.link-list > a.deemphasize:first-child {
+    margin-left: 0;
+}
+
 .sidebar {
     background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
     /* Your original colors + a repeat to make the transition seamless */
