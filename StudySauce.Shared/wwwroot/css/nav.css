@@ -186,12 +186,15 @@ a .bi {
         height: 0;
     }
 
-    .sidebar {
-        transition: height ease-in-out 0.6s;
-    }
-
     .page.login-mode .navbar-toggler {
         display: none;
+    }
+
+    .sidebar {
+        position: static;
+        width: 100%;
+        z-index: 100;
+        transition: height ease-in-out 0.6s;
     }
 
 }
@@ -200,6 +203,7 @@ a .bi {
     .sidebar {
         position: fixed;
         transition: width ease-in-out 0.6s;
+        max-width: 250px;
     }
 
     .navbar-toggler {
