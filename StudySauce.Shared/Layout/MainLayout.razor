@@ -13,11 +13,11 @@
 @inject IJsonService JsonService
 @inject NavigationManager Nav
 
-<div class="@(Login == true ? "login-mode" : Study == true ? "study-mode" : "") @PageClass page @(Application)">
+<div class="@(Login == true ? "login-mode" : Study == true ? "study-mode" : "") @PageClass page theme-@(Application.ToString()?.ToLowerInvariant())">
     <div class="canvas-container">
         <canvas id="lichtenbergCanvas"></canvas>
     </div>
-    <div class="sidebar @(Sidebar)">
+    <div class="sidebar @(Sidebar.ToString()?.ToLowerInvariant())">
         <NavMenu />
     </div>
 
@@ -174,9 +174,9 @@
         }
     }
 
-    public string? Application { get; set; }
+    public Pages.Admin.Settings.ApplicationTheme? Application { get; set; }
 
-    private void SetApplication(string? theme)
+    private void SetApplication(Pages.Admin.Settings.ApplicationTheme? theme)
     {
         if (theme != Application)
         {
@@ -186,11 +186,11 @@
     }
 
 
-    public string? Sidebar { get; set; }
+    public Pages.Admin.Settings.SidebarTheme? Sidebar { get; set; }
 
-    private void SetSidebar(string? theme)
+    private void SetSidebar(Pages.Admin.Settings.SidebarTheme? theme)
     {
-        if (theme != Application)
+        if (theme != Sidebar)
         {
             Sidebar = theme;
             this.StateHasChanged();
@@ -198,10 +198,10 @@
     }
 
 
-    public string? Background { get; set; } = "None";
+    public Pages.Admin.Settings.AnimationMode? Background { get; set; } = Pages.Admin.Settings.AnimationMode.None;
     public bool initRender { get; set; } = true;
 
-    private void SetBackground(string? theme)
+    private void SetBackground(Pages.Admin.Settings.AnimationMode? theme)
     {
         if (theme != Background)
         {
@@ -304,14 +304,14 @@
             _animationCts = null;
         }
 
-        if(Background == "None")
+        if(Background == Pages.Admin.Settings.AnimationMode.None)
         {
             return;
         }
 
         // Trigger the JS engine
         //await JS.InvokeVoidAsync("initLichtenberg", "lichtenbergCanvas");
-        var _module = await JS.InvokeAsync<IJSObjectReference>("import", $"/_content/StudySauce.Shared/{Background}.js");
+        var _module = await JS.InvokeAsync<IJSObjectReference>("import", $"/_content/StudySauce.Shared/{Background.ToString()?.ToLowerInvariant()}.js");
 
         // 2. Call the function from the module
         _animationCts = await _module.InvokeAsync<IJSObjectReference>("initLichtenberg", "lichtenbergCanvas");

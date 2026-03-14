@@ -1,5 +1,9 @@
 @page "/settings"
+@using StudySauce.Shared.Controls
 @using StudySauce.Shared.Services
+@using System.ComponentModel
+@using System.Reflection
+@using System.ComponentModel.DataAnnotations
 @inject IMenuService MenuService
 
 
@@ -29,49 +33,8 @@
     </div>
 
 
-    
-    <label for="animation-selector">Background Animation</label>
-    <select id="animation-selector" class="atrium-select" @bind="Background">
-        <option value="None">None (Turn Off)</option>
-        <option value="lichtenberg">Lichtenberg Cube</option>
-        <option value="lichtenlight">Lichtenberg Light</option>
-        <option value="lichtenbird">Lichten Bird</option>
-        <option value="lichtenatrium">Lichten Atrium</option>
-    </select>
+    <MetadataControl TModel="DataLayer.Entities.Setting" Model="ThemeLayout" />
 
-    <label for="theme-selector">Sidebar Theme</label>
-    <select id="theme-selector" class="atrium-select" @bind="Sidebar">
-        <option value="default">Default (Blazor Purple)</option>
-        <option value="daybreak">Daybreak (Classic Sunrise)</option>
-        <option value="desert-sunset">Desert Sunset (Banded Gold)</option>
-        <option value="ocean-ripple">Ocean Ripple (Deep Reflective)</option>
-        <option value="silver-chrome">Silver Chrome (Metallic)</option>
-        <option value="coral-reef">Coral Reef (Tropical Cyan)</option>
-        <option value="dusk">Dusk (Atmospheric Night)</option>
-        <option value="rainbow-peak">Rainbow Peak (Full Spectrum)</option>
-        <option value="golden-gate">Golden Gate (Polished Gold)</option>
-        <option value="emerald-forest">Emerald Forest (Vibrant Green)</option>
-        <option value="night-vision">Night Vision (Matrix Green)</option>
-        <option value="berry-blast">Berry Blast (Candy Red/Blue)</option>
-        <option value="parchment">Parchment (Academic Beige)</option>
-    </select>
-
-    <label for="contradiction-selector">Application Theme:</label>
-    <select id="contradiction-selector" class="atrium-select" @bind="Application">
-        <option value="theme-atrium-ivory">Atrium Ivory (vs Default Purple)</option>
-        <option value="theme-midnight-void">Midnight Void (vs Daybreak)</option>
-        <option value="theme-arctic-thaw">Arctic Thaw (vs Desert Sunset)</option>
-        <option value="theme-abyssal-trench">Abyssal Trench (vs Ocean Ripple)</option>
-        <option value="theme-oxidized-iron">Oxidized Iron (vs Silver Chrome)</option>
-        <option value="theme-deep-sea-kelp">Deep Sea Kelp (vs Coral Reef)</option>
-        <option value="theme-solar-flare">Solar Flare (vs Dusk)</option>
-        <option value="theme-monochrome-matrix">Monochrome Matrix (vs Rainbow)</option>
-        <option value="theme-lead-fortress">Lead Fortress (vs Golden Gate)</option>
-        <option value="theme-ashen-wastes">Ashen Wastes (vs Emerald Forest)</option>
-        <option value="theme-inverted-neon">Inverted Neon (vs Night Vision)</option>
-        <option value="theme-sour-lime">Sour Lime (vs Berry Blast)</option>
-        <option value="theme-obsidian-ledger">Obsidian Ledger (vs Parchment)</option>
-    </select>
 
     <h2>Parental Controls</h2>
     <div>
@@ -98,8 +61,9 @@
 
 @code
 {
-    public string? _app;
-    public string? Application
+    public ApplicationTheme? _app;
+    [Display(GroupName = "Themes", Order = 1)]
+    public ApplicationTheme? Application
     {
         get
         {
@@ -112,8 +76,9 @@
         }
     }
 
-    public string? _theme;
-    public string? Sidebar
+    public SidebarTheme? _theme;
+    [Display(GroupName = "Themes", Order = 2)]
+    public SidebarTheme? Sidebar
     {
         get
         {
@@ -126,9 +91,13 @@
         }
     }
 
+    static EntityMetadata Metadata = new EntityMetadata(typeof(Pages.Admin.Settings));
+    IEnumerable<PropertyMetadata>? ThemeLayout { get; set; }
 
-    public string? _background;
-    public string? Background
+
+    public AnimationMode? _background;
+    [Display(GroupName = "Themes", Order = 0)]
+    public AnimationMode? Background
     {
         get
         {
@@ -145,5 +114,154 @@
     {
         base.OnInitialized();
         MenuService?.SetMenu(@<StudySauce.Shared.Pages.Shared.Settings />);
+        ThemeLayout = Pages.Admin.Settings.Metadata.Groups["Themes"]?.ToList();
+    }
+
+    [Obfuscation(Exclude = true, ApplyToMembers = true)]
+    public enum ApplicationTheme
+    {
+        [Description("Atrium Ivory (vs Default Purple)")]
+        Ivory = 0,
+
+        [Description("Dark Slate (vs Shale Life)")]
+        DarkSlate = 13,
+
+        [Description("Midnight Void (vs Daybreak)")]
+        MidnightVoid = 1,
+
+        [Description("Arctic Thaw (vs Desert Sunset)")]
+        ArcticThaw = 2,
+
+        [Description("Abyssal Trench (vs Ocean Ripple)")]
+        AbyssalTrench = 3,
+
+        [Description("Oxidized Iron (vs Silver Chrome)")]
+        OxidizedIron = 4,
+
+        [Description("Deep Sea Kelp (vs Coral Reef)")]
+        DeepSeaKelp = 5,
+
+        [Description("Solar Flare (vs Dusk)")]
+        SolarFlare = 6,
+
+        [Description("Monochrome Matrix (vs Rainbow)")]
+        MonochromeMatrix = 7,
+
+        [Description("Lead Fortress (vs Golden Gate)")]
+        LeadFortress = 8,
+
+        [Description("Ashen Wastes (vs Emerald Forest)")]
+        AshenWastes = 9,
+
+        [Description("Inverted Neon (vs Night Vision)")]
+        InvertedNeon = 10,
+
+        [Description("Sour Lime (vs Berry Blast)")]
+        SourLime = 11,
+
+        [Description("Obsidian Ledger (vs Parchment)")]
+        ObsidianLedger = 12
+    }
+
+    [Obfuscation(Exclude = true, ApplyToMembers = true)]
+    public enum SidebarTheme
+    {
+
+        [Description("Default (Blazor Purple)")]
+        Default = 0,
+
+        [Description("Midnight Void (vs Daybreak)")]
+        MidnightVoid = 14,
+
+        [Description("Arctic Thaw (vs Desert Sunset)")]
+        ArcticThaw = 15,
+
+        [Description("Abyssal Trench (vs Ocean Ripple)")]
+        AbyssalTrench = 16,
+
+        [Description("Oxidized Iron (vs Silver Chrome)")]
+        OxidizedIron = 17,
+
+        [Description("Deep Sea Kelp (vs Coral Reef)")]
+        DeepSeaKelp = 18,
+
+        [Description("Solar Flare (vs Dusk)")]
+        SolarFlare = 19,
+
+        [Description("Monochrome Matrix (vs Rainbow)")]
+        MonochromeMatrix = 20,
+
+        [Description("Lead Fortress (vs Golden Gate)")]
+        LeadFortress = 21,
+
+        [Description("Ashen Wastes (vs Emerald Forest)")]
+        AshenWastes = 22,
+
+        [Description("Inverted Neon (vs Night Vision)")]
+        InvertedNeon = 23,
+
+        [Description("Sour Lime (vs Berry Blast)")]
+        SourLime = 24,
+
+        [Description("Obsidian Ledger (vs Parchment)")]
+        ObsidianLedger = 25,
+
+        [Description("Shale Life (Default Dark Mode)")]
+        ShaleLife = 13,
+
+        [Description("Daybreak (Classic Sunrise)")]
+        Daybreak = 1,
+
+        [Description("Desert Sunset (Banded Gold)")]
+        DesertSunset = 2,
+
+        [Description("Ocean Ripple (Deep Reflective)")]
+        OceanRipple = 3,
+
+        [Description("Silver Chrome (Metallic)")]
+        SilverChrome = 4,
+
+        [Description("Coral Reef (Tropical Cyan)")]
+        CoralReef = 5,
+
+        [Description("Dusk (Atmospheric Night)")]
+        Dusk = 6,
+
+        [Description("Rainbow Peak (Full Spectrum)")]
+        RainbowPeak = 7,
+
+        [Description("Golden Gate (Polished Gold)")]
+        GoldenGate = 8,
+
+        [Description("Emerald Forest (Vibrant Green)")]
+        EmeraldForest = 9,
+
+        [Description("Night Vision (Matrix Green)")]
+        NightVision = 10,
+
+        [Description("Berry Blast (Candy Red/Blue)")]
+        BerryBlast = 11,
+
+        [Description("Parchment (Academic Beige)")]
+        Parchment = 12
+    }
+
+    [Obfuscation(Exclude = true, ApplyToMembers = true)]
+    public enum AnimationMode
+    {
+        [Description("None (Turn Off)")]
+        None = 0,
+
+        [Description("Lichtenberg Cube")]
+        lichtenberg = 1,
+
+        [Description("Lichtenberg Light")]
+        lichtenlight = 2,
+
+        [Description("Lichten Birds")]
+        lichtenbird = 3,
+
+        [Description("Lichten Atrium")]
+        lichtenatrium = 4
     }
 }

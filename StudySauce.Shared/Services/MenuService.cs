@@ -10,14 +10,14 @@ namespace StudySauce.Shared.Services
         Task SetHeader(bool? show);
         event Action<bool?>? OnHeaderChanged;
 
-        Task SetSidebar(string? theme);
-        event Action<string?>? OnSidebarChanged;
+        Task SetSidebar(Pages.Admin.Settings.SidebarTheme? theme);
+        event Action<Pages.Admin.Settings.SidebarTheme?>? OnSidebarChanged;
 
-        Task SetApplication(string? theme);
-        event Action<string?>? OnApplicationChanged;
+        Task SetApplication(Pages.Admin.Settings.ApplicationTheme? theme);
+        event Action<Pages.Admin.Settings.ApplicationTheme?>? OnApplicationChanged;
 
-        Task SetBackground(string? theme);
-        event Action<string?>? OnBackgroundChanged;
+        Task SetBackground(Pages.Admin.Settings.AnimationMode? theme);
+        event Action<Pages.Admin.Settings.AnimationMode?>? OnBackgroundChanged;
     }
 
     public class MenuService : IMenuService
@@ -37,22 +37,22 @@ namespace StudySauce.Shared.Services
             OnHeaderChanged?.Invoke(show);
         }
 
-        public event Action<string?>? OnSidebarChanged;
-        public async Task SetSidebar(string? theme)
+        public event Action<Pages.Admin.Settings.SidebarTheme?>? OnSidebarChanged;
+        public async Task SetSidebar(Pages.Admin.Settings.SidebarTheme? theme)
         {
             OnSidebarChanged?.Invoke(theme);
         }
 
-        public event Action<string?>? OnApplicationChanged;
+        public event Action<Pages.Admin.Settings.ApplicationTheme?>? OnApplicationChanged;
 
-        public async Task SetApplication(string? theme)
+        public async Task SetApplication(Pages.Admin.Settings.ApplicationTheme? theme)
         {
             OnApplicationChanged?.Invoke(theme);
         }
 
-        public event Action<string?>? OnBackgroundChanged;
+        public event Action<Pages.Admin.Settings.AnimationMode?>? OnBackgroundChanged;
 
-        public async Task SetBackground(string? theme)
+        public async Task SetBackground(Pages.Admin.Settings.AnimationMode? theme)
         {
             OnBackgroundChanged?.Invoke(theme);
         }
