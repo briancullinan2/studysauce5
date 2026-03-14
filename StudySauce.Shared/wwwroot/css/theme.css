@@ -1,6 +1,6 @@
 ﻿
 
-
+.sidebar.default,
 .page, .theme-ivory {
     --slate-bg: #fdfdf2;
     --slate-surface: #ffffff;
@@ -35,6 +35,7 @@
 .sensor-electric { color: var(--atrium-electric); }
 .sensor-gold { color: var(--atrium-gold); }
 
+.sidebar.shalelife,
 .theme-darkslate {
     --slate-bg: #05050a;
     --slate-surface: #0f172a;
@@ -49,6 +50,7 @@
 }
 
 /* 1. Opposed to Daybreak: The "Midnight Void" */
+.sidebar.midnightvoid,
 .theme-midnightvoid {
     --slate-bg: #020617;
     --slate-surface: #0f172a;
@@ -63,6 +65,7 @@
 }
 
 /* 2. Opposed to Desert Sunset: The "Arctic Thaw" */
+.sidebar.arcticthaw,
 .theme-arcticthaw {
     --slate-bg: #0f172a;
     --slate-surface: #1e293b;
@@ -77,6 +80,8 @@
 }
 
 /* 3. Opposed to Ocean Ripple: The "Abyssal Trench" */
+
+.sidebar.abyssaltrench,
 .theme-abyssaltrench {
     --slate-bg: #000000;
     --slate-surface: #081121;
@@ -91,6 +96,7 @@
 }
 
 /* 4. Opposed to Silver Chrome: The "Oxidized Iron" */
+.sidebar.oxidizediron, 
 .theme-oxidizediron {
     --slate-bg: #1a1a1a;
     --slate-surface: #2d2d2d;
@@ -105,6 +111,7 @@
 }
 
 /* 5. Opposed to Coral Reef: The "Deep Sea Kelp" */
+.sidebar.deepseakelp,
 .theme-deepseakelp {
     --slate-bg: #052e16;
     --slate-surface: #064e3b;
@@ -119,6 +126,7 @@
 }
 
 /* 6. Opposed to Dusk: The "Solar Flare" (Dark Mode version of midday) */
+.sidebar.solarflare,
 .theme-solarflare {
     --slate-bg: #1c1917;
     --slate-surface: #451a03;
@@ -133,6 +141,7 @@
 }
 
 /* 7. Opposed to Rainbow Peak: The "Monochrome Matrix" */
+.sidebar.monochromematrix,
 .theme-monochromematrix {
     --slate-bg: #020617;
     --slate-surface: #000000;
@@ -147,6 +156,7 @@
 }
 
 /* 8. Opposed to Golden Gate: The "Lead Fortress" */
+.sidebar.leadfortress,
 .theme-leadfortress {
     --slate-bg: #0f172a;
     --slate-surface: #1e293b;
@@ -161,6 +171,7 @@
 }
 
 /* 9. Opposed to Emerald Forest: The "Ashen Wastes" */
+.sidebar.ashenwastes,
 .theme-ashenwastes {
     --slate-bg: #18181b;
     --slate-surface: #27272a;
@@ -175,6 +186,7 @@
 }
 
 /* 10. Opposed to Night Vision: The "Inverted Neon" */
+.sidebar.invertedneon,
 .theme-invertedneon {
     --slate-bg: #ffffff;
     --slate-surface: #f1f5f9;
@@ -189,6 +201,8 @@
 }
 
 /* 11. Opposed to Berry Blast: The "Sour Lime" */
+
+.sidebar.sourlime,
 .theme-sourlime {
     --slate-bg: #020617;
     --slate-surface: #064e3b;
@@ -203,6 +217,7 @@
 }
 
 /* 12. Opposed to Parchment: The "Obsidian Ledger" */
+.sidebar.obsidianledger, 
 .theme-obsidianledger {
     --slate-bg: #000000;
     --slate-surface: #171717;
@@ -221,6 +236,7 @@
 
 
 /* 1. Daybreak (Vibrant Pink/Orange) -> Soft Peach Card, Deep Purple Accents */
+.sidebar.daybreak,
 .theme-daybreak {
     --slate-bg: #fff0f5;
     --slate-surface: #ffe4e1;
@@ -236,6 +252,8 @@
 }
 
 /* 2. Desert Sunset (Gold/Orange/Purple) -> Warm Sand Card, Sunset Accents */
+
+.sidebar.desertsunset,
 .theme-desertsunset {
     --slate-bg: #fffbf0;
     --slate-surface: #fdf5e6;
@@ -251,6 +269,7 @@
 }
 
 /* 3. Ocean Ripple (Deep Blue/White) -> Midnight Slate Card, Cyan Accents */
+.sidebar.oceanripple, 
 .theme-oceanripple {
     --slate-bg: #000510;
     --slate-surface: #0a1931;
@@ -266,6 +285,7 @@
 }
 
 /* 4. Silver Chrome (Metallic) -> Polished Ash Card, Chrome Accents */
+.sidebar.silverchrome,
 .theme-silverchrome {
     --slate-bg: #f5f5f5;
     --slate-surface: #e5e5e5;
@@ -281,6 +301,7 @@
 }
 
 /* 5. Coral Reef (Tropical Cyan/Pink) -> Mint/Seafoam Card, Coral Accents */
+.sidebar.coralreef,
 .theme-coralreef {
     --slate-bg: #e0fcfc;
     --slate-surface: #f0fff0;
@@ -296,6 +317,7 @@
 }
 
 /* 6. Dusk (Deep Night) -> Obsidian Card, Ultra-Violet Accents */
+.sidebar.dusk,
 .theme-dusk {
     --slate-bg: #020210;
     --slate-surface: #000033;
@@ -310,6 +332,7 @@
 }
 
 /* 7. Rainbow Peak (Full Spectrum) -> Off-White Card, Prism Accents */
+.sidebar.rainbowpeak,
 .theme-rainbowpeak {
     --slate-bg: #fafafa;
     --slate-surface: #f0fdf4;
@@ -324,6 +347,7 @@
 }
 
 /* 8. Golden Gate (Polished Gold) -> Ivory/Cream Card, Bronze Accents */
+.sidebar.goldengate,
 .theme-goldengate {
     --slate-bg: #fffdf0;
     --slate-surface: #fefce8;
@@ -338,6 +362,7 @@
 }
 
 /* 9. Emerald Forest (Deep Green) -> Mossy Slate Card, Lime Accents */
+.sidebar.emeraldforest,
 .theme-emeraldforest {
     --slate-bg: #020502;
     --slate-surface: #061a06;
@@ -352,6 +377,7 @@
 }
 
 /* 10. Night Vision (The Matrix) -> Pitch Black Card, Neon Accents */
+.sidebar.nightvision,
 .theme-nightvision {
     --slate-bg: #000000;
     --slate-surface: #001100;
@@ -366,6 +392,7 @@
 }
 
 /* 11. Berry Blast (Candy Blue/Red) -> Deep Berry Card, Neon Cyan Accents */
+.sidebar.berryblast,
 .theme-berryblast {
     --slate-bg: #05051a;
     --slate-surface: #0000ff;
@@ -380,6 +407,7 @@
 }
 
 /* 12. Parchment (Academic Beige) -> Antique Paper Card, Leather Accents */
+.sidebar.parchment,
 .theme-parchment {
     --slate-bg: #fcfaf2;
     --slate-surface: #f5f5dc;
