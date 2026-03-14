@@ -4,7 +4,7 @@
 
 @if (Model != null)
 {
-    <select value="@(Data!=null && Data.Count() > 0 ? Model.GetValue(Data.ElementAt(0)!) : "")">
+    <select value="@(Data?.ElementAt(0) != null ? Model.GetValue(Data.ElementAt(0)!) : "")">
         @foreach (var value in Enum.GetValues(Model.PropertyType))
         {
             var attribute = Model.PropertyType.GetField(value.ToString()!)?.GetCustomAttribute<DescriptionAttribute>();

@@ -11,7 +11,7 @@
     resize();
 
     let angle = 0;
-    let cts = { cancel: false };
+
     function project(x, y, z) {
         const cos = Math.cos(angle * 0.5);
         const sin = Math.sin(angle * 0.5);
@@ -33,25 +33,28 @@
         // Create a pulse value (0 to 1) based on time and depth
         const pulse = (Math.cos(angle + (depth * 0.3)) + 1) / 2;
 
-        // --- NEW COLOR LOGIC ---
+        // --- UPDATED COLOR LOGIC ---
+        // Shifted from electric to warm/organic tones that evoke sunlight and plants
         let color;
-        // We use the 'pulse' and a bit of randomness to decide the color bucket
         const colorSeed = (pulse + Math.random() * 0.2);
 
         if (colorSeed > 0.8) {
-            // High pulse: Near White / Bright Cyan
-            color = `rgb(${200 + pulse * 55}, ${220 + pulse * 35}, 255)`;
+            // High pulse: Warm Golden/Amber (Sunlight burst)
+            const r = Math.floor(220 + pulse * 35);
+            const g = Math.floor(180 + pulse * 45);
+            const b = Math.floor(100 + pulse * 50);
+            color = `rgb(${r}, ${g}, ${b})`;
         } else if (colorSeed > 0.4) {
-            // Mid pulse: Electric Purples
-            const r = Math.floor(140 + pulse * 100);
-            const g = Math.floor(50 + pulse * 50);
-            const b = 255;
+            // Mid pulse: Sage Green (Indoor plant life)
+            const r = Math.floor(120 + pulse * 40);
+            const g = Math.floor(160 + pulse * 30);
+            const b = Math.floor(110 + pulse * 20);
             color = `rgb(${r}, ${g}, ${b})`;
         } else {
-            // Low pulse: Deep Blues
-            const r = Math.floor(30 + pulse * 30);
-            const g = Math.floor(80 + pulse * 40);
-            const b = Math.floor(200 + pulse * 55);
+            // Low pulse: Forest Green (Deep shadow/Organic matter)
+            const r = Math.floor(30 + pulse * 20);
+            const g = Math.floor(100 + pulse * 40);
+            const b = Math.floor(60 + pulse * 30);
             color = `rgb(${r}, ${g}, ${b})`;
         }
 
@@ -59,7 +62,8 @@
         ctx.moveTo(p1.x, p1.y);
         ctx.lineTo(p2.x, p2.y);
 
-        // Add a slight glow effect by setting shadowBlur
+        // --- UPDATED SHADOW COLOR ---
+        // Using the same palette for the glow
         ctx.shadowBlur = depth * 2;
         ctx.shadowColor = color;
 
@@ -67,7 +71,6 @@
         ctx.lineWidth = depth * 0.5 * pulse;
         ctx.stroke();
 
-        // Reset shadowBlur for performance so it doesn't bleed into other operations
         ctx.shadowBlur = 0;
 
         // --- RECURSION ---
@@ -88,7 +91,6 @@
 
     function animate(currentTime) {
         if (isCancelled) return;
-
         let elapsed = currentTime - lastDrawTime;
         if (elapsed < fpsInterval) {
             requestAnimationFrame(animate);
@@ -96,8 +98,10 @@
         }
         lastDrawTime = currentTime - (elapsed % fpsInterval);
 
-        // Darker trail for high-contrast static
-        ctx.fillStyle = 'rgba(5, 2, 15, 0.15)';
+        // --- UPDATED BACKGROUND AND TRAIL ---
+        // Change from dark void (5, 2, 15) to a warm, soft cream/beige
+        // (rgb 245, 240, 220) and reduce opacity to keep the atmosphere light.
+        ctx.fillStyle = 'rgba(245, 240, 220, 0.12)';
         ctx.fillRect(0, 0, width, height);
         angle += 0.015;
 
@@ -117,26 +121,23 @@
         }
 
         // 2. Draw Bursts from Center (0,0,0) to each Corner
-        // Increased jitterScale (20) makes center bursts look more erratic
         nodes.forEach(node => {
             drawBranch(0, 0, 0, node[0], node[1], node[2], 6, 20);
         });
 
         // 3. Draw "Wild Static" shooting outward from corners into the void
         nodes.forEach(node => {
-            // Shoots 1.5x further out than the corner
             const reach = 3.5;
             drawBranch(
-                node[0], node[1], node[2],           // Start at corner
-                node[0] * reach, node[1] * reach, node[2] * reach, // End far out
-                3, 25                                // Depth and jitter
+                node[0], node[1], node[2],
+                node[0] * reach, node[1] * reach, node[2] * reach,
+                3, 25
             );
         });
 
         requestAnimationFrame(animate);
     }
-    animate(0)
-    //setInterval(() => animate(performace.now()), fpsInterval);
+    animate(0);
     return {
         dispose: () => {
             isCancelled = true;
@@ -144,4 +145,5 @@
             window.removeEventListener('resize', resize);
         }
     };
+
 }

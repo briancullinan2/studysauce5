@@ -67,8 +67,7 @@
     max-width: 800px;
     position: relative;
     perspective: 1000px;
-    padding: 0 30px;
-    padding-bottom: 30px;
+    padding: 10px 30px 30px 30px;
     min-height: calc(100vh - 3.5rem);
 }
 

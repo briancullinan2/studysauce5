@@ -1,0 +1,356 @@
+﻿
+.page, .theme-atrium-ivory {
+    --slate-bg: #fdfdf2;
+    --slate-surface: #ffffff;
+    --slate-card: #ffffff;
+    --slate-border: #e2e8f0;
+    --emerald-glow: #10b981;
+    --cyan-bolt: #06b6d4;
+    --amber-locus: #fbbf24;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+}
+
+.theme-dark-slate {
+    --slate-bg: #05050a;
+    --slate-surface: #0f172a;
+    --slate-card: #1e293b;
+    --slate-border: rgba(255, 255, 255, 0.1);
+    --emerald-glow: #10b981;
+    --cyan-bolt: #06b6d4;
+    --amber-locus: #fbbf24;
+    --text-main: #f1f5f9;
+    --text-muted: #94a3b8;
+}
+
+/* 1. Opposed to Daybreak: The "Midnight Void" */
+.theme-midnight-void {
+    --slate-bg: #020617;
+    --slate-surface: #0f172a;
+    --slate-card: #1e293b;
+    --slate-border: rgba(56, 189, 248, 0.1);
+    --emerald-glow: #334155;
+    --cyan-bolt: #1e40af;
+    --amber-locus: #6366f1;
+    --text-main: #94a3b8;
+    --text-muted: #475569;
+}
+
+/* 2. Opposed to Desert Sunset: The "Arctic Thaw" */
+.theme-arctic-thaw {
+    --slate-bg: #0f172a;
+    --slate-surface: #1e293b;
+    --slate-card: #334155;
+    --slate-border: rgba(255, 255, 255, 0.05);
+    --emerald-glow: #0ea5e9;
+    --cyan-bolt: #7dd3fc;
+    --amber-locus: #ffffff;
+    --text-main: #f1f5f9;
+    --text-muted: #94a3b8;
+}
+
+/* 3. Opposed to Ocean Ripple: The "Abyssal Trench" */
+.theme-abyssal-trench {
+    --slate-bg: #000000;
+    --slate-surface: #081121;
+    --slate-card: #0c1a33;
+    --slate-border: rgba(6, 182, 212, 0.2);
+    --emerald-glow: #164e63;
+    --cyan-bolt: #083344;
+    --amber-locus: #155e75;
+    --text-main: #06b6d4;
+    --text-muted: #164e63;
+}
+
+/* 4. Opposed to Silver Chrome: The "Oxidized Iron" */
+.theme-oxidized-iron {
+    --slate-bg: #1a1a1a;
+    --slate-surface: #2d2d2d;
+    --slate-card: #1c1917;
+    --slate-border: rgba(120, 113, 108, 0.2);
+    --emerald-glow: #78350f;
+    --cyan-bolt: #b45309;
+    --amber-locus: #451a03;
+    --text-main: #d6d3d1;
+    --text-muted: #78716c;
+}
+
+/* 5. Opposed to Coral Reef: The "Deep Sea Kelp" */
+.theme-deep-sea-kelp {
+    --slate-bg: #052e16;
+    --slate-surface: #064e3b;
+    --slate-card: #14532d;
+    --slate-border: rgba(16, 185, 129, 0.1);
+    --emerald-glow: #ec4899;
+    --cyan-bolt: #f43f5e;
+    --amber-locus: #881337;
+    --text-main: #d1fae5;
+    --text-muted: #10b981;
+}
+
+/* 6. Opposed to Dusk: The "Solar Flare" (Dark Mode version of midday) */
+.theme-solar-flare {
+    --slate-bg: #1c1917;
+    --slate-surface: #451a03;
+    --slate-card: #78350f;
+    --slate-border: rgba(251, 191, 36, 0.2);
+    --emerald-glow: #f59e0b;
+    --cyan-bolt: #fbbf24;
+    --amber-locus: #ffffff;
+    --text-main: #fffbeb;
+    --text-muted: #fcd34d;
+}
+
+/* 7. Opposed to Rainbow Peak: The "Monochrome Matrix" */
+.theme-monochrome-matrix {
+    --slate-bg: #020617;
+    --slate-surface: #000000;
+    --slate-card: #0f172a;
+    --slate-border: rgba(255, 255, 255, 0.1);
+    --emerald-glow: #ffffff;
+    --cyan-bolt: #94a3b8;
+    --amber-locus: #475569;
+    --text-main: #f8fafc;
+    --text-muted: #64748b;
+}
+
+/* 8. Opposed to Golden Gate: The "Lead Fortress" */
+.theme-lead-fortress {
+    --slate-bg: #0f172a;
+    --slate-surface: #1e293b;
+    --slate-card: #334155;
+    --slate-border: rgba(0, 0, 0, 0.5);
+    --emerald-glow: #475569;
+    --cyan-bolt: #1e293b;
+    --amber-locus: #000000;
+    --text-main: #cbd5e1;
+    --text-muted: #64748b;
+}
+
+/* 9. Opposed to Emerald Forest: The "Ashen Wastes" */
+.theme-ashen-wastes {
+    --slate-bg: #18181b;
+    --slate-surface: #27272a;
+    --slate-card: #3f3f46;
+    --slate-border: rgba(255, 255, 255, 0.05);
+    --emerald-glow: #ef4444;
+    --cyan-bolt: #dc2626;
+    --amber-locus: #7f1d1d;
+    --text-main: #f4f4f5;
+    --text-muted: #a1a1aa;
+}
+
+/* 10. Opposed to Night Vision: The "Inverted Neon" */
+.theme-inverted-neon {
+    --slate-bg: #ffffff;
+    --slate-surface: #f1f5f9;
+    --slate-card: #e2e8f0;
+    --slate-border: rgba(0, 0, 0, 0.1);
+    --emerald-glow: #000000;
+    --cyan-bolt: #475569;
+    --amber-locus: #0f172a;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+}
+
+/* 11. Opposed to Berry Blast: The "Sour Lime" */
+.theme-sour-lime {
+    --slate-bg: #020617;
+    --slate-surface: #064e3b;
+    --slate-card: #14532d;
+    --slate-border: rgba(132, 204, 22, 0.2);
+    --emerald-glow: #bef264;
+    --cyan-bolt: #84cc16;
+    --amber-locus: #365314;
+    --text-main: #f7fee7;
+    --text-muted: #a3e635;
+}
+
+/* 12. Opposed to Parchment: The "Obsidian Ledger" */
+.theme-obsidian-ledger {
+    --slate-bg: #000000;
+    --slate-surface: #171717;
+    --slate-card: #262626;
+    --slate-border: rgba(255, 255, 255, 0.1);
+    --emerald-glow: #404040;
+    --cyan-bolt: #525252;
+    --amber-locus: #111827;
+    --text-main: #e5e5e5;
+    --text-muted: #737373;
+}
+
+.canvas-container {
+    background: var(--slate-bg);
+}
+
+.sidebar {
+    border-right: 1px solid var(--slate-border);
+}
+
+
+.sidebar.default {
+    background: linear-gradient( 125deg, rgb(5, 39, 103) 0%, #3a0647 40%, rgb(10, 50, 120) 70%, #4a085c 100% );
+    background-size: 400% 400%;
+}
+
+/* 1. Classic Sunrise/Purple */
+.sidebar.daybreak {
+    background: linear-gradient(125deg, #ff8c00 0%, #ff0080 50%, #800080 100%);
+    background-size: 400% 400%;
+}
+
+/* 2. Banded Gold, Orange, and Purple */
+.sidebar.desert-sunset {
+    background: linear-gradient(125deg, #4b0082 0%, #ff4500 45%, #ffd700 80%, #ffffff 100%);
+    background-size: 400% 400%;
+}
+
+/* 3. Deep Reflective Blue */
+.sidebar.ocean-ripple {
+    background: linear-gradient(125deg, #000080 0%, #0000ff 40%, #00ffff 70%, #ffffff 100%);
+    background-size: 400% 400%;
+}
+
+/* 4. High-Contrast Metallic */
+.sidebar.silver-chrome {
+    background: linear-gradient(125deg, #4d4d4d 0%, #ffffff 45%, #7a7a7a 50%, #c0c0c0 100%);
+    background-size: 400% 400%;
+}
+
+/* 5. Tropical Cyan and Pink */
+.sidebar.coral-reef {
+    background: linear-gradient(125deg, #ff7f50 0%, #ff1493 40%, #ffd700 80%, #00ced1 100%);
+    background-size: 400% 400%;
+}
+
+/* 6. Atmospheric Night */
+.sidebar.dusk {
+    background: linear-gradient(125deg, #000033 0%, #1a0033 40%, #330066 70%, #000066 100%);
+    background-size: 400% 400%;
+}
+
+/* 7. The Full Spectrum */
+.sidebar.rainbow-peak {
+    background: linear-gradient(125deg, #ff0000 0%, #ffff00 25%, #00ff00 50%, #00ffff 75%, #0000ff 100%);
+    background-size: 400% 400%;
+}
+
+/* 8. Polished Metal Gold */
+.sidebar.golden-gate {
+    background: linear-gradient(125deg, #b8860b 0%, #ffd700 40%, #ffffff 50%, #b8860b 100%);
+    background-size: 400% 400%;
+}
+
+/* 9. Earthy Vibrant Green */
+.sidebar.emerald-forest {
+    background: linear-gradient(125deg, #004d00 0%, #008000 40%, #32cd32 70%, #adff2f 100%);
+    background-size: 400% 400%;
+}
+
+/* 10. Matrix-Style Black & Green */
+.sidebar.night-vision {
+    background: linear-gradient(125deg, #000000 0%, #003300 45%, #00ff00 55%, #000000 100%);
+    background-size: 400% 400%;
+}
+
+/* 11. 90s Candy Blue/Red */
+.sidebar.berry-blast {
+    background: linear-gradient(125deg, #0000ff 0%, #6a5acd 40%, #ff00ff 70%, #dc143c 100%);
+    background-size: 400% 400%;
+}
+
+/* 12. Structured Academic Beige */
+.sidebar.parchment {
+    background: linear-gradient(125deg, #8b4513 0%, #d2b48c 40%, #f5f5dc 70%, #ffffff 100%);
+    background-size: 400% 400%;
+}
+
+
+header.top-row {
+    background: rgba(5, 5, 10, 0.85);
+    color: var(--text-main);
+    border-bottom: 1px solid var(--slate-border);
+    backdrop-filter: blur(8px);
+}
+
+.card-container, .flash-card, .card-inner, .user-account, .pack-edit {
+    background-color: var(--slate-card);
+    color: var(--text-main);
+    border: 1px solid var(--slate-border);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+}
+
+.nav-link, .top-row a, .top-row .btn-link {
+    color: var(--text-muted);
+}
+
+.nav-link:hover, .nav-link.active {
+    color: var(--cyan-bolt);
+    background: rgba(6, 182, 212, 0.1);
+}
+
+select, textarea, input[type] {
+    background-color: var(--slate-bg);
+    color: var(--text-main);
+    border: 2px solid var(--emerald-glow);
+}
+
+
+select:active, textarea:active, input:active, input[type]:active,
+select:focus, textarea:focus, input:focus, input[type]:focus {
+    border-color: var(--cyan-bolt);
+    box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.2);
+}
+
+button.btn-more, .btn-primary {
+    background: var(--amber-locus);
+    color: #000;
+    border: none;
+    box-shadow: 0 0 15px rgba(251, 191, 36, 0.3);
+}
+
+.bi-study::before {
+    background-color: var(--emerald-glow);
+}
+
+.drop-shader {
+    background: rgba(5, 5, 10, 0.9);
+    color: var(--cyan-bolt);
+    font-weight: bold;
+}
+
+.award {
+    background: var(--slate-surface);
+    border: 5px solid #334155;
+}
+
+.award > .medal {
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+}
+
+.badge.bg-secondary {
+    background: #334155;
+    border: 1px solid var(--text-muted);
+    color: var(--text-main);
+}
+
+a.deemphasize, button.deemphasize {
+    color: var(--text-muted);
+}
+
+.user-avatar > a:first-child .bi, .flex-row span:first-child .bi {
+    background: var(--slate-surface);
+    color: var(--cyan-bolt);
+    border: 1px solid var(--cyan-bolt);
+}
+
+#blazor-error-ui {
+    background: #450a0a;
+    color: #fecaca;
+    border-top: 1px solid #ef4444;
+}
+
+::selection {
+    background: var(--cyan-bolt);
+    color: #000;
+}

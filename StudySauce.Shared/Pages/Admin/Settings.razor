@@ -28,6 +28,51 @@
         <input type="checkbox" />
     </div>
 
+
+    
+    <label for="animation-selector">Background Animation</label>
+    <select id="animation-selector" class="atrium-select" @bind="Background">
+        <option value="None">None (Turn Off)</option>
+        <option value="lichtenberg">Lichtenberg Cube</option>
+        <option value="lichtenlight">Lichtenberg Light</option>
+        <option value="lichtenbird">Lichten Bird</option>
+        <option value="lichtenatrium">Lichten Atrium</option>
+    </select>
+
+    <label for="theme-selector">Sidebar Theme</label>
+    <select id="theme-selector" class="atrium-select" @bind="Sidebar">
+        <option value="default">Default (Blazor Purple)</option>
+        <option value="daybreak">Daybreak (Classic Sunrise)</option>
+        <option value="desert-sunset">Desert Sunset (Banded Gold)</option>
+        <option value="ocean-ripple">Ocean Ripple (Deep Reflective)</option>
+        <option value="silver-chrome">Silver Chrome (Metallic)</option>
+        <option value="coral-reef">Coral Reef (Tropical Cyan)</option>
+        <option value="dusk">Dusk (Atmospheric Night)</option>
+        <option value="rainbow-peak">Rainbow Peak (Full Spectrum)</option>
+        <option value="golden-gate">Golden Gate (Polished Gold)</option>
+        <option value="emerald-forest">Emerald Forest (Vibrant Green)</option>
+        <option value="night-vision">Night Vision (Matrix Green)</option>
+        <option value="berry-blast">Berry Blast (Candy Red/Blue)</option>
+        <option value="parchment">Parchment (Academic Beige)</option>
+    </select>
+
+    <label for="contradiction-selector">Application Theme:</label>
+    <select id="contradiction-selector" class="atrium-select" @bind="Application">
+        <option value="theme-atrium-ivory">Atrium Ivory (vs Default Purple)</option>
+        <option value="theme-midnight-void">Midnight Void (vs Daybreak)</option>
+        <option value="theme-arctic-thaw">Arctic Thaw (vs Desert Sunset)</option>
+        <option value="theme-abyssal-trench">Abyssal Trench (vs Ocean Ripple)</option>
+        <option value="theme-oxidized-iron">Oxidized Iron (vs Silver Chrome)</option>
+        <option value="theme-deep-sea-kelp">Deep Sea Kelp (vs Coral Reef)</option>
+        <option value="theme-solar-flare">Solar Flare (vs Dusk)</option>
+        <option value="theme-monochrome-matrix">Monochrome Matrix (vs Rainbow)</option>
+        <option value="theme-lead-fortress">Lead Fortress (vs Golden Gate)</option>
+        <option value="theme-ashen-wastes">Ashen Wastes (vs Emerald Forest)</option>
+        <option value="theme-inverted-neon">Inverted Neon (vs Night Vision)</option>
+        <option value="theme-sour-lime">Sour Lime (vs Berry Blast)</option>
+        <option value="theme-obsidian-ledger">Obsidian Ledger (vs Parchment)</option>
+    </select>
+
     <h2>Parental Controls</h2>
     <div>
         <span>Allow child accounts to subscribe to new content</span>
@@ -53,6 +98,48 @@
 
 @code
 {
+    public string? _app;
+    public string? Application
+    {
+        get
+        {
+            return _app;
+        }
+        set
+        {
+            _app = value;
+            MenuService.SetApplication(_app);
+        }
+    }
+
+    public string? _theme;
+    public string? Sidebar
+    {
+        get
+        {
+            return _theme;
+        }
+        set
+        {
+            _theme = value;
+            MenuService.SetSidebar(_theme);
+        }
+    }
+
+
+    public string? _background;
+    public string? Background
+    {
+        get
+        {
+            return _background;
+        }
+        set
+        {
+            _background = value;
+            MenuService.SetBackground(_background);
+        }
+    }
 
     protected override void OnInitialized()
     {

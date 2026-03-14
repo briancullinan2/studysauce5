@@ -3,7 +3,7 @@
 @using StudySauce.Shared.Services
 @inherits LayoutComponentBase
 @implements IDisposable
-
+@implements IAsyncDisposable
 @inject IJSRuntime JS
 @inject IMenuService MenuService
 @inject IStudyService StudyService
@@ -13,11 +13,11 @@
 @inject IJsonService JsonService
 @inject NavigationManager Nav
 
-<div class="@(Login == true ? "login-mode" : Study == true ? "study-mode" : "") @PageClass page">
+<div class="@(Login == true ? "login-mode" : Study == true ? "study-mode" : "") @PageClass page @(Application)">
     <div class="canvas-container">
         <canvas id="lichtenbergCanvas"></canvas>
     </div>
-    <div class="sidebar">
+    <div class="sidebar @(Sidebar)">
         <NavMenu />
     </div>
 
@@ -124,6 +124,9 @@
         TitleService.OnTitleChanged += SetTitle;
         MenuService.OnMenuChanged += SetHeaderMenu;
         MenuService.OnHeaderChanged += SetHeader;
+        MenuService.OnApplicationChanged += SetApplication;
+        MenuService.OnSidebarChanged += SetSidebar;
+        MenuService.OnBackgroundChanged += SetBackground;
         StudyService.OnStudyChanged += SetStudyMode;
         LoginService.OnLoginChanged += SetLoginMode;
         LoginService.OnUserChanged += SetUser;
@@ -170,6 +173,45 @@
             this.StateHasChanged();
         }
     }
+
+    public string? Application { get; set; }
+
+    private void SetApplication(string? theme)
+    {
+        if (theme != Application)
+        {
+            Application = theme;
+            this.StateHasChanged();
+        }
+    }
+
+
+    public string? Sidebar { get; set; }
+
+    private void SetSidebar(string? theme)
+    {
+        if (theme != Application)
+        {
+            Sidebar = theme;
+            this.StateHasChanged();
+        }
+    }
+
+
+    public string? Background { get; set; } = "None";
+    public bool initRender { get; set; } = true;
+
+    private void SetBackground(string? theme)
+    {
+        if (theme != Background)
+        {
+            Background = theme;
+            initRender = true;
+            this.StateHasChanged();
+            _ = OnAfterRenderAsync(true);
+        }
+    }
+
 
 
     private void SetHeader(bool? show)
@@ -223,6 +265,9 @@
         Nav.LocationChanged -= OnLocationChanged;
         TitleService.OnTitleChanged -= SetTitle;
         MenuService.OnMenuChanged -= SetHeaderMenu;
+        MenuService.OnApplicationChanged -= SetApplication;
+        MenuService.OnSidebarChanged -= SetSidebar;
+        MenuService.OnBackgroundChanged -= SetBackground;
         StudyService.OnStudyChanged -= SetStudyMode;
         LoginService.OnLoginChanged -= SetLoginMode;
         LoginService.OnUserChanged -= SetUser;
@@ -238,19 +283,48 @@
             // Assuming your SectionOutlet renders something with ID 'sync-target'
             var content = await JSRuntime.InvokeAsync<string>("eval", "document.title");
             // Now you have it in C#
+            }
         }
-    }
    */
+
+    private IJSObjectReference? _animationCts;
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        if (!initRender || Background == null)
         {
-            // Trigger the JS engine
-            //await JS.InvokeVoidAsync("initLichtenberg", "lichtenbergCanvas");
-            var _module = await JS.InvokeAsync<IJSObjectReference>("import", "/_content/StudySauce.Shared/lichtenberg.js");
+            return;
+        }
+        initRender = false;
 
-            // 2. Call the function from the module
-            await _module.InvokeVoidAsync("initLichtenberg", "lichtenbergCanvas");
+        if(_animationCts != null)
+        {
+            _ = _animationCts.InvokeVoidAsync("dispose");
+            _ = _animationCts.DisposeAsync();
+            _animationCts = null;
+        }
+
+        if(Background == "None")
+        {
+            return;
+        }
+
+        // Trigger the JS engine
+        //await JS.InvokeVoidAsync("initLichtenberg", "lichtenbergCanvas");
+        var _module = await JS.InvokeAsync<IJSObjectReference>("import", $"/_content/StudySauce.Shared/{Background}.js");
+
+        // 2. Call the function from the module
+        _animationCts = await _module.InvokeAsync<IJSObjectReference>("initLichtenberg", "lichtenbergCanvas");
+
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_animationCts != null)
+        {
+            _ = _animationCts.InvokeVoidAsync("dispose");
+            _ = _animationCts.DisposeAsync();
+            _animationCts = null;
         }
     }
 }
