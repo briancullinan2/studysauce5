@@ -1,6 +1,6 @@
 ﻿
 
-.sidebar.default,
+.sidebar.theme-ivory,
 .page, .theme-ivory {
     --slate-bg: #fdfdf2;
     --slate-surface: #ffffff;
@@ -36,7 +36,7 @@
 .sensor-electric { color: var(--atrium-electric); }
 .sensor-gold { color: var(--atrium-gold); }
 
-.sidebar.shalelife,
+.sidebar.theme-darkslate,
 .theme-darkslate {
     --slate-bg: #05050a;
     --slate-surface: #0f172a;
@@ -52,7 +52,7 @@
 }
 
 /* 1. Opposed to Daybreak: The "Midnight Void" */
-.sidebar.midnightvoid,
+.sidebar.theme-midnightvoid,
 .theme-midnightvoid {
     --slate-bg: #020617;
     --slate-surface: #0f172a;
@@ -70,7 +70,7 @@
 
 
 /* 2. Opposed to Desert Sunset: The "Arctic Thaw" */
-.sidebar.arcticthaw,
+.sidebar.theme-arcticthaw,
 .theme-arcticthaw {
     --slate-bg: #0f172a;
     --slate-surface: #1e293b;
@@ -87,7 +87,7 @@
 
 /* 3. Opposed to Ocean Ripple: The "Abyssal Trench" */
 
-.sidebar.abyssaltrench,
+.sidebar.theme-abyssaltrench,
 .theme-abyssaltrench {
     --slate-bg: #000000;
     --slate-surface: #081121;
@@ -103,7 +103,7 @@
 }
 
 /* 4. Opposed to Silver Chrome: The "Oxidized Iron" */
-.sidebar.oxidizediron, 
+.sidebar.theme-oxidizediron, 
 .theme-oxidizediron {
     --slate-bg: #1a1a1a;
     --slate-surface: #2d2d2d;
@@ -119,7 +119,7 @@
 }
 
 /* 5. Opposed to Coral Reef: The "Deep Sea Kelp" */
-.sidebar.deepseakelp,
+.sidebar.theme-deepseakelp,
 .theme-deepseakelp {
     --slate-bg: #052e16;
     --slate-surface: #064e3b;
@@ -135,7 +135,7 @@
 }
 
 /* 6. Opposed to Dusk: The "Solar Flare" (Dark Mode version of midday) */
-.sidebar.solarflare,
+.sidebar.theme-solarflare,
 .theme-solarflare {
     --slate-bg: #1c1917;
     --slate-surface: #451a03;
@@ -147,11 +147,11 @@
     --text-main: #fffbeb;
     --text-muted: #fcd34d;
     --atrium-stone: #451a03; --atrium-nature: #f59e0b; --atrium-electric: #fbbf24; --atrium-gold: #ffffff;
-    --text-sidebar: #451a03;
+    --text-sidebar: #fffbeb;
 }
 
 /* 7. Opposed to Rainbow Peak: The "Monochrome Matrix" */
-.sidebar.monochromematrix,
+.sidebar.theme-monochromematrix,
 .theme-monochromematrix {
     --slate-bg: #020617;
     --slate-surface: #000000;
@@ -167,7 +167,7 @@
 }
 
 /* 8. Opposed to Golden Gate: The "Lead Fortress" */
-.sidebar.leadfortress,
+.sidebar.theme-leadfortress,
 .theme-leadfortress {
     --slate-bg: #0f172a;
     --slate-surface: #1e293b;
@@ -183,7 +183,7 @@
 }
 
 /* 9. Opposed to Emerald Forest: The "Ashen Wastes" */
-.sidebar.ashenwastes,
+.sidebar.theme-ashenwastes,
 .theme-ashenwastes {
     --slate-bg: #18181b;
     --slate-surface: #27272a;
@@ -201,7 +201,7 @@
 
 
 /* 10. Opposed to Night Vision: The "Inverted Neon" */
-.sidebar.invertedneon,
+.sidebar.theme-invertedneon,
 .theme-invertedneon {
     --slate-bg: #ffffff;
     --slate-surface: #f1f5f9;
@@ -218,7 +218,7 @@
 
 /* 11. Opposed to Berry Blast: The "Sour Lime" */
 
-.sidebar.sourlime,
+.sidebar.theme-sourlime,
 .theme-sourlime {
     --slate-bg: #020617;
     --slate-surface: #064e3b;
@@ -234,7 +234,7 @@
 }
 
 /* 12. Opposed to Parchment: The "Obsidian Ledger" */
-.sidebar.obsidianledger, 
+.sidebar.theme-obsidianledger, 
 .theme-obsidianledger {
     --slate-bg: #000000;
     --slate-surface: #171717;
@@ -252,7 +252,7 @@
 
 
 /* 1. Daybreak (Vibrant Pink/Orange) -> Soft Peach Card, Deep Purple Accents */
-.sidebar.daybreak,
+.sidebar.theme-daybreak,
 .theme-daybreak {
     --slate-bg: #fff0f5;
     --slate-surface: #ffe4e1;
@@ -272,7 +272,7 @@
 
 /* 2. Desert Sunset (Gold/Orange/Purple) -> Warm Sand Card, Sunset Accents */
 
-.sidebar.desertsunset,
+.sidebar.theme-desertsunset,
 .theme-desertsunset {
     --slate-bg: #fffbf0;
     --slate-surface: #fdf5e6;
@@ -289,7 +289,7 @@
 }
 
 /* 3. Ocean Ripple (Deep Blue/White) -> Midnight Slate Card, Cyan Accents */
-.sidebar.oceanripple, 
+.sidebar.theme-oceanripple, 
 .theme-oceanripple {
     --slate-bg: #000510;
     --slate-surface: #0a1931;
@@ -306,7 +306,7 @@
 }
 
 /* 4. Silver Chrome (Metallic) -> Polished Ash Card, Chrome Accents */
-.sidebar.silverchrome,
+.sidebar.theme-silverchrome,
 .theme-silverchrome {
     --slate-bg: #f5f5f5;
     --slate-surface: #e5e5e5;
@@ -325,7 +325,7 @@
 
 
 /* 5. Coral Reef (Tropical Cyan/Pink) -> Mint/Seafoam Card, Coral Accents */
-.sidebar.coralreef,
+.sidebar.theme-coralreef,
 .theme-coralreef {
     --slate-bg: #e0fcfc;
     --slate-surface: #f0fff0;
@@ -341,7 +341,7 @@
 }
 
 /* 6. Dusk (Deep Night) -> Obsidian Card, Ultra-Violet Accents */
-.sidebar.dusk,
+.sidebar.theme-dusk,
 .theme-dusk {
     --slate-bg: #020210;
     --slate-surface: #000033;
@@ -357,7 +357,7 @@
 }
 
 /* 7. Rainbow Peak (Full Spectrum) -> Off-White Card, Prism Accents */
-.sidebar.rainbowpeak,
+.sidebar.theme-rainbowpeak,
 .theme-rainbowpeak {
     --slate-bg: #fafafa;
     --slate-surface: #f0fdf4;
@@ -373,7 +373,7 @@
 }
 
 /* 8. Golden Gate (Polished Gold) -> Ivory/Cream Card, Bronze Accents */
-.sidebar.goldengate,
+.sidebar.theme-goldengate,
 .theme-goldengate {
     --slate-bg: #fffdf0;
     --slate-surface: #fefce8;
@@ -389,7 +389,7 @@
 }
 
 /* 9. Emerald Forest (Deep Green) -> Mossy Slate Card, Lime Accents */
-.sidebar.emeraldforest,
+.sidebar.theme-emeraldforest,
 .theme-emeraldforest {
     --slate-bg: #020502;
     --slate-surface: #061a06;
@@ -408,7 +408,7 @@
 
 
 /* 10. Night Vision (The Matrix) -> Pitch Black Card, Neon Accents */
-.sidebar.nightvision,
+.sidebar.theme-nightvision,
 .theme-nightvision {
     --slate-bg: #000000;
     --slate-surface: #001100;
@@ -424,7 +424,7 @@
 }
 
 /* 11. Berry Blast (Candy Blue/Red) -> Deep Berry Card, Neon Cyan Accents */
-.sidebar.berryblast,
+.sidebar.theme-berryblast,
 .theme-berryblast {
     --slate-bg: #05051a;
     --slate-surface: #0000ff;
@@ -440,7 +440,7 @@
 }
 
 /* 12. Parchment (Academic Beige) -> Antique Paper Card, Leather Accents */
-.sidebar.parchment,
+.sidebar.theme-parchment,
 .theme-parchment {
     --slate-bg: #fcfaf2;
     --slate-surface: #f5f5dc;
@@ -459,85 +459,85 @@
 
 
 /* 1. Midnight Void */
-.sidebar.midnightvoid {
+.sidebar.theme-midnightvoid {
     background: linear-gradient(125deg, #020617 0%, #0f172a 100%);
     background-size: 400% 400%;
 }
 
 /* 2. Arctic Thaw */
-.sidebar.arcticthaw {
+.sidebar.theme-arcticthaw {
     background: linear-gradient(125deg, #0f172a 0%, #1e293b 50%, #7dd3fc 100%);
     background-size: 400% 400%;
 }
 
 /* 3. Abyssal Trench */
-.sidebar.abyssaltrench {
+.sidebar.theme-abyssaltrench {
     background: linear-gradient(125deg, #000000 0%, #081121 100%);
     background-size: 400% 400%;
 }
 
 /* 4. Oxidized Iron */
-.sidebar.oxidizediron {
+.sidebar.theme-oxidizediron {
     background: linear-gradient(125deg, #1a1a1a 0%, #451a03 100%);
     background-size: 400% 400%;
 }
 
 /* 5. Deep Sea Kelp */
-.sidebar.deepseakelp {
+.sidebar.theme-deepseakelp {
     background: linear-gradient(125deg, #052e16 0%, #10b981 100%);
     background-size: 400% 400%;
 }
 
 /* 6. Solar Flare */
-.sidebar.solarflare {
+.sidebar.theme-solarflare {
     background: linear-gradient(125deg, #451a03 0%, #78350f 100%);
     background-size: 400% 400%;
 }
 
 /* 7. Monochrome Matrix */
-.sidebar.monochromematrix {
+.sidebar.theme-monochromematrix {
     background: linear-gradient(125deg, #020617 0%, #000000 100%);
     background-size: 400% 400%;
 }
 
 /* 8. Lead Fortress */
-.sidebar.leadfortress {
+.sidebar.theme-leadfortress {
     background: linear-gradient(125deg, #1e293b 0%, #0f172a 100%);
     background-size: 400% 400%;
 }
 
 /* 9. Ashen Wastes */
-.sidebar.ashenwastes {
+.sidebar.theme-ashenwastes {
     background: linear-gradient(125deg, #18181b 0%, #7f1d1d 100%);
     background-size: 400% 400%;
 }
 
 /* 10. Inverted Neon */
-.sidebar.invertedneon {
+.sidebar.theme-invertedneon {
     background: linear-gradient(125deg, #f1f5f9 0%, #cbd5e1 100%);
     background-size: 400% 400%;
 }
 
 /* 11. Sour Lime */
-.sidebar.sourlime {
+.sidebar.theme-sourlime {
     background: linear-gradient(125deg, #064e3b 0%, #365314 100%);
     background-size: 400% 400%;
 }
 
 /* 12. Obsidian Ledger */
-.sidebar.obsidianledger {
+.sidebar.theme-obsidianledger {
     background: linear-gradient(125deg, #000000 0%, #171717 100%);
     background-size: 400% 400%;
 }
 
 
 
-.sidebar.default {
+.sidebar.theme-ivory {
     background: linear-gradient( 125deg, rgb(5, 39, 103) 0%, #3a0647 40%, rgb(10, 50, 120) 70%, #4a085c 100% );
     background-size: 400% 400%;
 }
 
-sidebar.shalelife {
+sidebar.theme-darkslate {
     background: linear-gradient( 125deg, #020617 0%, /* True black-blue at the top */
     #0f172a 40%, /* Slate surface match */
     #064e3b 70%, /* Deep moss/emerald shadow */
@@ -547,78 +547,130 @@ sidebar.shalelife {
 }
 
 /* 1. Classic Sunrise/Purple */
-.sidebar.daybreak {
+.sidebar.theme-daybreak {
     background: linear-gradient(125deg, #ff8c00 0%, #ff0080 50%, #800080 100%);
     background-size: 400% 400%;
 }
 
 /* 2. Banded Gold, Orange, and Purple */
-.sidebar.desertsunset {
+.sidebar.theme-desertsunset {
     background: linear-gradient(125deg, #4b0082 0%, #ff4500 45%, #ffd700 80%, #ffffff 100%);
     background-size: 400% 400%;
 }
 
 /* 3. Deep Reflective Blue */
-.sidebar.oceanripple {
+.sidebar.theme-oceanripple {
     background: linear-gradient(125deg, #000080 0%, #0000ff 40%, #00ffff 70%, #ffffff 100%);
     background-size: 400% 400%;
 }
 
 /* 4. High-Contrast Metallic */
-.sidebar.silverchrome {
+.sidebar.theme-silverchrome {
     background: linear-gradient(125deg, #4d4d4d 0%, #ffffff 45%, #7a7a7a 50%, #c0c0c0 100%);
     background-size: 400% 400%;
 }
 
 /* 5. Tropical Cyan and Pink */
-.sidebar.coralreef {
+.sidebar.theme-coralreef {
     background: linear-gradient(125deg, #ff7f50 0%, #ff1493 40%, #ffd700 80%, #00ced1 100%);
     background-size: 400% 400%;
 }
 
 /* 6. Atmospheric Night */
-.sidebar.dusk {
+.sidebar.theme-dusk {
     background: linear-gradient(125deg, #000033 0%, #1a0033 40%, #330066 70%, #000066 100%);
     background-size: 400% 400%;
 }
 
 /* 7. The Full Spectrum */
-.sidebar.rainbowpeak {
+.sidebar.theme-rainbowpeak {
     background: linear-gradient(125deg, #ff0000 0%, #ffff00 25%, #00ff00 50%, #00ffff 75%, #0000ff 100%);
     background-size: 400% 400%;
 }
 
 /* 8. Polished Metal Gold */
-.sidebar.goldengate {
+.sidebar.theme-goldengate {
     background: linear-gradient(125deg, #b8860b 0%, #ffd700 40%, #ffffff 50%, #b8860b 100%);
     background-size: 400% 400%;
 }
 
 /* 9. Earthy Vibrant Green */
-.sidebar.emeraldforest {
+.sidebar.theme-emeraldforest {
     background: linear-gradient(125deg, #004d00 0%, #008000 40%, #32cd32 70%, #adff2f 100%);
     background-size: 400% 400%;
 }
 
 /* 10. Matrix-Style Black & Green */
-.sidebar.nightvision {
+.sidebar.theme-nightvision {
     background: linear-gradient(125deg, #000000 0%, #003300 45%, #00ff00 55%, #000000 100%);
     background-size: 400% 400%;
 }
 
 /* 11. 90s Candy Blue/Red */
-.sidebar.berryblast {
+.sidebar.theme-berryblast {
     background: linear-gradient(125deg, #0000ff 0%, #6a5acd 40%, #ff00ff 70%, #dc143c 100%);
     background-size: 400% 400%;
 }
 
 /* 12. Structured Academic Beige */
-.sidebar.parchment {
+.sidebar.theme-parchment {
     background: linear-gradient(125deg, #8b4513 0%, #d2b48c 40%, #f5f5dc 70%, #ffffff 100%);
     background-size: 400% 400%;
 }
 
+/* 1. Midnight Void */
+.theme-midnightvoid { --amber-compliment: #38bdf8; }
+/* 2. Arctic Thaw */
+.theme-arcticthaw { --amber-compliment: #0ea5e9; }
+/* 3. Abyssal Trench */
+.theme-abyssaltrench { --amber-compliment: #06b6d4; }
+/* 4. Oxidized Iron */
+.theme-oxidizediron { --amber-compliment: #44403c; }
+/* 5. Deep Sea Kelp */
+.theme-deepseakelp { --amber-compliment: #f43f5e; }
+/* 6. Solar Flare */
+.theme-solarflare { --amber-compliment: #451a03; }
+/* 7. Monochrome Matrix */
+.theme-monochromematrix { --amber-compliment: #ffffff; }
+/* 8. Lead Fortress */
+.theme-leadfortress { --amber-compliment: #0f172a; }
+/* 9. Ashen Wastes */
+.theme-ashenwastes { --amber-compliment: #991b1b; }
+/* 10. Inverted Neon */
+.theme-invertedneon { --amber-compliment: #000000; }
+/* 11. Sour Lime */
+.theme-sourlime { --amber-compliment: #365314; }
+/* 12. Obsidian Ledger */
+.theme-obsidianledger { --amber-compliment: #171717; }
 
+/* Default */
+.theme-ivory { --amber-compliment: #e9d5ff; }
+/* Darkslate */
+.theme-darkslate { --amber-compliment: #083344; }
+/* 1. Daybreak */
+.theme-daybreak { --amber-compliment: #701a75; }
+/* 2. Desert Sunset */
+.theme-desertsunset { --amber-compliment: #4c1d95; }
+/* 3. Ocean Ripple */
+.theme-oceanripple { --amber-compliment: #082f49; }
+/* 4. Silver Chrome */
+.theme-silverchrome { --amber-compliment: #404040; }
+/* 5. Coral Reef */
+.theme-coralreef { --amber-compliment: #831843; }
+/* 6. Dusk */
+.theme-dusk { --amber-compliment: #1e1b4b; }
+/* 7. Rainbow Peak */
+.theme-rainbowpeak { --amber-compliment: #171717; }
+/* 8. Golden Gate */
+.theme-goldengate { --amber-compliment: #713f12; }
+/* 9. Emerald Forest */
+.theme-emeraldforest { --amber-compliment: #064e3b; }
+/* 10. Night Vision */
+.theme-nightvision { --amber-compliment: #052e16; }
+/* 11. Berry Blast */
+.theme-berryblast { --amber-compliment: #1e1b4b; }
+/* 12. Parchment */
+.theme-parchment { --amber-compliment: #451a03; }
 
 
 .sidebar {
@@ -653,9 +705,13 @@ sidebar.shalelife {
     background-size: 800% 800%;
 }
 
+.header-link.active
+{
+    border-color: rgb(from var(--cyan-bolt) r g b / 20%);
+}
 
 header.top-row {
-    background: rgb(from var(--slate-card) r g b / 30%);
+    background: rgb(from var(--slate-card) r g b / 50%);
     backdrop-filter: blur(8px);
 }
 
@@ -673,7 +729,7 @@ a:hover, .btn-link:hover
 {
     background-color: var(--amber-locus);
     border: 2px solid var(--slate-border);
-    color: var(--slate-card);
+    color: var(--amber-compliment);
     text-shadow: 0px 1px 5px var(--text-muted);
 }
 
@@ -700,6 +756,11 @@ a:hover, .btn-link:hover
 .navbar-brand, .nav-item .nav-link {
     color: var(--text-sidebar);
     text-shadow: 1px 2px 3px rgb(from var(--slate-surface) r g b / 50%);
+}
+
+.nav-item .nav-link:hover
+{
+    background-color: rgb(from var(--text-sidebar) r g b / 10%);
 }
 
 .study-now h2 a, .study-now h3 a, .study-now h4 a,

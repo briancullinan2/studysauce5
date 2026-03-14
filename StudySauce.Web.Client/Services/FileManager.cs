@@ -36,7 +36,9 @@ namespace StudySauce.Web.Client.Services
 
             content.Add(streamContent, "file", Path.GetFileName(localPath));
 
-            var response = await _httpClient?.PostAsync("/api/upload", content);
+            var result = _httpClient?.PostAsync("/api/upload", content);
+            if (result == null) return;
+            var response = await result;
             // TODO: update file list wasn't implemented until after saving
 
         }
@@ -51,6 +53,12 @@ namespace StudySauce.Web.Client.Services
             OnFileDragging?.Invoke(dragging);
         }
 
+        public async Task<string?> OpenFile(string file)
+        {
+            var result = _httpClient?.GetStringAsync(file);
+            if (result == null) return null;
+            return await result;
+        }
     }
 
 

@@ -108,20 +108,21 @@
   <ItemGroup>
     <ProjectReference Include="..\AnkiParser\AnkiParser.csproj" />
     <ProjectReference Include="..\DataLayer\DataLayer.csproj" />
+    <ProjectReference Include="..\Retheme\Retheme.csproj" />
     <ProjectReference Include="..\StudySauce.Shared\StudySauce.Shared.csproj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </ProjectReference>
   </ItemGroup>
-	
-	
-	<ItemGroup Condition="$(TargetFramework.Contains('windows'))">
+
+
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
 		<PackageReference Include="System.ServiceProcess.ServiceController" Version="10.0.5" />
 		<ProjectReference Include="..\StudySauce.Web.Client\StudySauce.Web.Client.csproj">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</ProjectReference>
 	</ItemGroup>
-	
-	
+
+
 	
 	<Target Name="ForceMauiIconToCustomPath" AfterTargets="Resizetizer">
 		<ItemGroup>

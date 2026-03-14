@@ -1,15 +1,23 @@
 @page "/settings"
+@page "/settings/edit"
+@page "/settings/add"
+@page "/settings/list"
+
+@implements IDisposable
 @using StudySauce.Shared.Controls
 @using StudySauce.Shared.Services
 @using System.ComponentModel
 @using System.Reflection
 @using System.ComponentModel.DataAnnotations
 @inject IMenuService MenuService
-
+@inject ITitleService TitleService
+@inject IFileManager FileManager
+@inject NavigationManager Nav
+@inject HttpClient Http
 
 <SyncedTitle Title="Application Settings"></SyncedTitle>
 
-<div class="flash-card animate-in">
+<div class="flash-card @GetDisplayClass(DataLayer.Customization.ControlMode.Edit)">
     <h2>Display Settings</h2>
     <div>
         <span>Show animated background from packs</span>
@@ -62,8 +70,87 @@
     </div>
 </div>
 
+
+<div class="flash-card  @GetDisplayClass(DataLayer.Customization.ControlMode.List)">
+    <heading class="flex-row">
+        <label></label>
+        <label>Theme Name</label>
+        <label>Background</label>
+        <label>Electric</label>
+        <label>Locus</label>
+        <label>Actions</label>
+    </heading>
+    @foreach (var theme in extractedThemes ?? [])
+    {
+        <div class="flex-row">
+            <span></span>
+            <span>@theme.ClassName.Replace("theme-", "")</span>
+            <span>@theme.Variables.GetValueOrDefault("--slate-bg")</span>
+            <span>@theme.Variables.GetValueOrDefault("--atrium-electric")</span>
+            <span>@theme.Variables.GetValueOrDefault("--amber-locus")</span>
+            <span></span>
+        </div>
+    }
+</div>
+
 @code
 {
+    public DataLayer.Customization.ControlMode? Mode { get; set; } = DataLayer.Customization.ControlMode.Edit;
+    public DataLayer.Customization.ControlMode? PreviousMode { get; set; }
+    public List<Retheme.ThemeData>? extractedThemes { get; set;  } 
+
+
+    private string? themeContent;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Path is relative to wwwroot
+        //using var stream = await FileSystem.OpenAppPackageFileAsync("wwwroot/_content/StudySauce.Shared/css/theme.css");
+        //using var reader = new StreamReader(stream);
+        //themeContent = await reader.ReadToEndAsync();
+        themeContent = await FileManager.OpenFile("_content/StudySauce.Shared/css/theme.css");
+        extractedThemes = Retheme.Theme.ExtractThemes(themeContent ?? "");
+    }
+
+
+    protected void SetControlMode()
+    {
+        var relativePath = Nav.ToBaseRelativePath(Nav.Uri);
+
+        var segments = relativePath.Split('/');
+
+        DataLayer.Customization.ControlMode? newStep = DataLayer.Customization.ControlMode.Edit;
+        if (segments.Count() >= 2)
+        {
+            newStep = segments.Last().TryParse<DataLayer.Customization.ControlMode>() ?? DataLayer.Customization.ControlMode.Edit;
+        }
+
+
+        if (newStep != Mode)
+        {
+            PreviousMode = Mode;
+            Mode = newStep;
+            StateHasChanged();
+        }
+
+        if(Mode == DataLayer.Customization.ControlMode.List)
+        {
+            TitleService?.UpdateTitle("Edit Theme");
+        }
+        else if (Mode == DataLayer.Customization.ControlMode.Edit)
+        {
+            TitleService?.UpdateTitle("Application Settings");
+        }
+
+    }
+    
+    protected string? GetDisplayClass(DataLayer.Customization.ControlMode mode)
+    {
+        if (Mode == mode) return "animate-in";
+        if (PreviousMode == mode) return "animate-out";
+        return "hidden";
+    }
+
     public ApplicationTheme? _app;
     [Display(GroupName = "Themes", Order = 1)]
     public ApplicationTheme? Application
@@ -152,7 +239,21 @@
         base.OnInitialized();
         MenuService?.SetMenu(@<StudySauce.Shared.Pages.Shared.Settings />);
         ThemeLayout = Pages.Admin.Settings.Metadata.Groups["Themes"]?.ToList();
+        Nav.LocationChanged += OnLocationChanged;
     }
+    
+    protected void OnLocationChanged(object? sender, LocationChangedEventArgs args)
+    {
+        SetControlMode();
+    }
+
+    
+    
+    public void Dispose()
+    {
+        Nav.LocationChanged -= OnLocationChanged;
+    }
+
 
     [Obfuscation(Exclude = true, ApplyToMembers = true)]
     public enum ApplicationTheme

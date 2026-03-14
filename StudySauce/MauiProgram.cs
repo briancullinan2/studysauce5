@@ -64,7 +64,7 @@ namespace StudySauce
             builder.Services.AddSingleton<IStatusService, StatusService>();
             builder.Services.AddScoped<HttpClient>(sp => new HttpClient
             {
-
+                BaseAddress = new Uri("https://0.0.0.1")
             });
 
             _keepAliveConnection = new KeepAlive("Data Source=:memory:");

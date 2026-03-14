@@ -25,6 +25,7 @@
     <ProjectReference Include="..\DataLayer\DataLayer.csproj">
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\Retheme\Retheme.csproj" />
   </ItemGroup>
 
 

@@ -30,6 +30,12 @@ namespace StudySauce.Services
 
         public async Task UploadFile(Stream localStream, string localPath, string? source = "Uploads")
         {
+
+            if (_services == null)
+            {
+                return;
+            }
+
             if (!Directory.Exists(Path.Combine(AppContext.BaseDirectory, "Uploads")))
             {
                 Directory.CreateDirectory(Path.Combine(AppContext.BaseDirectory, "Uploads"));
@@ -41,7 +47,8 @@ namespace StudySauce.Services
             fileStream.Close();
             localStream.Close();
 
-            var persistentStore = _services?.GetRequiredService<IDbContextFactory<DataLayer.PersistentStorage>>();
+
+            var persistentStore = _services.GetRequiredService<IDbContextFactory<DataLayer.PersistentStorage>>();
             using var fileContext = persistentStore?.CreateDbContext();
             try
             {
@@ -119,11 +126,11 @@ namespace StudySauce.Services
                     using (var scope = _services?.CreateScope())
                     {
                         var manager = scope?.ServiceProvider.GetRequiredService<IFileManager>();
-                        await manager?.UploadFile(System.IO.File.OpenRead(result.FullPath), result.FullPath);
+                        _ = manager?.UploadFile(System.IO.File.OpenRead(result.FullPath), result.FullPath);
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Handle cancel or permission issues
             }
@@ -132,6 +139,20 @@ namespace StudySauce.Services
         public async Task SetDragging(bool dragging)
         {
             OnFileDragging?.Invoke(dragging);
+        }
+
+        public async Task<string?> OpenFile(string file)
+        {
+            string path = Path.Combine("wwwroot", file);
+
+            if (await FileSystem.AppPackageFileExistsAsync(path))
+            {
+                using var stream = await FileSystem.OpenAppPackageFileAsync(path);
+                using var reader = new StreamReader(stream);
+                return await reader.ReadToEndAsync();
+            }
+
+            return null;
         }
 
 

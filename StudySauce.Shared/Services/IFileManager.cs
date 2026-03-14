@@ -8,5 +8,6 @@
         Task SetDragging(bool dragging);
         event Action<DataLayer.Entities.File?>? OnFileUploaded;
         event Action<bool>? OnFileDragging;
+        Task<string?> OpenFile(string file);
     }
 }

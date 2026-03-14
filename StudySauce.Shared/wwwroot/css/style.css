@@ -146,6 +146,14 @@ h4.header-active ~ *:not(h4) ~ .h4.inactive ~ *:not(h4) {
 /*    display: flex;*/
     vertical-align: middle;
     justify-content: flex-start;
+    height: 50px;
+    align-items: center;
+    display:flex;
+    padding-left: 50px;
+    background-image: url(/_content/StudySauce.Shared/atrium8.svg);
+    background-size: 50px 50px;
+    background-repeat: no-repeat;
+    background-position: 0 50%;
 }
 
 .container-logo > * {
@@ -156,6 +164,7 @@ h4.header-active ~ *:not(h4) ~ .h4.inactive ~ *:not(h4) {
 .container-logo > img {
     margin: auto 15px;
     cursor: pointer;
+    display:none;
 }
 
 .navbar-brand {
