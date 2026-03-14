@@ -33,8 +33,11 @@
     </div>
 
 
-    <MetadataControl TModel="DataLayer.Entities.Setting" Model="ThemeLayout" ValueChanged="@(EventCallback.Factory.Create<Tuple<PropertyMetadata, DataLayer.Entities.Setting, object?>>(this, HandleTheme))" />
+    <MetadataControl Data="@([new DataLayer.Entities.Setting() {Name = "Application.Background", Value = Background.ToString()}])" TModel="DataLayer.Entities.Setting" Model="[ThemeLayout?.ElementAt(0)]" ValueChanged="@(EventCallback.Factory.Create<Tuple<PropertyMetadata, DataLayer.Entities.Setting, object?>>(this, HandleTheme))" />
+    <MetadataControl Data="@([new DataLayer.Entities.Setting() {Name = "Application.Theme", Value = Application.ToString()}])" TModel="DataLayer.Entities.Setting" Model="[ThemeLayout?.ElementAt(1)]" ValueChanged="@(EventCallback.Factory.Create<Tuple<PropertyMetadata, DataLayer.Entities.Setting, object?>>(this, HandleTheme))" />
+    <MetadataControl Data="@([new DataLayer.Entities.Setting() {Name = "Application.Sidebar", Value = Sidebar.ToString()}])" TModel="DataLayer.Entities.Setting" Model="[ThemeLayout?.ElementAt(2)]" ValueChanged="@(EventCallback.Factory.Create<Tuple<PropertyMetadata, DataLayer.Entities.Setting, object?>>(this, HandleTheme))" />
 
+    <button name="themeSelect" class="cta" @onclick="() => RandomizeTheme()">Randomize Theme</button>
 
     <h2>Parental Controls</h2>
     <div>
@@ -108,6 +111,23 @@
             _background = value;
             MenuService.SetBackground(_background);
         }
+    }
+
+
+    protected void RandomizeTheme()
+    {
+        var animationValues = Enum.GetValues<AnimationMode>();
+        int randomAnimation = Random.Shared.Next(1, animationValues.Length);
+        Background = animationValues[randomAnimation];
+
+        var themeValues = Enum.GetValues<ApplicationTheme>();
+        int randomTheme = Random.Shared.Next(1, themeValues.Length);
+        Application = themeValues[randomTheme];
+
+        // TODO: always make random sidebar and application match?
+        var sidebarValues = Enum.GetValues<SidebarTheme>();
+        //int randomSidebar = Random.Shared.Next(1, sidebarValues.Length);
+        Sidebar = sidebarValues[randomTheme];
     }
 
     private async Task HandleTheme(Tuple<PropertyMetadata, DataLayer.Entities.Setting, object?> selectedValue)

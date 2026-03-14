@@ -41,15 +41,30 @@
         get
         {
             if (Data?.ElementAt(0) == null) return _value;
-            return Model?.GetValue(Data.ElementAt(0)!)?.ToString() ?? _value;
+            if (Data.ElementAt(0) is DataLayer.Entities.Setting setting)
+            {
+                return setting.Value;
+            }
+            else
+            {
+                return Model?.GetValue(Data.ElementAt(0)!)?.ToString() ?? _value;
+            }
         }
         set
         {
             _value = value;
             if (Data?.ElementAt(0) != null)
             {
-                Model?.SetValue(Data.ElementAt(0)!, value);
+                if (Data.ElementAt(0) is DataLayer.Entities.Setting setting)
+                {
+                    setting.Value = value;
+                }
+                else
+                {
+                    Model?.SetValue(Data.ElementAt(0)!, value);
+                }
             }
+
             if (EnumType != null && Enum.TryParse(EnumType, value, true, out var myEnum))
             {
                 ValueChanged?.InvokeAsync(myEnum);
