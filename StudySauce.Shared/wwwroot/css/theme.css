@@ -45,6 +45,7 @@
     --amber-locus: #fbbf24;
     --text-main: #f1f5f9;
     --text-muted: #94a3b8;
+    --atrium-stone: #0f172a; --atrium-nature: #10b981; --atrium-electric: #06b6d4; --atrium-gold: #fbbf24;
 }
 
 /* 1. Opposed to Daybreak: The "Midnight Void" */
@@ -58,6 +59,7 @@
     --amber-locus: #6366f1;
     --text-main: #94a3b8;
     --text-muted: #475569;
+    --atrium-stone: #0f172a; --atrium-nature: #334155; --atrium-electric: #1e40af; --atrium-gold: #6366f1;
 }
 
 /* 2. Opposed to Desert Sunset: The "Arctic Thaw" */
@@ -71,6 +73,7 @@
     --amber-locus: #ffffff;
     --text-main: #f1f5f9;
     --text-muted: #94a3b8;
+    --atrium-stone: #1e293b; --atrium-nature: #0ea5e9; --atrium-electric: #7dd3fc; --atrium-gold: #ffffff;
 }
 
 /* 3. Opposed to Ocean Ripple: The "Abyssal Trench" */
@@ -84,6 +87,7 @@
     --amber-locus: #155e75;
     --text-main: #06b6d4;
     --text-muted: #164e63;
+    --atrium-stone: #081121; --atrium-nature: #164e63; --atrium-electric: #083344; --atrium-gold: #06b6d4;
 }
 
 /* 4. Opposed to Silver Chrome: The "Oxidized Iron" */
@@ -97,6 +101,7 @@
     --amber-locus: #451a03;
     --text-main: #d6d3d1;
     --text-muted: #78716c;
+    --atrium-stone: #2d2d2d; --atrium-nature: #78350f; --atrium-electric: #b45309; --atrium-gold: #d6d3d1;
 }
 
 /* 5. Opposed to Coral Reef: The "Deep Sea Kelp" */
@@ -110,6 +115,7 @@
     --amber-locus: #881337;
     --text-main: #d1fae5;
     --text-muted: #10b981;
+    --atrium-stone: #064e3b; --atrium-nature: #ec4899; --atrium-electric: #f43f5e; --atrium-gold: #10b981;
 }
 
 /* 6. Opposed to Dusk: The "Solar Flare" (Dark Mode version of midday) */
@@ -123,6 +129,7 @@
     --amber-locus: #ffffff;
     --text-main: #fffbeb;
     --text-muted: #fcd34d;
+    --atrium-stone: #451a03; --atrium-nature: #f59e0b; --atrium-electric: #fbbf24; --atrium-gold: #ffffff;
 }
 
 /* 7. Opposed to Rainbow Peak: The "Monochrome Matrix" */
@@ -136,6 +143,7 @@
     --amber-locus: #475569;
     --text-main: #f8fafc;
     --text-muted: #64748b;
+    --atrium-stone: #000000; --atrium-nature: #ffffff; --atrium-electric: #94a3b8; --atrium-gold: #f8fafc;
 }
 
 /* 8. Opposed to Golden Gate: The "Lead Fortress" */
@@ -149,6 +157,7 @@
     --amber-locus: #000000;
     --text-main: #cbd5e1;
     --text-muted: #64748b;
+    --atrium-stone: #1e293b; --atrium-nature: #475569; --atrium-electric: #334155; --atrium-gold: #000000;
 }
 
 /* 9. Opposed to Emerald Forest: The "Ashen Wastes" */
@@ -162,6 +171,7 @@
     --amber-locus: #7f1d1d;
     --text-main: #f4f4f5;
     --text-muted: #a1a1aa;
+    --atrium-stone: #27272a; --atrium-nature: #ef4444; --atrium-electric: #dc2626; --atrium-gold: #f4f4f5;
 }
 
 /* 10. Opposed to Night Vision: The "Inverted Neon" */
@@ -175,6 +185,7 @@
     --amber-locus: #0f172a;
     --text-main: #0f172a;
     --text-muted: #64748b;
+    --atrium-stone: #f1f5f9; --atrium-nature: #000000; --atrium-electric: #475569; --atrium-gold: #0f172a;
 }
 
 /* 11. Opposed to Berry Blast: The "Sour Lime" */
@@ -188,6 +199,7 @@
     --amber-locus: #365314;
     --text-main: #f7fee7;
     --text-muted: #a3e635;
+    --atrium-stone: #064e3b; --atrium-nature: #bef264; --atrium-electric: #84cc16; --atrium-gold: #f7fee7;
 }
 
 /* 12. Opposed to Parchment: The "Obsidian Ledger" */
@@ -201,7 +213,11 @@
     --amber-locus: #111827;
     --text-main: #e5e5e5;
     --text-muted: #737373;
+    --atrium-stone: #171717; --atrium-nature: #404040; --atrium-electric: #525252; --atrium-gold: #e5e5e5;
 }
+
+
+
 
 
 /* 1. Daybreak (Vibrant Pink/Orange) -> Soft Peach Card, Deep Purple Accents */
@@ -215,6 +231,8 @@
     --amber-locus: #800080;
     --text-main: #4a0026;
     --text-muted: #800080;
+        --atrium-stone: #800080; --atrium-nature: #ff0080; --atrium-electric: #ff8c00; --atrium-gold: #ffd700;
+
 }
 
 /* 2. Desert Sunset (Gold/Orange/Purple) -> Warm Sand Card, Sunset Accents */
@@ -228,6 +246,8 @@
     --amber-locus: #4b0082;
     --text-main: #2d1b4d;
     --text-muted: #4b0082;
+        --atrium-stone: #4b0082; --atrium-nature: #ff4500; --atrium-electric: #ffd700; --atrium-gold: #ffffff;
+
 }
 
 /* 3. Ocean Ripple (Deep Blue/White) -> Midnight Slate Card, Cyan Accents */
@@ -241,6 +261,8 @@
     --amber-locus: #0000ff;
     --text-main: #f0f9ff;
     --text-muted: #00ffff;
+        --atrium-stone: #000044; --atrium-nature: #0000ff; --atrium-electric: #00ffff; --atrium-gold: #ffffff;
+
 }
 
 /* 4. Silver Chrome (Metallic) -> Polished Ash Card, Chrome Accents */
@@ -254,6 +276,8 @@
     --amber-locus: #000000;
     --text-main: #171717;
     --text-muted: #4d4d4d;
+        --atrium-stone: #4d4d4d; --atrium-nature: #7a7a7a; --atrium-electric: #c0c0c0; --atrium-gold: #ffffff;
+
 }
 
 /* 5. Coral Reef (Tropical Cyan/Pink) -> Mint/Seafoam Card, Coral Accents */
@@ -267,6 +291,8 @@
     --amber-locus: #ff7f50;
     --text-main: #831843;
     --text-muted: #be185d;
+        --atrium-stone: #ff7f50; --atrium-nature: #ff1493; --atrium-electric: #00ced1; --atrium-gold: #ffd700;
+
 }
 
 /* 6. Dusk (Deep Night) -> Obsidian Card, Ultra-Violet Accents */
@@ -280,6 +306,7 @@
     --amber-locus: #1a0033;
     --text-main: #e0e7ff;
     --text-muted: #818cf8;
+    --atrium-stone: #000033; --atrium-nature: #1a0033; --atrium-electric: #330066; --atrium-gold: #000066;
 }
 
 /* 7. Rainbow Peak (Full Spectrum) -> Off-White Card, Prism Accents */
@@ -293,6 +320,7 @@
     --amber-locus: #ff00ff;
     --text-main: #171717;
     --text-muted: #0000ff;
+    --atrium-stone: #ff0000; --atrium-nature: #00ff00; --atrium-electric: #00ffff; --atrium-gold: #ffff00;
 }
 
 /* 8. Golden Gate (Polished Gold) -> Ivory/Cream Card, Bronze Accents */
@@ -306,6 +334,7 @@
     --amber-locus: #451a03;
     --text-main: #422006;
     --text-muted: #b8860b;
+    --atrium-stone: #451a03; --atrium-nature: #ffd700; --atrium-electric: #b8860b; --atrium-gold: #ffffff;
 }
 
 /* 9. Emerald Forest (Deep Green) -> Mossy Slate Card, Lime Accents */
@@ -319,6 +348,7 @@
     --amber-locus: #adff2f;
     --text-main: #f0fdf4;
     --text-muted: #32cd32;
+    --atrium-stone: #002200; --atrium-nature: #008000; --atrium-electric: #32cd32; --atrium-gold: #adff2f;
 }
 
 /* 10. Night Vision (The Matrix) -> Pitch Black Card, Neon Accents */
@@ -332,6 +362,7 @@
     --amber-locus: #00ff00;
     --text-main: #00ff00;
     --text-muted: #003300;
+    --atrium-stone: #003300; --atrium-nature: #003300; --atrium-electric: #00ff00; --atrium-gold: #00ff00;
 }
 
 /* 11. Berry Blast (Candy Blue/Red) -> Deep Berry Card, Neon Cyan Accents */
@@ -345,6 +376,7 @@
     --amber-locus: #0000ff;
     --text-main: #ffffff;
     --text-muted: #ff00ff;
+    --atrium-stone: #0000ff; --atrium-nature: #dc143c; --atrium-electric: #ff00ff; --atrium-gold: #6a5acd;
 }
 
 /* 12. Parchment (Academic Beige) -> Antique Paper Card, Leather Accents */
@@ -358,17 +390,11 @@
     --amber-locus: #f5f5dc;
     --text-main: #451a03;
     --text-muted: #8b4513;
+        --atrium-stone: #8b4513; --atrium-nature: #d2b48c; --atrium-electric: #f5f5dc; --atrium-gold: #8b4513;
+
 }
 
 
-
-.canvas-container {
-    background: var(--slate-bg);
-}
-
-.sidebar {
-    border-right: 1px solid var(--slate-border);
-}
 
 /* 1. Midnight Void */
 .sidebar.midnightvoid {
@@ -531,22 +557,84 @@ sidebar.shalelife {
 }
 
 
+.sidebar {
+}
+
+
+.canvas-container {
+/*    background: var(--slate-bg);*/
+}
+
+.big-button {
+    background: linear-gradient(125deg, #052767 0%, /* 1. Deep Blue */
+    #3a0647 9%, /* 2. Deep Purple */
+    var(--amber-locus) 14%,
+    #800080 18%, /* 3. Violet */
+    var(--atrium-stone) 20%,
+    #ff00cc 27%, /* 4. Vivid Magenta */
+    var(--cyan-bolt) 30%,
+    #ff0066 36%, /* 5. Hot Pink */
+    #ff3300 45%, /* 6. Orange Red */
+    var(--emerald-glow) 50%,
+    #ffcc00 54%, /* 7. Gold */
+    #33ff00 63%, /* 8. Neon Green */
+    var(--atrium-electric) 68%,
+    #00ffcc 72%, /* 9. Turquoise */
+    #0ea5e9 81%, /* 10. Sky Blue */
+    var(--atrium-gold) 86%,
+    #7000ff 90%, /* 11. Electric Purple */
+    var(--atrium-nature) 95%,
+    #052767 100% /* 12. Loop back to Deep Blue */
+    );
+    background-size: 800% 800%;
+}
+
+
 header.top-row {
-    background: rgba(5, 5, 10, 0.85);
-    color: var(--text-main);
-    border-bottom: 1px solid var(--slate-border);
+    background: rgb(from var(--slate-bg) r g b / 30%);
     backdrop-filter: blur(8px);
 }
+
+a, .btn-link
+{
+    color: var(--cyan-bolt);
+}
+
+a:hover, .btn-link:hover
+{
+    color: var(--atrium-electric);
+}
+
+.btn-primary, a.cta, button.cta
+{
+    background-color: var(--amber-locus);
+    border: 2px solid var(--slate-border);
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus, button.cta:hover
+{
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem var(--cyan-bolt);
+}
+
 
 .card-container, .flash-card, .card-inner, .user-account, .pack-edit {
     background-color: var(--slate-card);
     color: var(--text-main);
-    border: 1px solid var(--slate-border);
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
 }
 
-.nav-link, .top-row a, .top-row .btn-link {
-    color: var(--text-muted);
+.study-now
+{
+    background: rgb(from var(--slate-bg) r g b / 30%);
+}
+
+
+.navbar-brand:hover,
+.nav-item .nav-link:hover,
+.study-now h2 a, .study-now h3 a, .study-now h4 a,
+header.top-row, .top-row > *,
+.navbar-brand, .nav-item .nav-link, .page .top-row > a, .page .contextual-menu a, .top-row .btn-link {
+    color: var(--slate-surface);
 }
 
 .nav-link:hover, .nav-link.active {
@@ -575,7 +663,7 @@ button.btn-more, .btn-primary {
 }
 
 .bi-study::before {
-    background-color: var(--emerald-glow);
+/*    background-color: var(--emerald-glow);*/
 }
 
 .drop-shader {

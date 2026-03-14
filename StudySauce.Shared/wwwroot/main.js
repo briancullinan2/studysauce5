@@ -18,3 +18,11 @@
 
 window.getThemeColors = getThemeColors;
 
+function normalizeColor(colorStr) {
+    // style will always be "rgb(r, g, b)" or "rgba(r, g, b, a)"
+    const matches = colorStr.match(/\d+/g);
+    return matches ? matches.slice(0, 3) : [0, 0, 0];
+}
+
+window.normalizeColor = normalizeColor;
+

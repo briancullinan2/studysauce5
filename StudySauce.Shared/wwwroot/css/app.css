@@ -7,6 +7,7 @@ html, body {
     drag-drop-zone: none; /* Non-standard, but some engines respect it */
     -webkit-user-drag: none;
     height: 100%;
+
 }
 
 #app
@@ -19,7 +20,7 @@ h1, h2, h3, h4, h5 {
     outline: none;
 }
 
-*, ::before, ::after {
+*, ::before, ::after, *:focus, *:active {
     box-sizing: border-box;
     outline: none; /* TODO: override this on specific elements for screen readers */
 }

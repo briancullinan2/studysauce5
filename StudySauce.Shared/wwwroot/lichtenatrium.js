@@ -82,6 +82,9 @@
                 drawElementalBranch(midX, midY, midZ, x2, y2, z2, depth - 1, type);
             }
         }
+
+        ctx.shadowBlur = 0;
+        ctx.shadowColor = 'transparent';
     }
 
     function drawLocus(x, y, z, color) {
@@ -92,21 +95,46 @@
         ctx.shadowBlur = 15;
         ctx.shadowColor = color;
         ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.shadowColor = 'transparent';
     }
+
+
+    let fps = 24;
+    let fpsInterval = 1000 / fps;
+    let lastDrawTime = performance.now();
+    let colors = getThemeColors();
+    let lastColorUpdate = performance.now();
+
 
     function animate(currentTime) {
         if (isCancelled) return;
+        let elapsed = currentTime - lastDrawTime;
+        if (elapsed < fpsInterval) {
+            requestAnimationFrame(animate);
+            return;
+        }
+
+        if (currentTime - lastColorUpdate > 1000) {
+            colors = getThemeColors();
+            lastColorUpdate = currentTime - (elapsed % fpsInterval);
+        }
+
+        lastDrawTime = currentTime - (elapsed % fpsInterval);
+
+
         time += 0.02;
 
         // Background trail (Secret Garden Ivory)
-        ctx.fillStyle = 'rgba(252, 252, 240, 0.15)';
+        const [br, bg, bb] = normalizeColor(colors.main);
+        ctx.fillStyle = `rgba(${br}, ${bg}, ${bb}, 0.15)`;
         ctx.fillRect(0, 0, width, height);
 
         // 1. ANCHOR NODES (Elementals)
         const anchors = [
-            { pos: [-200, 200, 0], col: '#fbbf24', type: 'gold' },
+            { pos: [-300, 200, 0], col: '#fbbf24', type: 'gold' },
             { pos: [200, 200, 0], col: '#fbbf24', type: 'gold' },
-            { pos: [0, -250, 100], col: '#67e8f9', type: 'electric' },
+            { pos: [0, -350, 100], col: '#67e8f9', type: 'electric' },
             { pos: [150, 0, -100], col: '#fb7185', type: 'nature' }
         ];
 
@@ -141,7 +169,7 @@
         const archNodes = [];
         for (let i = 0; i <= 10; i++) {
             const a = (i / 10) * Math.PI;
-            archNodes.push([Math.cos(a) * 250, -Math.sin(a) * 250, 0]);
+            archNodes.push([Math.cos(a) * 400, -Math.sin(a) * 400, 0]);
         }
         for (let i = 0; i < archNodes.length - 1; i++) {
             drawElementalBranch(...archNodes[i], ...archNodes[i + 1], 6, 'electric');

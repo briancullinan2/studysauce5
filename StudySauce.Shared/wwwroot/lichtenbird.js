@@ -182,13 +182,17 @@
             requestAnimationFrame(animate);
             return;
         }
-        lastDrawTime = currentTime - (elapsed % fpsInterval);
-        if (currentTime - lastDrawTime > 1000) {
+
+        if (currentTime - lastColorUpdate > 1000) {
             colors = getThemeColors();
+            lastColorUpdate = currentTime - (elapsed % fpsInterval);
         }
 
+        lastDrawTime = currentTime - (elapsed % fpsInterval);
+
         // Clean slate with background (Warm Cream/Beige)
-        ctx.fillStyle = 'rgba(245, 240, 220, 0.1)';
+        const [br, bg, bb] = normalizeColor(colors.main);
+        ctx.fillStyle = `rgba(${br}, ${bg}, ${bb}, 0.15)`;
         ctx.fillRect(0, 0, width, height);
         time += 0.03; // Increment animation timer
 
